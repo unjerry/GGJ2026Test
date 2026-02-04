@@ -15,14 +15,14 @@ enum State {
 const GROUND_STATES := [State.IDLE, State.RUNNING]
 
 # 角色属性常量
-const RUN_SPEED := 200.0 # 奔跑速度
-const JUMP_VELOCITY := -300.0 # 跳跃初速度（负值表示向上）
-const FLOOR_ACCELERATION := RUN_SPEED / 0.1 # 地面加速度
+const RUN_SPEED := 1000.0 # 奔跑速度
+const JUMP_VELOCITY := -2000.0 # 跳跃初速度（负值表示向上）
+const FLOOR_ACCELERATION := RUN_SPEED / 0.15 # 地面加速度
 const AIR_ACCELERATION := RUN_SPEED / 0.05 # 空中加速度
-const DASH_VELOCITY := 200 # 冲刺速度
+const DASH_VELOCITY := 2000 # 冲刺速度
 
 # 角色变量
-var gravity := ProjectSettings.get("physics/2d/default_gravity") as float # 从项目设置获取重力值
+var gravity := ProjectSettings.get("physics/2d/default_gravity") * 5 as float # 从项目设置获取重力值
 var solid := true # 空心与实心状态的标记
 var is_first_tick := false
 

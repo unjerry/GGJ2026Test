@@ -20,14 +20,14 @@ var can_move := true
 
 func _physics_process(delta: float) -> void:
 	# 当玩家位置超过250时，调整相机范围和墙壁位置
-	if player.global_position.x > 250:
+	if player.global_position.x > 1000:
 		# 设置相机左右边界
-		camera_2d.limit_right = 500  # 相机右边界
-		camera_2d.limit_left = 116   # 相机左边界
+		camera_2d.limit_right = 1960  # 相机右边界
+		camera_2d.limit_left = 40   # 相机左边界
 		
 		# 交换墙壁位置（实现场景切换效果）
-		right_wall.global_position.x = 116  # 右侧墙壁移到左边
-		left_wall.global_position.x = 500   # 左侧墙壁移到右边
+		left_wall.global_position.x = 1960   # 左侧墙壁移到右边
+		right_wall.global_position.x = 40  # 右侧墙壁移到左边
 		
 	# 如果玩家不能移动，将相机固定在指定位置
 	if not can_move:

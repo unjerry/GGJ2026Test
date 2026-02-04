@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://bverj00ttxftq"]
 
-[ext_resource type="Script" uid="uid://cwh04sgko1nh3" path="res://enemy.gd" id="1_ofsxj"]
+[ext_resource type="Script" uid="uid://cwh04sgko1nh3" path="res://enemy/enemy.gd" id="1_ofsxj"]
 [ext_resource type="Script" uid="uid://bd7ush4653ea" path="res://classes/StateMachin.gd" id="2_ppra6"]
 [ext_resource type="Texture2D" uid="uid://4peybch1w74x" path="res://player/Dot.png" id="3_pmsee"]
 [ext_resource type="Texture2D" uid="uid://h8g2gckq2w5f" path="res://player/ring.png" id="4_1wwld"]
