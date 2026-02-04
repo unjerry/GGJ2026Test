@@ -73,6 +73,7 @@
 - /player：玩家
 - /envm：环境
 - /fightsystem：战斗系统
+- /tutorialUI：教程UI
 
 ## 编码与改动规则（Coding rules）
 
