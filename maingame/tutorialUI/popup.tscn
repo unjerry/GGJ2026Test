@@ -1,0 +1,55 @@
+[gd_scene load_steps=3 format=3 uid="uid://bc88h4q2xmvod"]
+
+[ext_resource type="Theme" uid="uid://2dfilxv0lnph" path="res://tutorialUI/UI.tres" id="1_ceelg"]
+[ext_resource type="Texture2D" uid="uid://cn1oavouy7nvi" path="res://tutorialUI/wasd.png" id="2_ceelg"]
+
+[node name="popup" type="Control"]
+layout_mode = 3
+anchor_left = 0.66700006
+anchor_top = 0.67600006
+anchor_right = 0.957
+anchor_bottom = 0.93700004
+offset_left = -0.3840332
+offset_top = -0.048034668
+offset_right = -0.46398926
+offset_bottom = -0.17602539
+grow_horizontal = 0
+grow_vertical = 0
+theme = ExtResource("1_ceelg")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="Hint_AD" type="HFlowContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label_use" type="Label" parent="PanelContainer/MarginContainer/Hint_AD"]
+layout_mode = 2
+text = "ui.use"
+
+[node name="Label_AD" type="Label" parent="PanelContainer/MarginContainer/Hint_AD"]
+layout_mode = 2
+text = "A & D "
+
+[node name="Image_wasd" type="TextureRect" parent="PanelContainer/MarginContainer/Hint_AD"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("2_ceelg")
+expand_mode = 1
+
+[node name="Label_movehint" type="Label" parent="PanelContainer/MarginContainer/Hint_AD"]
+layout_mode = 2
+text = "ui.move_hint"
+
+[node name="Label_period" type="Label" parent="PanelContainer/MarginContainer/Hint_AD"]
+layout_mode = 2
+text = "ui.period"

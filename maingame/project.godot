@@ -14,9 +14,17 @@ config/name="maingame"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[display]
+
+window/stretch/mode="canvas_items"
+
 [gui]
 
 theme/default_font_multichannel_signed_distance_field=true
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://trans/trans.en.translation", "res://trans/trans.zh_CN.translation")
 
 [rendering]
 
