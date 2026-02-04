@@ -1,9 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://cn4tdklhwm6o3"]
+[gd_scene load_steps=8 format=3 uid="uid://cn4tdklhwm6o3"]
 
 [ext_resource type="Script" uid="uid://b14i6rr1d4go6" path="res://player/player.gd" id="1_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://4peybch1w74x" path="res://player/Dot.png" id="1_rkbax"]
 [ext_resource type="Texture2D" uid="uid://dnh4uudei85k8" path="res://player/Cut.png" id="3_yw30f"]
-[ext_resource type="Script" uid="uid://bd7ush4653ea" path="res://classes/StateMachin.gd" id="4_yw30f"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qjkh3"]
 radius = 10.715238
@@ -121,7 +120,3 @@ wait_time = 0.1
 one_shot = true
 
 [node name="DashTimer" type="Timer" parent="."]
-
-[node name="StateMachine" type="Node" parent="."]
-script = ExtResource("4_yw30f")
-metadata/_custom_type_script = "uid://bd7ush4653ea"
