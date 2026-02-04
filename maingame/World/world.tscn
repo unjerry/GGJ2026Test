@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://b3tw005pgghb3"]
+[gd_scene load_steps=9 format=3 uid="uid://b3tw005pgghb3"]
 
 [ext_resource type="Texture2D" uid="uid://beqdkc8j1jogf" path="res://World/Line.png" id="1_8a836"]
 [ext_resource type="Script" uid="uid://dbnfhngc1mt7a" path="res://World/world.gd" id="1_j8job"]
 [ext_resource type="PackedScene" uid="uid://cn4tdklhwm6o3" path="res://player/player.tscn" id="2_j8job"]
 [ext_resource type="Texture2D" uid="uid://denp1ctkvxwnw" path="res://World/Background.png" id="4_3f78f"]
+[ext_resource type="PackedScene" uid="uid://bs3apdfuibdg8" path="res://enemy/test.tscn" id="4_k8do8"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_8a836"]
 
@@ -54,6 +55,9 @@ position = Vector2(6250, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Node2D/LeftWall"]
 shape = SubResource("WorldBoundaryShape2D_3f78f")
+
+[node name="Test" parent="Node2D" instance=ExtResource("4_k8do8")]
+position = Vector2(5200, -387.5)
 
 [node name="Parallax2D" type="Parallax2D" parent="."]
 scroll_scale = Vector2(0, 0)

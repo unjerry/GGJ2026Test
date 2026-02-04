@@ -19,20 +19,26 @@ const RUN_SPEED := 200.0 # 奔跑速度
 const JUMP_VELOCITY := -300.0 # 跳跃初速度（负值表示向上）
 const FLOOR_ACCELERATION := RUN_SPEED / 0.1 # 地面加速度
 const AIR_ACCELERATION := RUN_SPEED / 0.05 # 空中加速度
-const DASH_VELOCITY := 200 # 冲刺速度
+const DASH_SPEED := 500
+const DASH_DURATION := 0.2
+const DASH_COOLDOWN: float = 0.5
 
 # 角色变量
 var gravity := ProjectSettings.get("physics/2d/default_gravity") as float # 从项目设置获取重力值
 var solid := true # 空心与实心状态的标记
-var is_first_tick := false
+var has_dashed := false
+var dash_cooldown: float = 0.0
 
 # 节点引用
 @onready var jump_request_timer: Timer = $JumpRequestTimer # 跳跃输入缓冲计时器
+@onready var dash_timer: Timer = $DashTimer
+@onready var dash_request_timer: Timer = $DashRequestTimer
+@onready var state_machine: StateMachine = $StateMachine
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	# 只有在solid为true时才处理输入
-	if solid:
+	if not solid:
 		# 按下跳跃键时启动跳跃缓冲计时器
 		if event.is_action_pressed("jump"):
 			jump_request_timer.start()
@@ -55,7 +61,7 @@ func tick_physics(state: State, delta: float) -> void:
 			move(delta) # 跳跃状态下的移动
 			
 		State.DASH:
-			move(delta) # 冲刺状态下的移动
+			dash(delta) # 冲刺状态下的移动
 
 
 func move(delta: float) -> void:
@@ -75,10 +81,21 @@ func move(delta: float) -> void:
 	move_and_slide()
 
 
+func dash(delta: float) -> void:
+	var mouse_world_pos = get_global_mouse_position()
+	if solid:
+		velocity.x = sign(mouse_world_pos.x - global_position.x) * DASH_SPEED
+	else:  # 空心环：向鼠标方向冲刺
+		var direction = (mouse_world_pos - global_position).normalized()
+		velocity = direction * DASH_SPEED
+		velocity.y += gravity * delta
+	
+	move_and_slide()
+
+
 func get_next_state(state: State) -> State:
 	# 判断是否可以跳跃：在地面且跳跃计时器正在运行
 	var can_jump := is_on_floor() and jump_request_timer.time_left > 0
-	
 	# 如果可以跳跃，优先转换为跳跃状态
 	if can_jump:
 		return State.JUMP
@@ -91,12 +108,14 @@ func get_next_state(state: State) -> State:
 	# 根据当前状态判断下一个状态
 	match state:
 		State.IDLE:
-			# 闲置时如果有移动输入，转换为奔跑状态
+			if Input.is_action_just_pressed("dash"):
+				return State.DASH
 			if not is_still:
 				return State.RUNNING
 			
 		State.RUNNING:
-			# 奔跑时如果静止，转换为闲置状态
+			if Input.is_action_just_pressed("dash"):
+				return State.DASH
 			if is_still:
 				return State.IDLE
 			
@@ -106,8 +125,11 @@ func get_next_state(state: State) -> State:
 				return State.IDLE
 		
 		State.DASH:
-			# 冲刺状态逻辑（待实现）
-			pass
+			print(dash_timer.time_left)
+			if state_machine.state_time > DASH_DURATION:
+				if is_on_floor():
+					has_dashed = true
+				return State.IDLE
 	
 	# 默认保持当前状态
 	return state

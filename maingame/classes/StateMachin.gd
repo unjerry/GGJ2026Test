@@ -10,6 +10,9 @@ var current_state: int = -1:
 		# 状态变化时通知所有者进行状态转换处理
 		owner.transition_state(current_state, v)
 		current_state = v  # 更新当前状态
+		
+var state_time: float
+
 
 func _ready() -> void:
 	# 等待所有者节点完全就绪
@@ -20,6 +23,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# 状态转换循环：持续检查直到状态稳定
 	while true:
+		print(current_state)
 		# 从所有者获取下一个状态
 		var next := owner.get_next_state(current_state) as int
 		
@@ -32,3 +36,4 @@ func _physics_process(delta: float) -> void:
 	
 	# 执行当前状态的物理更新
 	owner.tick_physics(current_state, delta)
+	state_time += delta
