@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://q7dq315mg1jr"]
 
-[ext_resource type="Texture2D" uid="uid://cn1oavouy7nvi" path="res://tutorialUI/wasd.png" id="1_dsluf"]
+[ext_resource type="Texture2D" uid="uid://cn1oavouy7nvi" path="res://tutorialUI/Assets/wasd.png" id="1_dsluf"]
 
 [node name="Hint_AD" type="HFlowContainer"]
 size_flags_vertical = 3

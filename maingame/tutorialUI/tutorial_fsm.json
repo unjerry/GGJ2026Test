@@ -1,0 +1,47 @@
+{
+  "initial_state": "start",
+  "states": {
+    "start": {
+      "enter": "_state_start_enter",
+      "update": "_state_start_update",
+      "exit": "_state_start_exit"
+    },
+    "show": {
+      "enter": "_state_show_enter",
+      "update": "_state_show_update",
+      "exit": "_state_show_exit"
+    },
+    "hide": {
+      "enter": "_state_hide_enter",
+      "update": "_state_hide_update",
+      "exit": "_state_hide_exit"
+    },
+    "end": {
+      "enter": "_state_end_enter",
+      "update": "_state_end_update",
+      "exit": "_state_end_exit"
+    }
+  },
+  "transitions": [
+    {
+      "from": "start",
+      "event": "begin_show",
+      "to": "show"
+    },
+    {
+      "from": "show",
+      "event": "ready_to_hide",
+      "to": "hide"
+    },
+    {
+      "from": "hide",
+      "event": "hide_done",
+      "to": "start"
+    },
+    {
+      "from": "*",
+      "event": "finish",
+      "to": "end"
+    }
+  ]
+}

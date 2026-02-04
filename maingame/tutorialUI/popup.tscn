@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://bc88h4q2xmvod"]
 
-[ext_resource type="Theme" uid="uid://2dfilxv0lnph" path="res://tutorialUI/UI.tres" id="1_ceelg"]
-[ext_resource type="Script" uid="uid://c7r12jyaapwxb" path="res://tutorialUI/popup.gd" id="3_7e1cw"]
+[ext_resource type="Theme" uid="uid://2dfilxv0lnph" path="res://tutorialUI/Assets/UI.tres" id="1_ceelg"]
+[ext_resource type="Script" uid="uid://c7r12jyaapwxb" path="res://tutorialUI/script/popup.gd" id="3_7e1cw"]
 [ext_resource type="AnimationNodeStateMachine" uid="uid://co5tg43hhmgml" path="res://tutorialUI/popup_AD.tres" id="3_n2n3w"]
 [ext_resource type="PackedScene" uid="uid://q7dq315mg1jr" path="res://tutorialUI/Hints/hint_ad.tscn" id="4_n2n3w"]
 
@@ -145,6 +145,7 @@ advance_expression_base_node = NodePath("..")
 anim_player = NodePath("../AnimationPlayer")
 
 [node name="panel_Hint_AD" type="PanelContainer" parent="."]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

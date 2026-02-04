@@ -7,7 +7,6 @@ animation = &"AD"
 animation = &"Hide"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_start_to_ad"]
-switch_mode = 0
 advance_mode = 2
 advance_expression = "state==\"show\""
 
