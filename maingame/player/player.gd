@@ -1,104 +1,134 @@
+# 文件名: player.gd (玩家角色脚本)
+# 说明：玩家角色控制，包含移动、跳跃、状态管理等功能
+
 extends CharacterBody2D
 
-enum Form { DOT, RING }
+# 状态枚举定义
+enum State {
+	IDLE, # 闲置状态
+	RUNNING, # 奔跑状态
+	JUMP, # 跳跃状态
+	DASH, # 冲刺状态
+}
 
-@export var form: Form = Form.DOT
-@export var move_speed := 220.0
-@export var jump_velocity := -320.0
-@export var dash_speed := 520.0
-@export var dash_duration := 0.12
-@export var dash_cooldown := 0.4
-@export var radius := 10.0
-@export var ring_width := 2.0
+# 地面状态数组（用于判断是否在地面状态）
+const GROUND_STATES := [State.IDLE, State.RUNNING]
 
-var _gravity := ProjectSettings.get_setting("physics/2d/default_gravity") as float
-var _dash_time_left := 0.0
-var _dash_cooldown_left := 0.0
-var _dash_dir := Vector2.ZERO
-var _facing := 1.0
+# 角色属性常量
+const RUN_SPEED := 200.0 # 奔跑速度
+const JUMP_VELOCITY := -300.0 # 跳跃初速度（负值表示向上）
+const FLOOR_ACCELERATION := RUN_SPEED / 0.1 # 地面加速度
+const AIR_ACCELERATION := RUN_SPEED / 0.05 # 空中加速度
+const DASH_VELOCITY := 200 # 冲刺速度
 
+# 角色变量
+var gravity := ProjectSettings.get("physics/2d/default_gravity") as float # 从项目设置获取重力值
+var solid := true # 空心与实心状态的标记
+var is_first_tick := false
 
-func _ready() -> void:
-	_ensure_input()
-	queue_redraw()
+# 节点引用
+@onready var jump_request_timer: Timer = $JumpRequestTimer # 跳跃输入缓冲计时器
 
 
-func _physics_process(delta: float) -> void:
-	_update_dash_timers(delta)
+func _unhandled_input(event: InputEvent) -> void:
+	# 只有在solid为true时才处理输入
+	if solid:
+		# 按下跳跃键时启动跳跃缓冲计时器
+		if event.is_action_pressed("jump"):
+			jump_request_timer.start()
+			
+		# 松开跳跃键时，如果上升速度小于一半跳跃速度，则减少垂直速度
+		if event.is_action_released("jump") and velocity.y < JUMP_VELOCITY / 2:
+			velocity.y = JUMP_VELOCITY / 2 # 实现跳跃高度控制
 
-	var input_dir := Input.get_axis("move_left", "move_right")
-	if input_dir != 0.0:
-		_facing = sign(input_dir)
 
-	if _dash_time_left > 0.0:
-		velocity = _dash_dir * dash_speed
-	else:
-		if not is_on_floor():
-			velocity.y += _gravity * delta
-		elif form == Form.RING and Input.is_action_just_pressed("jump"):
-			velocity.y = jump_velocity
+func tick_physics(state: State, delta: float) -> void:
+	# 根据当前状态执行相应的物理更新
+	match state:
+		State.IDLE:
+			move(delta) # 闲置状态下的移动
+			
+		State.RUNNING:
+			move(delta) # 奔跑状态下的移动
+			
+		State.JUMP:
+			move(delta) # 跳跃状态下的移动
+			
+		State.DASH:
+			move(delta) # 冲刺状态下的移动
 
-		velocity.x = input_dir * move_speed
 
-	if Input.is_action_just_pressed("dash") and _dash_time_left <= 0.0 and _dash_cooldown_left <= 0.0:
-		_start_dash()
-
+func move(delta: float) -> void:
+	# 获取水平输入方向（-1:左, 0:无输入, 1:右）
+	var direction := Input.get_axis("move_left", "move_right")
+	
+	# 根据是否在地面选择加速度
+	var acceleration := FLOOR_ACCELERATION if is_on_floor() else AIR_ACCELERATION
+	
+	# 水平速度插值（平滑加速/减速）
+	velocity.x = move_toward(velocity.x, direction * RUN_SPEED, acceleration * delta)
+	
+	# 应用重力（垂直加速度）
+	velocity.y += gravity * delta
+	
+	# 执行移动和碰撞检测
 	move_and_slide()
 
 
-func _start_dash() -> void:
-	_dash_cooldown_left = dash_cooldown
-	_dash_time_left = dash_duration
+func get_next_state(state: State) -> State:
+	# 判断是否可以跳跃：在地面且跳跃计时器正在运行
+	var can_jump := is_on_floor() and jump_request_timer.time_left > 0
+	
+	# 如果可以跳跃，优先转换为跳跃状态
+	if can_jump:
+		return State.JUMP
+	
+	# 获取水平输入方向
+	var direction := Input.get_axis("move_left", "move_right")
+	# 判断是否静止：无输入且水平速度接近零
+	var is_still := is_zero_approx(direction) and is_zero_approx(velocity.x)
+	
+	# 根据当前状态判断下一个状态
+	match state:
+		State.IDLE:
+			# 闲置时如果有移动输入，转换为奔跑状态
+			if not is_still:
+				return State.RUNNING
+			
+		State.RUNNING:
+			# 奔跑时如果静止，转换为闲置状态
+			if is_still:
+				return State.IDLE
+			
+		State.JUMP:
+			# 跳跃时如果落地，转换为闲置状态
+			if is_on_floor():
+				return State.IDLE
+		
+		State.DASH:
+			# 冲刺状态逻辑（待实现）
+			pass
+	
+	# 默认保持当前状态
+	return state
 
-	if form == Form.RING:
-		var dir := get_global_mouse_position() - global_position
-		if dir.length() < 0.001:
-			dir = Vector2(_facing, 0.0)
-		_dash_dir = dir.normalized()
-	else:
-		var dir_x := Input.get_axis("move_left", "move_right")
-		if dir_x == 0.0:
-			dir_x = _facing
-		_dash_dir = Vector2(sign(dir_x), 0.0)
 
-
-func _update_dash_timers(delta: float) -> void:
-	if _dash_time_left > 0.0:
-		_dash_time_left = max(0.0, _dash_time_left - delta)
-	if _dash_cooldown_left > 0.0:
-		_dash_cooldown_left = max(0.0, _dash_cooldown_left - delta)
-
-
-func _draw() -> void:
-	if form == Form.DOT:
-		draw_circle(Vector2.ZERO, radius, Color.BLACK)
-	else:
-		draw_arc(Vector2.ZERO, radius, 0.0, TAU, 32, Color.BLACK, ring_width)
-
-
-func _ensure_input() -> void:
-	_add_action("move_left", [KEY_A, KEY_LEFT])
-	_add_action("move_right", [KEY_D, KEY_RIGHT])
-	_add_action("jump", [KEY_SPACE])
-	_add_action("dash", [KEY_SHIFT])
-
-
-func _add_action(action_name: String, keycodes: Array) -> void:
-	if not InputMap.has_action(action_name):
-		InputMap.add_action(action_name)
-
-	var existing := InputMap.action_get_events(action_name)
-	for keycode in keycodes:
-		var already := false
-		for ev in existing:
-			if ev is InputEventKey and (ev.keycode == keycode or ev.physical_keycode == keycode):
-				already = true
-				break
-		if already:
-			continue
-
-		var event := InputEventKey.new()
-		event.keycode = keycode
-		event.physical_keycode = keycode
-		InputMap.action_add_event(action_name, event)
-		existing.append(event)
+func transition_state(from: State, to: State) -> void:
+	# 状态转换时的处理逻辑
+	match to:
+		State.IDLE:
+			# 进入闲置状态（暂无特殊处理）
+			pass
+		
+		State.RUNNING:
+			# 进入奔跑状态（暂无特殊处理）
+			pass
+		
+		State.JUMP:
+			# 进入跳跃状态：设置跳跃速度并停止计时器
+			velocity.y = JUMP_VELOCITY
+			jump_request_timer.stop()
+			
+		State.DASH:
+			# 进入冲刺状态（待实现）
+			pass
