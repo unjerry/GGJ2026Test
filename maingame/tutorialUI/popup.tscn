@@ -1,16 +1,18 @@
-[gd_scene load_steps=10 format=3 uid="uid://bc88h4q2xmvod"]
+[gd_scene load_steps=16 format=3 uid="uid://bc88h4q2xmvod"]
 
 [ext_resource type="Theme" uid="uid://2dfilxv0lnph" path="res://tutorialUI/Assets/UI.tres" id="1_ceelg"]
-[ext_resource type="Script" uid="uid://c7r12jyaapwxb" path="res://tutorialUI/script/popup.gd" id="3_7e1cw"]
-[ext_resource type="AnimationNodeStateMachine" uid="uid://co5tg43hhmgml" path="res://tutorialUI/popup_AD.tres" id="3_n2n3w"]
-[ext_resource type="PackedScene" uid="uid://q7dq315mg1jr" path="res://tutorialUI/Hints/hint_ad.tscn" id="4_n2n3w"]
+[ext_resource type="Script" uid="uid://c8v0hujv3n0gt" path="res://tutorialUI/script/Tut.gd" id="2_tut"]
+[ext_resource type="AnimationNodeStateMachine" uid="uid://co5tg43hhmgml" path="res://tutorialUI/popup_AD.tres" id="3_ad_sm"]
+[ext_resource type="AnimationNodeStateMachine" uid="uid://dadjoka1m0bfn" path="res://tutorialUI/popup_Space.tres" id="4_space_sm"]
+[ext_resource type="PackedScene" uid="uid://q7dq315mg1jr" path="res://tutorialUI/Hints/hint_ad.tscn" id="5_hint_ad"]
+[ext_resource type="PackedScene" uid="uid://b4bx61blpwt40" path="res://tutorialUI/Hints/hint_space.tscn" id="6_hint_space"]
 
-[sub_resource type="Animation" id="Animation_ceelg"]
+[sub_resource type="Animation" id="Animation_ad_show"]
 resource_name = "AD"
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("panel_Hint_AD:visible")
+tracks/0/path = NodePath("panel_AD:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -22,7 +24,7 @@ tracks/0/keys = {
 tracks/1/type = "bezier"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("panel_Hint_AD:position:y")
+tracks/1/path = NodePath("panel_AD:position:y")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -33,7 +35,7 @@ tracks/1/keys = {
 tracks/2/type = "bezier"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("panel_Hint_AD:modulate:a")
+tracks/2/path = NodePath("panel_AD:modulate:a")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -42,13 +44,13 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 1)
 }
 
-[sub_resource type="Animation" id="Animation_r30qg"]
+[sub_resource type="Animation" id="Animation_ad_hide"]
 resource_name = "Hide"
 length = 0.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("panel_Hint_AD:visible")
+tracks/0/path = NodePath("panel_AD:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -60,7 +62,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("panel_Hint_AD:position:y")
+tracks/1/path = NodePath("panel_AD:position:y")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -72,7 +74,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("panel_Hint_AD:modulate:a")
+tracks/2/path = NodePath("panel_AD:modulate:a")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -82,81 +84,179 @@ tracks/2/keys = {
 "values": [1.0, 0.0]
 }
 
-[sub_resource type="Animation" id="Animation_ut8xv"]
+[sub_resource type="Animation" id="Animation_space_show"]
+resource_name = "Space"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("panel_Space:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, true]
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("panel_Space:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(200, -0.25, 0, 0.25, 0, 0, -0.9, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("panel_Space:modulate:a")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 1)
+}
+
+[sub_resource type="Animation" id="Animation_space_hide"]
+resource_name = "Hide_Space"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("panel_Space:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("panel_Space:position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 220.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("panel_Space:modulate:a")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_reset"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("panel_Hint_AD:visible")
+tracks/0/path = NodePath("panel_AD:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [true]
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("panel_Space:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
 }
 
-[sub_resource type="Animation" id="Animation_n2n3w"]
-resource_name = "loop"
-tracks/0/type = "method"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(),
-"transitions": PackedFloat32Array(),
-"values": []
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_n2n3w"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_main"]
 _data = {
-&"AD": SubResource("Animation_ceelg"),
-&"Hide": SubResource("Animation_r30qg"),
-&"RESET": SubResource("Animation_ut8xv"),
-&"loop": SubResource("Animation_n2n3w")
+&"AD": SubResource("Animation_ad_show"),
+&"Hide": SubResource("Animation_ad_hide"),
+&"Space": SubResource("Animation_space_show"),
+&"Hide_Space": SubResource("Animation_space_hide"),
+&"RESET": SubResource("Animation_reset")
 }
 
-[node name="popup" type="Control"]
+[node name="Tutorial" type="Control"]
 layout_mode = 3
-anchor_left = 0.66700006
-anchor_top = 0.67600006
+anchor_left = 0.667
+anchor_top = 0.676
 anchor_right = 0.957
-anchor_bottom = 0.93700004
-offset_left = -0.3840332
-offset_top = -0.048034668
-offset_right = -0.46398926
-offset_bottom = -0.17602539
+anchor_bottom = 0.937
 grow_horizontal = 0
 grow_vertical = 0
 theme = ExtResource("1_ceelg")
-script = ExtResource("3_7e1cw")
+script = ExtResource("2_tut")
+config_path = "res://tutorialUI/tutorial_fsm.json"
+auto_start = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-&"": SubResource("AnimationLibrary_n2n3w")
+&"": SubResource("AnimationLibrary_main")
 }
 
-[node name="statemachine" type="AnimationTree" parent="."]
-tree_root = ExtResource("3_n2n3w")
+[node name="AnimTree_AD" type="AnimationTree" parent="."]
+tree_root = ExtResource("3_ad_sm")
 advance_expression_base_node = NodePath("..")
 anim_player = NodePath("../AnimationPlayer")
+active = false
+parameters/state = "start"
 
-[node name="panel_Hint_AD" type="PanelContainer" parent="."]
+[node name="AnimTree_Space" type="AnimationTree" parent="."]
+tree_root = ExtResource("4_space_sm")
+advance_expression_base_node = NodePath("..")
+anim_player = NodePath("../AnimationPlayer")
+active = false
+parameters/state = "start"
+
+[node name="panel_AD" type="PanelContainer" parent="."]
+visible = false
 modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = 0.00036621094
-offset_bottom = -0.0032958984
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="panel_Hint_AD"]
+[node name="MarginContainer" type="MarginContainer" parent="panel_AD"]
 layout_mode = 2
 
-[node name="Hint_AD" parent="panel_Hint_AD/MarginContainer" instance=ExtResource("4_n2n3w")]
+[node name="Hint_AD" parent="panel_AD/MarginContainer" instance=ExtResource("5_hint_ad")]
+layout_mode = 2
+
+[node name="panel_Space" type="PanelContainer" parent="."]
+visible = false
+modulate = Color(1, 1, 1, 0)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="panel_Space"]
+layout_mode = 2
+
+[node name="Hint_Space" parent="panel_Space/MarginContainer" instance=ExtResource("6_hint_space")]
 layout_mode = 2

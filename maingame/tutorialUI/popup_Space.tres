@@ -1,28 +1,29 @@
 [gd_resource type="AnimationNodeStateMachine" load_steps=6 format=3 uid="uid://dadjoka1m0bfn"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qsdge"]
-animation = &"AD_2"
+animation = &"Space"
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_5e5jt"]
-animation = &"Hide_2"
+animation = &"Hide_Space"
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5e5jt"]
 advance_mode = 2
+advance_expression = "state==\"show\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_nnxr3"]
 switch_mode = 2
 advance_mode = 2
-advance_expression = "hide==\"Space\""
+advance_expression = "state==\"hide\""
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_j5rcv"]
 switch_mode = 2
 
 [resource]
-states/AD_2/node = SubResource("AnimationNodeAnimation_qsdge")
-states/AD_2/position = Vector2(273, 98.3125)
-states/End/position = Vector2(633, 98.21875)
-states/Hide_2/node = SubResource("AnimationNodeAnimation_5e5jt")
-states/Hide_2/position = Vector2(444, 98.328125)
-states/Start/position = Vector2(63.5, 98.125)
-transitions = ["Start", "AD_2", SubResource("AnimationNodeStateMachineTransition_5e5jt"), "AD_2", "Hide_2", SubResource("AnimationNodeStateMachineTransition_nnxr3"), "Hide_2", "End", SubResource("AnimationNodeStateMachineTransition_j5rcv")]
+states/Space/node = SubResource("AnimationNodeAnimation_qsdge")
+states/Space/position = Vector2(273, 98)
+states/End/position = Vector2(633, 98)
+states/Hide_Space/node = SubResource("AnimationNodeAnimation_5e5jt")
+states/Hide_Space/position = Vector2(444, 98)
+states/Start/position = Vector2(64, 98)
+transitions = ["Start", "Space", SubResource("AnimationNodeStateMachineTransition_5e5jt"), "Space", "Hide_Space", SubResource("AnimationNodeStateMachineTransition_nnxr3"), "Hide_Space", "End", SubResource("AnimationNodeStateMachineTransition_j5rcv")]
 graph_offset = Vector2(-52, -26)

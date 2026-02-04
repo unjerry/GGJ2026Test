@@ -1,47 +1,55 @@
 {
-  "initial_state": "start",
+  "initial_state": "idle",
   "states": {
-    "start": {
-      "enter": "_state_start_enter",
-      "update": "_state_start_update",
-      "exit": "_state_start_exit"
+    "idle": {
+      "enter": "",
+      "update": "",
+      "exit": ""
     },
-    "show": {
-      "enter": "_state_show_enter",
-      "update": "_state_show_update",
-      "exit": "_state_show_exit"
+    "show_ad": {
+      "enter": "_enter_show_ad",
+      "update": "",
+      "exit": ""
     },
-    "hide": {
-      "enter": "_state_hide_enter",
-      "update": "_state_hide_update",
-      "exit": "_state_hide_exit"
+    "wait_ad": {
+      "enter": "",
+      "update": "_update_wait_ad",
+      "exit": ""
+    },
+    "hide_ad": {
+      "enter": "_enter_hide_ad",
+      "update": "",
+      "exit": ""
+    },
+    "show_space": {
+      "enter": "_enter_show_space",
+      "update": "",
+      "exit": ""
+    },
+    "wait_space": {
+      "enter": "",
+      "update": "_update_wait_space",
+      "exit": ""
+    },
+    "hide_space": {
+      "enter": "_enter_hide_space",
+      "update": "",
+      "exit": ""
     },
     "end": {
-      "enter": "_state_end_enter",
-      "update": "_state_end_update",
-      "exit": "_state_end_exit"
+      "enter": "_enter_end",
+      "update": "",
+      "exit": ""
     }
   },
   "transitions": [
-    {
-      "from": "start",
-      "event": "begin_show",
-      "to": "show"
-    },
-    {
-      "from": "show",
-      "event": "ready_to_hide",
-      "to": "hide"
-    },
-    {
-      "from": "hide",
-      "event": "hide_done",
-      "to": "start"
-    },
-    {
-      "from": "*",
-      "event": "finish",
-      "to": "end"
-    }
+    { "from": "idle", "event": "start_tutorial", "to": "show_ad" },
+    { "from": "show_ad", "event": "anim_done", "to": "wait_ad" },
+    { "from": "wait_ad", "event": "action_done", "to": "hide_ad" },
+    { "from": "hide_ad", "event": "anim_done", "to": "show_space" },
+    { "from": "show_space", "event": "anim_done", "to": "wait_space" },
+    { "from": "wait_space", "event": "action_done", "to": "hide_space" },
+    { "from": "hide_space", "event": "anim_done", "to": "end" },
+    { "from": "*", "event": "skip", "to": "end" }
   ]
 }
