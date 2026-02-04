@@ -1,7 +1,7 @@
-[gd_scene load_steps=16 format=3 uid="uid://bc88h4q2xmvod"]
+[gd_scene load_steps=13 format=3 uid="uid://bc88h4q2xmvod"]
 
 [ext_resource type="Theme" uid="uid://2dfilxv0lnph" path="res://tutorialUI/Assets/UI.tres" id="1_ceelg"]
-[ext_resource type="Script" uid="uid://c8v0hujv3n0gt" path="res://tutorialUI/script/Tut.gd" id="2_tut"]
+[ext_resource type="Script" uid="uid://c4kc1f34s13ij" path="res://tutorialUI/script/Tut.gd" id="2_tut"]
 [ext_resource type="AnimationNodeStateMachine" uid="uid://co5tg43hhmgml" path="res://tutorialUI/popup_AD.tres" id="3_ad_sm"]
 [ext_resource type="AnimationNodeStateMachine" uid="uid://dadjoka1m0bfn" path="res://tutorialUI/popup_Space.tres" id="4_space_sm"]
 [ext_resource type="PackedScene" uid="uid://q7dq315mg1jr" path="res://tutorialUI/Hints/hint_ad.tscn" id="5_hint_ad"]
@@ -192,9 +192,9 @@ tracks/1/keys = {
 _data = {
 &"AD": SubResource("Animation_ad_show"),
 &"Hide": SubResource("Animation_ad_hide"),
-&"Space": SubResource("Animation_space_show"),
 &"Hide_Space": SubResource("Animation_space_hide"),
-&"RESET": SubResource("Animation_reset")
+&"RESET": SubResource("Animation_reset"),
+&"Space": SubResource("Animation_space_show")
 }
 
 [node name="Tutorial" type="Control"]
@@ -207,8 +207,6 @@ grow_horizontal = 0
 grow_vertical = 0
 theme = ExtResource("1_ceelg")
 script = ExtResource("2_tut")
-config_path = "res://tutorialUI/tutorial_fsm.json"
-auto_start = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -216,18 +214,16 @@ libraries = {
 }
 
 [node name="AnimTree_AD" type="AnimationTree" parent="."]
+active = false
 tree_root = ExtResource("3_ad_sm")
 advance_expression_base_node = NodePath("..")
 anim_player = NodePath("../AnimationPlayer")
-active = false
-parameters/state = "start"
 
 [node name="AnimTree_Space" type="AnimationTree" parent="."]
+active = false
 tree_root = ExtResource("4_space_sm")
 advance_expression_base_node = NodePath("..")
 anim_player = NodePath("../AnimationPlayer")
-active = false
-parameters/state = "start"
 
 [node name="panel_AD" type="PanelContainer" parent="."]
 visible = false

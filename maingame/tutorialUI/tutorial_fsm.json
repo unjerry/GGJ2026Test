@@ -43,13 +43,45 @@
     }
   },
   "transitions": [
-    { "from": "idle", "event": "start_tutorial", "to": "show_ad" },
-    { "from": "show_ad", "event": "anim_done", "to": "wait_ad" },
-    { "from": "wait_ad", "event": "action_done", "to": "hide_ad" },
-    { "from": "hide_ad", "event": "anim_done", "to": "show_space" },
-    { "from": "show_space", "event": "anim_done", "to": "wait_space" },
-    { "from": "wait_space", "event": "action_done", "to": "hide_space" },
-    { "from": "hide_space", "event": "anim_done", "to": "end" },
-    { "from": "*", "event": "skip", "to": "end" }
+    {
+      "from": "idle",
+      "event": "start_tutorial",
+      "to": "show_ad"
+    },
+    {
+      "from": "show_ad",
+      "event": "anim_done",
+      "to": "wait_ad"
+    },
+    {
+      "from": "wait_ad",
+      "event": "action_done",
+      "to": "hide_ad"
+    },
+    {
+      "from": "hide_ad",
+      "event": "anim_done",
+      "to": "show_space"
+    },
+    {
+      "from": "show_space",
+      "event": "anim_done",
+      "to": "wait_space"
+    },
+    {
+      "from": "wait_space",
+      "event": "action_done",
+      "to": "hide_space"
+    },
+    {
+      "from": "hide_space",
+      "event": "anim_done",
+      "to": "end"
+    },
+    {
+      "from": "*",
+      "event": "skip",
+      "to": "end"
+    }
   ]
 }
