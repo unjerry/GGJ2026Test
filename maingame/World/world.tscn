@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://b3tw005pgghb3"]
+[gd_scene load_steps=9 format=3 uid="uid://b3tw005pgghb3"]
 
 [ext_resource type="Texture2D" uid="uid://beqdkc8j1jogf" path="res://World/Line.png" id="1_8a836"]
 [ext_resource type="Script" uid="uid://dbnfhngc1mt7a" path="res://World/world.gd" id="1_j8job"]
 [ext_resource type="PackedScene" uid="uid://cn4tdklhwm6o3" path="res://player/player.tscn" id="2_j8job"]
 [ext_resource type="Texture2D" uid="uid://denp1ctkvxwnw" path="res://World/Background.png" id="4_3f78f"]
+[ext_resource type="PackedScene" uid="uid://bc88h4q2xmvod" path="res://tutorialUI/popup.tscn" id="5_k8do8"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_8a836"]
 
@@ -63,3 +64,7 @@ z_index = -1
 scale = Vector2(3, 2)
 texture = ExtResource("4_3f78f")
 centered = false
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="TutorialPopup" parent="UI" instance=ExtResource("5_k8do8")]

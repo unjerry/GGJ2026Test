@@ -8,10 +8,12 @@ extends Node2D
 @onready var camera_2d: Camera2D = $Node2D/Player/Camera2D  # 玩家相机
 @onready var right_wall: StaticBody2D = $Node2D/RightWall  # 右侧墙壁
 @onready var left_wall: StaticBody2D = $Node2D/LeftWall  # 左侧墙壁
+@onready var tutorial_popup: Tut = $UI/TutorialPopup
 
 func _ready() -> void:
 	# 重置相机平滑效果，确保相机立即定位到正确位置
 	camera_2d.reset_smoothing()
+	tutorial_popup.start_tutorial()
 
 # 控制玩家是否可移动的标志变量
 var can_move := true
