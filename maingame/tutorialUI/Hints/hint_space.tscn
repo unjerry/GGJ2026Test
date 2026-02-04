@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://b4bx61blpwt40"]
+
+[ext_resource type="Texture2D" uid="uid://cn1oavouy7nvi" path="res://tutorialUI/wasd.png" id="1_tjxyv"]
+
+[node name="Hint_AD" type="HFlowContainer"]
+size_flags_vertical = 3
+
+[node name="Label_use" type="Label" parent="."]
+layout_mode = 2
+text = "ui.use"
+
+[node name="Label_AD" type="Label" parent="."]
+layout_mode = 2
+text = "space"
+
+[node name="Image_wasd" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("1_tjxyv")
+expand_mode = 1
+
+[node name="Label_movehint" type="Label" parent="."]
+layout_mode = 2
+text = "ui.space_hint"
+
+[node name="Label_period" type="Label" parent="."]
+layout_mode = 2
+text = "ui.period"

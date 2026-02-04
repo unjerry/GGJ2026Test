@@ -9,8 +9,6 @@ var state := "start"
 var _moved_left := false
 var _moved_right := false
 
-@onready var _animation_tree: AnimationTree = $statemachine
-
 
 func _ready() -> void:
 	#pass
@@ -39,7 +37,6 @@ func start_tutorial() -> void:
 	_moved_left = false
 	_moved_right = false
 	show()
-
 
 
 func _complete_tutorial() -> void:
