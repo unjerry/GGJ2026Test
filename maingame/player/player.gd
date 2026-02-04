@@ -31,12 +31,15 @@ var dash_cooldown: float = 0.0
 
 # 节点引用
 @onready var jump_request_timer: Timer = $JumpRequestTimer # 跳跃输入缓冲计时器
+@onready var state_machine: StateMachine = $StateMachine
 @onready var dash_timer: Timer = $DashTimer
 @onready var dash_request_timer: Timer = $DashRequestTimer
-@onready var state_machine: StateMachine = $StateMachine
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("dash"):
+		print("dddddddddddddddddddddddddddddddd")
+		dash_request_timer.start()
 	# 只有在solid为true时才处理输入
 	if not solid:
 		# 按下跳跃键时启动跳跃缓冲计时器
@@ -96,26 +99,26 @@ func dash(delta: float) -> void:
 func get_next_state(state: State) -> State:
 	# 判断是否可以跳跃：在地面且跳跃计时器正在运行
 	var can_jump := is_on_floor() and jump_request_timer.time_left > 0
+	var can_dash := dash_request_timer.time_left > 0
 	# 如果可以跳跃，优先转换为跳跃状态
 	if can_jump:
 		return State.JUMP
-	
+	if can_dash:
+		dash_timer.start()
+		return State.DASH
 	# 获取水平输入方向
 	var direction := Input.get_axis("move_left", "move_right")
 	# 判断是否静止：无输入且水平速度接近零
 	var is_still := is_zero_approx(direction) and is_zero_approx(velocity.x)
-	
+	print(dash_timer.time_left)
 	# 根据当前状态判断下一个状态
 	match state:
 		State.IDLE:
-			if Input.is_action_just_pressed("dash"):
-				return State.DASH
+			print("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
 			if not is_still:
 				return State.RUNNING
 			
 		State.RUNNING:
-			if Input.is_action_just_pressed("dash"):
-				return State.DASH
 			if is_still:
 				return State.IDLE
 			
@@ -125,10 +128,9 @@ func get_next_state(state: State) -> State:
 				return State.IDLE
 		
 		State.DASH:
-			print(dash_timer.time_left)
-			if state_machine.state_time > DASH_DURATION:
-				if is_on_floor():
-					has_dashed = true
+			print("ddddddddddddddddddddddddddddddddddddS")
+			if not dash_timer.time_left > 0:
+				dash_timer.stop()
 				return State.IDLE
 	
 	# 默认保持当前状态
@@ -152,5 +154,5 @@ func transition_state(from: State, to: State) -> void:
 			jump_request_timer.stop()
 			
 		State.DASH:
-			# 进入冲刺状态（待实现）
+			dash_request_timer.stop()
 			pass
