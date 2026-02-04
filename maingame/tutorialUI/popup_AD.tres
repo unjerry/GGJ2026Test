@@ -1,4 +1,4 @@
-[gd_resource type="AnimationNodeStateMachine" load_steps=4 format=3 uid="uid://co5tg43hhmgml"]
+[gd_resource type="AnimationNodeStateMachine" load_steps=6 format=3 uid="uid://co5tg43hhmgml"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ut8xv"]
 animation = &"AD"
@@ -6,17 +6,26 @@ animation = &"AD"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_n2n3w"]
 animation = &"Hide"
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wksi3"]
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_start_to_ad"]
+switch_mode = 0
+advance_mode = 2
+advance_expression = "state==\"show\""
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ad_to_hide"]
 switch_mode = 2
 advance_mode = 2
 advance_expression = "state==\"hide\""
 
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_hide_to_end"]
+switch_mode = 2
+advance_mode = 2
+
 [resource]
 states/AD/node = SubResource("AnimationNodeAnimation_ut8xv")
-states/AD/position = Vector2(348, 48.02975)
-states/End/position = Vector2(801, 47.92189)
+states/AD/position = Vector2(359, 47.96875)
+states/End/position = Vector2(769, 47.890625)
 states/Hide/node = SubResource("AnimationNodeAnimation_n2n3w")
-states/Hide/position = Vector2(643, 49.291832)
-states/Start/position = Vector2(171, 47.814026)
-transitions = ["AD", "Hide", SubResource("AnimationNodeStateMachineTransition_wksi3")]
-graph_offset = Vector2(73, -109)
+states/Hide/position = Vector2(570, 47.914063)
+states/Start/position = Vector2(173, 47.875)
+transitions = ["Start", "AD", SubResource("AnimationNodeStateMachineTransition_start_to_ad"), "AD", "Hide", SubResource("AnimationNodeStateMachineTransition_ad_to_hide"), "Hide", "End", SubResource("AnimationNodeStateMachineTransition_hide_to_end")]
+graph_offset = Vector2(74, -26)

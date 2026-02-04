@@ -1,0 +1,20 @@
+[gd_scene load_steps=0 format=3 uid="uid://d266fjx7y6yy3"]
+
+[node name="Hint_Dash" type="HFlowContainer"]
+size_flags_vertical = 3
+
+[node name="Label_use" type="Label" parent="."]
+layout_mode = 2
+text = "ui.use"
+
+[node name="Label_key" type="Label" parent="."]
+layout_mode = 2
+text = "Shift "
+
+[node name="Label_hint" type="Label" parent="."]
+layout_mode = 2
+text = "to dash"
+
+[node name="Label_period" type="Label" parent="."]
+layout_mode = 2
+text = "ui.period"

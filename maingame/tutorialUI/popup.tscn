@@ -145,14 +145,12 @@ advance_expression_base_node = NodePath("..")
 anim_player = NodePath("../AnimationPlayer")
 
 [node name="panel_Hint_AD" type="PanelContainer" parent="."]
-modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 220.0
 offset_right = 0.00036621094
-offset_bottom = 219.9967
+offset_bottom = -0.0032958984
 grow_horizontal = 2
 grow_vertical = 2
 
