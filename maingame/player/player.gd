@@ -5,29 +5,29 @@ extends CharacterBody2D
 
 # 状态枚举定义
 enum State {
-	IDLE,      # 闲置状态
-	RUNNING,   # 奔跑状态
-	JUMP,      # 跳跃状态
-	DASH,      # 冲刺状态
+	IDLE, # 闲置状态
+	RUNNING, # 奔跑状态
+	JUMP, # 跳跃状态
+	DASH, # 冲刺状态
 }
 
 # 地面状态数组（用于判断是否在地面状态）
 const GROUND_STATES := [State.IDLE, State.RUNNING]
 
 # 角色属性常量
-const RUN_SPEED := 200.0                     # 奔跑速度
-const JUMP_VELOCITY := -300.0                # 跳跃初速度（负值表示向上）
-const FLOOR_ACCELERATION := RUN_SPEED / 0.1  # 地面加速度
-const AIR_ACCELERATION := RUN_SPEED / 0.05   # 空中加速度
-const DASH_VELOCITY := 200                   # 冲刺速度
+const RUN_SPEED := 200.0 # 奔跑速度
+const JUMP_VELOCITY := -300.0 # 跳跃初速度（负值表示向上）
+const FLOOR_ACCELERATION := RUN_SPEED / 0.1 # 地面加速度
+const AIR_ACCELERATION := RUN_SPEED / 0.05 # 空中加速度
+const DASH_VELOCITY := 200 # 冲刺速度
 
 # 角色变量
-var gravity := ProjectSettings.get("physics/2d/default_gravity") as float  # 从项目设置获取重力值
-var solid := true  # 空心与实心状态的标记
+var gravity := ProjectSettings.get("physics/2d/default_gravity") as float # 从项目设置获取重力值
+var solid := true # 空心与实心状态的标记
 var is_first_tick := false
 
 # 节点引用
-@onready var jump_request_timer: Timer = $JumpRequestTimer  # 跳跃输入缓冲计时器
+@onready var jump_request_timer: Timer = $JumpRequestTimer # 跳跃输入缓冲计时器
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -39,23 +39,23 @@ func _unhandled_input(event: InputEvent) -> void:
 			
 		# 松开跳跃键时，如果上升速度小于一半跳跃速度，则减少垂直速度
 		if event.is_action_released("jump") and velocity.y < JUMP_VELOCITY / 2:
-			velocity.y = JUMP_VELOCITY / 2  # 实现跳跃高度控制
+			velocity.y = JUMP_VELOCITY / 2 # 实现跳跃高度控制
 
 
 func tick_physics(state: State, delta: float) -> void:
 	# 根据当前状态执行相应的物理更新
 	match state:
 		State.IDLE:
-			move(delta)  # 闲置状态下的移动
+			move(delta) # 闲置状态下的移动
 			
 		State.RUNNING:
-			move(delta)  # 奔跑状态下的移动
+			move(delta) # 奔跑状态下的移动
 			
 		State.JUMP:
-			move(delta)  # 跳跃状态下的移动
+			move(delta) # 跳跃状态下的移动
 			
 		State.DASH:
-			move(delta)  # 冲刺状态下的移动
+			move(delta) # 冲刺状态下的移动
 
 
 func move(delta: float) -> void:
