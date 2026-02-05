@@ -113,7 +113,7 @@ func get_next_state(state: State) -> State:
 	return state
 
 
-func transition_state(from: State, to: State) -> void:
+func transition_state(_from: State, to: State) -> void:
 	# 状态转换时的处理逻辑
 	match to:
 		State.IDLE:

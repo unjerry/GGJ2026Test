@@ -18,7 +18,7 @@ func _ready() -> void:
 # 控制玩家是否可移动的标志变量
 var can_move := true
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	# 当玩家位置超过250时，调整相机范围和墙壁位置
 	if player.global_position.x > 250:
 		# 设置相机左右边界

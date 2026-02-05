@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://cn4tdklhwm6o3"]
+[gd_scene load_steps=10 format=3 uid="uid://cn4tdklhwm6o3"]
 
-[ext_resource type="Script" uid="uid://b14i6rr1d4go6" path="res://player/player.gd" id="1_g1dw6"]
-[ext_resource type="Texture2D" uid="uid://4peybch1w74x" path="res://player/Dot.png" id="1_rkbax"]
-[ext_resource type="Texture2D" uid="uid://dnh4uudei85k8" path="res://player/Cut.png" id="3_yw30f"]
+[ext_resource type="Script" uid="uid://bjjylwy61hlix" path="res://player/player.gd" id="1_g1dw6"]
+[ext_resource type="Texture2D" uid="uid://bf11a4k8tpp67" path="res://player/Dot.png" id="1_rkbax"]
+[ext_resource type="SpriteFrames" uid="uid://whniqrf86x53" path="res://player/player.tres" id="2_qjkh3"]
+[ext_resource type="Texture2D" uid="uid://gek4rugmck5c" path="res://player/Cut.png" id="3_yw30f"]
 [ext_resource type="Script" uid="uid://bd7ush4653ea" path="res://classes/StateMachin.gd" id="4_yw30f"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qjkh3"]
@@ -97,11 +98,15 @@ _data = {
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_g1dw6")
 
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = ExtResource("2_qjkh3")
+animation = &"Cut"
+
 [node name="Dot" type="Sprite2D" parent="."]
 texture = ExtResource("1_rkbax")
 
 [node name="Cut" type="Sprite2D" parent="."]
-visible = false
 texture = ExtResource("3_yw30f")
 hframes = 4
 region_enabled = true
