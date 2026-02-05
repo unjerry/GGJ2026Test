@@ -13,9 +13,15 @@ signal tutorial_finished
 @onready var _panel_ad: PanelContainer = $panel_AD
 @onready var _panel_space: PanelContainer = $panel_Space
 
-# AD/Space 输入动作名
+# AD/Space/Dash/Hurt 输入动作名
 var _actions_ad: Array[StringName] = [&"move_left", &"move_right"]
 var _actions_space: Array[StringName] = [&"jump"]
+var _actions_dash: Array[StringName] = [&"dash"]
+var _actions_hurt: Array[StringName] = [&"hurt"]
+
+const _HINT_SPACE: PackedScene = preload("res://tutorialUI/Hints/hint_space.tscn")
+const _HINT_DASH: PackedScene = preload("res://tutorialUI/Hints/hint_dash.tscn")
+const _HINT_HURT: PackedScene = preload("res://tutorialUI/Hints/hint_hurt.tscn")
 
 # 跟踪 AD 按键状态
 var _ad_pressed: Dictionary = {} # { action_name: bool }
@@ -95,9 +101,8 @@ func _enter_hide_ad() -> void:
 
 
 func _enter_show_space() -> void:
-	_panel_space.visible = true
-	_panel_space.modulate.a = 0
-	_panel_space.position.y = 200
+	_replace_hint(_panel_space, _HINT_SPACE)
+	_prepare_panel_for_enter(_panel_space)
 	_anim_player.play(&"Space")
 
 
@@ -107,6 +112,36 @@ func _update_wait_space(_delta: float) -> void:
 
 
 func _enter_hide_space() -> void:
+	_anim_player.play(&"Hide_Space")
+
+
+func _enter_show_dash() -> void:
+	_replace_hint(_panel_space, _HINT_DASH)
+	_prepare_panel_for_enter(_panel_space)
+	_anim_player.play(&"Space")
+
+
+func _update_wait_dash(_delta: float) -> void:
+	if _check_any_action(_actions_dash):
+		emit_event(&"action_done")
+
+
+func _enter_hide_dash() -> void:
+	_anim_player.play(&"Hide_Space")
+
+
+func _enter_show_hurt() -> void:
+	_replace_hint(_panel_space, _HINT_HURT)
+	_prepare_panel_for_enter(_panel_space)
+	_anim_player.play(&"Space")
+
+
+func _update_wait_hurt(_delta: float) -> void:
+	if _check_any_action(_actions_hurt):
+		emit_event(&"action_done")
+
+
+func _enter_hide_hurt() -> void:
 	_anim_player.play(&"Hide_Space")
 
 
@@ -132,10 +167,10 @@ func _on_animation_finished(anim_name: StringName) -> void:
 			if current == &"hide_ad":
 				emit_event(&"anim_done")
 		&"Space":
-			if current == &"show_space":
+			if current == &"show_space" or current == &"show_dash" or current == &"show_hurt":
 				emit_event(&"anim_done")
 		&"Hide_Space":
-			if current == &"hide_space":
+			if current == &"hide_space" or current == &"hide_dash" or current == &"hide_hurt":
 				emit_event(&"anim_done")
 
 #endregion
@@ -156,6 +191,8 @@ func _ensure_input_actions() -> void:
 	_add_action(&"move_left", [KEY_A, KEY_LEFT])
 	_add_action(&"move_right", [KEY_D, KEY_RIGHT])
 	_add_action(&"jump", [KEY_SPACE])
+	_add_mouse_button_action(&"dash", MOUSE_BUTTON_LEFT)
+	_add_mouse_button_action(&"hurt", MOUSE_BUTTON_RIGHT)
 
 
 func _add_action(action_name: StringName, keycodes: Array) -> void:
@@ -176,5 +213,36 @@ func _add_action(action_name: StringName, keycodes: Array) -> void:
 		event.keycode = keycode
 		event.physical_keycode = keycode
 		InputMap.action_add_event(action_name, event)
+
+
+func _add_mouse_button_action(action_name: StringName, button_index: MouseButton) -> void:
+	if not InputMap.has_action(action_name):
+		InputMap.add_action(action_name)
+
+	var existing := InputMap.action_get_events(action_name)
+	for ev in existing:
+		if ev is InputEventMouseButton and ev.button_index == button_index:
+			return
+
+	var event := InputEventMouseButton.new()
+	event.button_index = button_index
+	InputMap.action_add_event(action_name, event)
+
+
+func _replace_hint(panel: PanelContainer, hint_scene: PackedScene) -> void:
+	var container := panel.get_node_or_null(^"MarginContainer") as MarginContainer
+	if container == null:
+		return
+
+	for child in container.get_children():
+		child.queue_free()
+
+	container.add_child(hint_scene.instantiate())
+
+
+func _prepare_panel_for_enter(panel: PanelContainer) -> void:
+	panel.visible = true
+	panel.modulate.a = 0
+	panel.position.y = 200
 
 #endregion
