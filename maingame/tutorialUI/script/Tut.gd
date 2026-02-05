@@ -6,6 +6,7 @@ extends "res://tutorialUI/script/StateMa.gd"
 signal tutorial_finished
 
 @export var auto_start := true
+@export var debug_logs := false
 
 # 节点引用
 @onready var _anim_player: AnimationPlayer = $AnimationPlayer
@@ -29,14 +30,16 @@ func _ready() -> void:
 
 
 ## 开始教程
-func start_tutorial() -> void:
+func start_tutorial(force_restart := false) -> void:
+	if not force_restart and get_current_state() != &"":
+		return
 	start()
 	emit_event(&"start_tutorial")
 
 
 ## 设置动画信号连接
 func _setup_anim_connections() -> void:
-	if _anim_player:
+	if _anim_player and not _anim_player.animation_finished.is_connected(_on_animation_finished):
 		_anim_player.animation_finished.connect(_on_animation_finished)
 
 
@@ -44,13 +47,16 @@ func _setup_anim_connections() -> void:
 
 # 调试：打印所有状态进入/更新/退出
 func _on_state_enter(state: StringName) -> void:
-	print("[Tut] ENTER: ", state)
+	if debug_logs:
+		print("[Tut] ENTER: ", state)
 
 func _on_state_update(state: StringName, delta: float) -> void:
-	print("[Tut] UPDATE: ", state, " delta=", delta)
+	if debug_logs:
+		print("[Tut] UPDATE: ", state, " delta=", delta)
 
 func _on_state_exit(state: StringName) -> void:
-	print("[Tut] EXIT: ", state)
+	if debug_logs:
+		print("[Tut] EXIT: ", state)
 
 
 func _enter_show_ad() -> void:
@@ -69,7 +75,8 @@ func _update_wait_ad(_delta: float) -> void:
 	for action in _actions_ad:
 		if Input.is_action_just_pressed(action):
 			_ad_pressed[action] = true
-			print("[Tut] AD pressed: ", action)
+			if debug_logs:
+				print("[Tut] AD pressed: ", action)
 	# 检查是否所有键都按过
 	if _check_all_ad_pressed():
 		emit_event(&"action_done")

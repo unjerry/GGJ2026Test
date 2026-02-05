@@ -99,13 +99,8 @@ func bind_signal_event(emitter: Object, signal_name: StringName, event_name: Str
 		push_warning("StateMa: 信号 '%s' 不存在" % String(signal_name))
 		return
 
-	var arg_count := _get_signal_arg_count(emitter, signal_name)
-	if arg_count < 0 or arg_count > 6:
-		push_warning("StateMa: 信号参数数量 %d 不支持 (最多6个)" % arg_count)
-		return
-
-	# 使用单一代理方法处理所有信号
-	var err := emitter.connect(signal_name, _on_bound_signal.bindv(_make_padding(arg_count) + [event_name]))
+	# 使用可变参数代理，移除固定参数数量限制
+	var err := emitter.connect(signal_name, _on_bound_signal.bind(event_name))
 	if err != OK:
 		push_warning("StateMa: 绑定信号失败，错误码 %d" % err)
 
@@ -359,27 +354,10 @@ func _get_method_arg_count(method_name: StringName) -> int:
 	return 0
 
 
-## 获取信号参数数量
-func _get_signal_arg_count(emitter: Object, signal_name: StringName) -> int:
-	for info in emitter.get_signal_list():
-		if _to_sname(info.get("name", "")) == signal_name:
-			return (info.get("args", []) as Array).size()
-	return -1
-
-
-## 创建填充数组用于信号绑定
-func _make_padding(count: int) -> Array:
-	var arr: Array = []
-	arr.resize(count)
-	return arr
-
-
-## 统一的信号代理方法 (通过 bindv 处理不同参数数量)
-func _on_bound_signal(
-	_a0: Variant = null, _a1: Variant = null, _a2: Variant = null,
-	_a3: Variant = null, _a4: Variant = null, _a5: Variant = null,
-	event_name: StringName = &""
-) -> void:
-	emit_event(event_name)
+## 统一的信号代理方法 (Godot 4.5+ 可变参数)
+func _on_bound_signal(...args) -> void:
+	if args.is_empty():
+		return
+	emit_event(_to_sname(args[args.size() - 1]))
 
 #endregion
