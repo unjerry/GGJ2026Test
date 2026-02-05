@@ -17,25 +17,25 @@ const GROUND_STATES := [State.IDLE, State.RUNNING]
 
 # 角色属性常量
 const RUN_SPEED := 1000.0 # 奔跑速度
-const JUMP_VELOCITY := -300.0 # 跳跃初速度（负值表示向上）
+const JUMP_VELOCITY := -2000.0 # 跳跃初速度（负值表示向上）
 const FLOOR_ACCELERATION := RUN_SPEED / 0.1 # 地面加速度
 const AIR_ACCELERATION := RUN_SPEED / 0.05 # 空中加速度
-const DASH_ACCELERATION := RUN_SPEED * 0.001 # 冲刺加速度
-const DASH_VELOCITY := 2000.0 # 冲刺速度
-const DASH_DURATION := 0.18 # 冲刺持续时间
+const DASH_ACCELERATION := 10 # 冲刺加速度
+const DASH_VELOCITY := 1000.0 # 冲刺速度
 const HURT_DURATION := 0.4 # 受击硬直时间（与Cut动画长度一致）
 const DOT_TEXTURE := preload("res://assets/Pictures/ball.png")
 const RING_TEXTURE := preload("res://assets/Pictures/circle.png")
 
 # 角色变量
-var gravity := ProjectSettings.get("physics/2d/default_gravity") as float # 从项目设置获取重力值
-var solid := true # 空心与实心状态的标记
+var gravity := ProjectSettings.get("physics/2d/default_gravity") * 5 as float # 从项目设置获取重力值
+var solid := false # 空心与实心状态的标记
 var is_first_tick := false
 var dash_direction := Vector2.RIGHT
 var dash_requested := false
 var hurt_requested := false
 var is_dead := false
 var keep_cut_visible := false
+var mouse_global_pos := get_global_mouse_position()
 
 # 节点引用
 @onready var jump_request_timer: Timer = $JumpRequestTimer # 跳跃输入缓冲计时器
@@ -49,7 +49,6 @@ var keep_cut_visible := false
 func _ready() -> void:
 	_ensure_attack_action()
 	dash_timer.one_shot = true
-	dash_timer.wait_time = DASH_DURATION
 	if not animation_player.animation_finished.is_connected(_on_animation_finished):
 		animation_player.animation_finished.connect(_on_animation_finished)
 	_update_form_visual()
@@ -115,7 +114,8 @@ func move(delta: float) -> void:
 
 
 func dash_move() -> void:
-	velocity = dash_direction * DASH_VELOCITY
+	move_toward(velocity.x, 0 , DASH_ACCELERATION)
+	move_toward(velocity.y, 0 , DASH_ACCELERATION)
 	move_and_slide()
 
 
@@ -210,9 +210,10 @@ func transition_state(from: State, to: State) -> void:
 			
 		State.DASH:
 			dash_requested = false
+			velocity = dash_direction * DASH_VELOCITY
 			jump_request_timer.stop()
-			dash_direction = _get_dash_direction()
-			dash_timer.start(DASH_DURATION)
+			dash_direction = calculate_dash_direction()
+			dash_timer.start()
 
 		State.HURT:
 			hurt_requested = false
@@ -261,25 +262,21 @@ func _ensure_attack_action() -> void:
 	InputMap.action_add_event(&"attack", attack_event)
 
 
-func _get_dash_direction() -> Vector2:
-	if solid:
-		var direction := Input.get_axis("move_left", "move_right")
-		if not is_zero_approx(direction):
-			return Vector2(sign(direction), 0.0)
-		if not is_zero_approx(velocity.x):
-			return Vector2(sign(velocity.x), 0.0)
-		return Vector2.RIGHT
-
-	var mouse_direction := get_global_mouse_position() - global_position
-	if mouse_direction.length_squared() > 0.0001:
-		return mouse_direction.normalized()
-
-	var fallback_direction := Input.get_axis("move_left", "move_right")
-	if not is_zero_approx(fallback_direction):
-		return Vector2(sign(fallback_direction), 0.0)
-	if not is_zero_approx(velocity.x):
-		return Vector2(sign(velocity.x), 0.0)
-	return Vector2.RIGHT
+func calculate_dash_direction() -> Vector2:
+	var mouse_pos = get_global_mouse_position()
+	var to_mouse = mouse_pos - global_position
+	
+	if solid:  # 实心点：水平方向
+		var x_direction = sign(to_mouse.x)
+		# 如果x为0，使用默认方向
+		if x_direction == 0:
+			x_direction = 1 if velocity.x >= 0 else -1
+		return Vector2(x_direction, 0)
+	else:  # 空心环：向鼠标方向
+		if to_mouse.length_squared() > 0.001:  # 避免除零
+			print(to_mouse.normalized())
+			return to_mouse.normalized()
+		return Vector2.RIGHT  # 默认方向
 
 
 func _update_form_visual() -> void:
