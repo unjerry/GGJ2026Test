@@ -23,8 +23,8 @@ const AIR_ACCELERATION := RUN_SPEED / 0.05 # 空中加速度
 const DASH_VELOCITY := 400.0 # 冲刺速度
 const DASH_DURATION := 0.18 # 冲刺持续时间
 const HURT_DURATION := 0.4 # 受击硬直时间（与Cut动画长度一致）
-const DOT_TEXTURE := preload("res://player/Dot.png")
-const RING_TEXTURE := preload("res://player/ring.png")
+const DOT_TEXTURE := preload("res://assets/Pictures/ball.png")
+const RING_TEXTURE := preload("res://assets/Pictures/circle.png")
 
 # 角色变量
 var gravity := ProjectSettings.get("physics/2d/default_gravity") as float # 从项目设置获取重力值

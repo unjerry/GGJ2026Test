@@ -1,23 +1,26 @@
 [gd_resource type="SpriteFrames" load_steps=7 format=3 uid="uid://whniqrf86x53"]
 
-[ext_resource type="Texture2D" uid="uid://dj5f7e5tn500m" path="res://player/Cut.png" id="1_ai2xe"]
-[ext_resource type="Texture2D" uid="uid://cepx78evq2yrv" path="res://player/Dot.png" id="2_12o4t"]
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_dnseu"]
+load_path = "res://.godot/imported/Cut.png-9c7bea9a96c5eabf04085a2336739111.ctex"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6jtci"]
-atlas = ExtResource("1_ai2xe")
+atlas = SubResource("CompressedTexture2D_dnseu")
 region = Rect2(0, 0, 290, 290)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f4qe5"]
-atlas = ExtResource("1_ai2xe")
+atlas = SubResource("CompressedTexture2D_dnseu")
 region = Rect2(290, 0, 290, 290)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_on6tl"]
-atlas = ExtResource("1_ai2xe")
+atlas = SubResource("CompressedTexture2D_dnseu")
 region = Rect2(580, 0, 290, 290)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7sfq0"]
-atlas = ExtResource("1_ai2xe")
+atlas = SubResource("CompressedTexture2D_dnseu")
 region = Rect2(870, 0, 290, 290)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_fqt1l"]
+load_path = "res://.godot/imported/Dot.png-e403e1415b8db63f0c8bce1dfc8e3d1b.ctex"
 
 [resource]
 animations = [{
@@ -40,7 +43,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_12o4t")
+"texture": SubResource("CompressedTexture2D_fqt1l")
 }],
 "loop": true,
 "name": &"default",

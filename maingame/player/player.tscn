@@ -1,10 +1,10 @@
 [gd_scene load_steps=10 format=3 uid="uid://cn4tdklhwm6o3"]
 
 [ext_resource type="Script" uid="uid://bjjylwy61hlix" path="res://player/player.gd" id="1_g1dw6"]
-[ext_resource type="Texture2D" uid="uid://cepx78evq2yrv" path="res://player/Dot.png" id="1_rkbax"]
-[ext_resource type="SpriteFrames" uid="uid://whniqrf86x53" path="res://player/player.tres" id="2_qjkh3"]
-[ext_resource type="Texture2D" uid="uid://dj5f7e5tn500m" path="res://player/Cut.png" id="3_yw30f"]
+[ext_resource type="Texture2D" uid="uid://dxebvb2ykyn2x" path="res://assets/Pictures/ball.png" id="3_qjkh3"]
+[ext_resource type="Texture2D" uid="uid://dt08lt4xgv8r4" path="res://assets/Pictures/circle.png" id="4_g6k8r"]
 [ext_resource type="Script" uid="uid://bd7ush4653ea" path="res://classes/StateMachin.gd" id="4_yw30f"]
+[ext_resource type="Texture2D" uid="uid://b4gpj3pqjrpue" path="res://assets/Pictures/stick.png" id="5_boad6"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qjkh3"]
 radius = 10.715238
@@ -13,81 +13,9 @@ radius = 10.715238
 resource_name = "Cut"
 length = 0.4
 step = 0.05
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Cut:region_rect")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Rect2(0, 0, 1160, 290)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Cut:hframes")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [4]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Cut:frame")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3]
-}
 
 [sub_resource type="Animation" id="Animation_boad6"]
 length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Cut:region_rect")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Rect2(0, 0, 1160, 290)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Cut:hframes")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [4]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Cut:frame")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_rgyib"]
 _data = {
@@ -97,20 +25,6 @@ _data = {
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_g1dw6")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-visible = false
-sprite_frames = ExtResource("2_qjkh3")
-animation = &"Cut"
-
-[node name="Dot" type="Sprite2D" parent="."]
-texture = ExtResource("1_rkbax")
-
-[node name="Cut" type="Sprite2D" parent="."]
-texture = ExtResource("3_yw30f")
-hframes = 4
-region_enabled = true
-region_rect = Rect2(0, 0, 1160, 290)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(7, 7)
@@ -130,3 +44,12 @@ one_shot = true
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("4_yw30f")
 metadata/_custom_type_script = "uid://bd7ush4653ea"
+
+[node name="Ball" type="Sprite2D" parent="."]
+texture = ExtResource("3_qjkh3")
+
+[node name="Circle" type="Sprite2D" parent="."]
+texture = ExtResource("4_g6k8r")
+
+[node name="Stick" type="Sprite2D" parent="."]
+texture = ExtResource("5_boad6")
