@@ -1,7 +1,7 @@
 ## 教程控制器
 ## 继承 StateMa，管理教程流程和动画播放
 class_name Tut
-extends StateMa
+extends "res://tutorialUI/script/StateMa.gd"
 
 signal tutorial_finished
 
@@ -17,7 +17,7 @@ var _actions_ad: Array[StringName] = [&"move_left", &"move_right"]
 var _actions_space: Array[StringName] = [&"jump"]
 
 # 跟踪 AD 按键状态
-var _ad_pressed: Dictionary = {}  # { action_name: bool }
+var _ad_pressed: Dictionary = {} # { action_name: bool }
 
 
 func _ready() -> void:
