@@ -3,4 +3,7 @@ ui.use,Use,使用
 ui.start,Start,开始
 ui.quit,Quit,退出
 ui.move_hint,to move around,来左右移动
+ui.space_hint,to jump,来跳跃
+ui.dash_hint,to dash,来冲刺
+ui.hurt_hint,to attack,来攻击
 ui.period,.,。

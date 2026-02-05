@@ -1,4 +1,7 @@
-[gd_scene load_steps=0 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://w0cgmnhkcm7f"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_f8nke"]
+load_path = "res://.godot/imported/keyboard_image.png-4cd01cd73f80b36cc69de7f09a376239.ctex"
 
 [node name="Hint_Hurt" type="HFlowContainer"]
 size_flags_vertical = 3
@@ -7,13 +10,15 @@ size_flags_vertical = 3
 layout_mode = 2
 text = "ui.use"
 
-[node name="Label_key" type="Label" parent="."]
+[node name="Image_wasd" type="NinePatchRect" parent="."]
+custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-text = "Mouse Right "
+texture = SubResource("CompressedTexture2D_f8nke")
+region_rect = Rect2(503, 175, 19, 19)
 
 [node name="Label_hint" type="Label" parent="."]
 layout_mode = 2
-text = "to trigger hurt"
+text = "ui.hurt_hint"
 
 [node name="Label_period" type="Label" parent="."]
 layout_mode = 2

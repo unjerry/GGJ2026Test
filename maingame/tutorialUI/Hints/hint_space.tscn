@@ -1,6 +1,7 @@
 [gd_scene load_steps=2 format=3 uid="uid://b4bx61blpwt40"]
 
-[ext_resource type="Texture2D" uid="uid://cn1oavouy7nvi" path="res://tutorialUI/Assets/wasd.png" id="1_tjxyv"]
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_fi0eu"]
+load_path = "res://.godot/imported/keyboard_image.png-4cd01cd73f80b36cc69de7f09a376239.ctex"
 
 [node name="Hint_AD" type="HFlowContainer"]
 size_flags_vertical = 3
@@ -9,15 +10,11 @@ size_flags_vertical = 3
 layout_mode = 2
 text = "ui.use"
 
-[node name="Label_AD" type="Label" parent="."]
+[node name="Image_wasd" type="NinePatchRect" parent="."]
+custom_minimum_size = Vector2(100, 20)
 layout_mode = 2
-text = "space"
-
-[node name="Image_wasd" type="TextureRect" parent="."]
-custom_minimum_size = Vector2(64, 64)
-layout_mode = 2
-texture = ExtResource("1_tjxyv")
-expand_mode = 1
+texture = SubResource("CompressedTexture2D_fi0eu")
+region_rect = Rect2(100, 322, 104, 14)
 
 [node name="Label_movehint" type="Label" parent="."]
 layout_mode = 2

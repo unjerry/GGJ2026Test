@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://q7dq315mg1jr"]
+[gd_scene load_steps=3 format=3 uid="uid://q7dq315mg1jr"]
 
-[ext_resource type="Texture2D" uid="uid://cn1oavouy7nvi" path="res://tutorialUI/Assets/wasd.png" id="1_dsluf"]
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_hjefm"]
+load_path = "res://.godot/imported/keyboard_image.png-4cd01cd73f80b36cc69de7f09a376239.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_dsluf"]
+load_path = "res://.godot/imported/keyboard_image.png-4cd01cd73f80b36cc69de7f09a376239.ctex"
 
 [node name="Hint_AD" type="HFlowContainer"]
 size_flags_vertical = 3
@@ -9,15 +13,21 @@ size_flags_vertical = 3
 layout_mode = 2
 text = "ui.use"
 
+[node name="Image_wasd" type="NinePatchRect" parent="."]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_hjefm")
+region_rect = Rect2(64, 177, 16, 15)
+
 [node name="Label_AD" type="Label" parent="."]
 layout_mode = 2
-text = "A & D "
+text = "&"
 
-[node name="Image_wasd" type="TextureRect" parent="."]
-custom_minimum_size = Vector2(64, 64)
+[node name="Image_wasd2" type="NinePatchRect" parent="."]
+custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-texture = ExtResource("1_dsluf")
-expand_mode = 1
+texture = SubResource("CompressedTexture2D_dsluf")
+region_rect = Rect2(96, 177, 16, 15)
 
 [node name="Label_movehint" type="Label" parent="."]
 layout_mode = 2
