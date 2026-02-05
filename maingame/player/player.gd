@@ -16,11 +16,12 @@ enum State {
 const GROUND_STATES := [State.IDLE, State.RUNNING]
 
 # 角色属性常量
-const RUN_SPEED := 200.0 # 奔跑速度
+const RUN_SPEED := 1000.0 # 奔跑速度
 const JUMP_VELOCITY := -300.0 # 跳跃初速度（负值表示向上）
 const FLOOR_ACCELERATION := RUN_SPEED / 0.1 # 地面加速度
 const AIR_ACCELERATION := RUN_SPEED / 0.05 # 空中加速度
-const DASH_VELOCITY := 400.0 # 冲刺速度
+const DASH_ACCELERATION := RUN_SPEED * 0.001 # 冲刺加速度
+const DASH_VELOCITY := 10000.0 # 冲刺速度
 const DASH_DURATION := 0.18 # 冲刺持续时间
 const HURT_DURATION := 0.4 # 受击硬直时间（与Cut动画长度一致）
 const DOT_TEXTURE := preload("res://assets/Pictures/ball.png")
@@ -90,7 +91,7 @@ func tick_physics(state: State, delta: float) -> void:
 			move(delta) # 跳跃状态下的移动
 			
 		State.DASH:
-			dash_move() # 冲刺状态下的移动
+			dash_move(delta) # 冲刺状态下的移动
 
 		State.HURT:
 			hurt_move(delta) # 受击状态下的移动
@@ -113,8 +114,8 @@ func move(delta: float) -> void:
 	move_and_slide()
 
 
-func dash_move() -> void:
-	velocity = dash_direction * DASH_VELOCITY
+func dash_move(delta: float) -> void:
+	velocity.x = move_toward(velocity.x, dash_direction.x * DASH_VELOCITY, FLOOR_ACCELERATION * delta)
 	move_and_slide()
 
 
