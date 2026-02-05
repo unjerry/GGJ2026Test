@@ -39,8 +39,8 @@ var keep_cut_visible := false
 # 节点引用
 @onready var jump_request_timer: Timer = $JumpRequestTimer # 跳跃输入缓冲计时器
 @onready var dash_timer: Timer = $DashTimer
-@onready var dot_sprite: Sprite2D = $Dot
-@onready var cut_sprite: Sprite2D = $Cut
+@onready var ball: Sprite2D = $Ball
+@onready var circle: Sprite2D = $Circle
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var state_machine: StateMachine = $StateMachine
 
@@ -49,7 +49,6 @@ func _ready() -> void:
 	_ensure_attack_action()
 	dash_timer.one_shot = true
 	dash_timer.wait_time = DASH_DURATION
-	cut_sprite.visible = false
 	if not animation_player.animation_finished.is_connected(_on_animation_finished):
 		animation_player.animation_finished.connect(_on_animation_finished)
 	_update_form_visual()
@@ -192,7 +191,6 @@ func get_next_state(state: State) -> State:
 func transition_state(from: State, to: State) -> void:
 	if from == State.HURT and to != State.HURT:
 		keep_cut_visible = false
-		cut_sprite.visible = false
 
 	# 状态转换时的处理逻辑
 	match to:
@@ -222,7 +220,6 @@ func transition_state(from: State, to: State) -> void:
 			if solid:
 				solid = false
 				keep_cut_visible = true
-				cut_sprite.visible = true
 				animation_player.play(&"Cut")
 				_update_form_visual()
 			else:
@@ -242,13 +239,11 @@ func attack() -> void:
 	if state_machine.current_state == State.HURT:
 		return
 	keep_cut_visible = false
-	cut_sprite.visible = true
 	animation_player.play(&"Cut")
 
 
 func _on_animation_finished(anim_name: StringName) -> void:
-	if anim_name == &"Cut" and not keep_cut_visible:
-		cut_sprite.visible = false
+	pass
 
 
 func _ensure_attack_action() -> void:
@@ -287,4 +282,4 @@ func _get_dash_direction() -> Vector2:
 
 
 func _update_form_visual() -> void:
-	dot_sprite.texture = DOT_TEXTURE if solid else RING_TEXTURE
+	ball.texture = DOT_TEXTURE if solid else RING_TEXTURE
