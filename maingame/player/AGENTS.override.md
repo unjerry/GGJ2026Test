@@ -8,7 +8,7 @@
 - `player/player.gd`：玩家移动与状态逻辑（核心）。
 - `player/player.tres`：`AnimatedSprite2D` 用的帧资源（Cut/default）。
 - `player/Dot.png`、`player/ring.png`、`player/Cut.png`：玩家贴图资源。
-- `player/JumpRequestTimer`、`player/DashTimer`：场景中的计时器节点（目前只实际使用了 JumpRequestTimer）。
+- `player/JumpRequestTimer`、`player/DashTimer`：场景中的计时器节点（分别用于跳跃输入缓冲、冲刺时长）。
 - `player/StateMachine`：场景里挂的是 `classes/StateMachin.gd`（通用状态机）。
 
 ## 玩家当前实现（`player.gd`）
@@ -19,28 +19,42 @@
 - `RUNNING`
 - `JUMP`
 - `DASH`
+- `HURT`
 
 ### 每帧物理行为
 
-- 4 个状态最终都调用同一个 `move(delta)`。
-- `move(delta)` 会做三件事：
+- `IDLE/RUNNING/JUMP` 使用 `move(delta)`：
   - 读取 `move_left/move_right`，计算水平速度。
   - 按是否在地面使用不同加速度。
   - 施加重力并 `move_and_slide()`。
+- `DASH` 使用 `dash_move()`：按冲刺方向给定固定速度。
+- `HURT` 使用 `hurt_move(delta)`：水平速度快速衰减 + 重力下落。
 
 ### 跳跃逻辑
 
-- `_unhandled_input` 中按下 `jump` 会启动 `JumpRequestTimer`（0.1 秒输入缓冲）。
-- `get_next_state` 中，若“在地面且缓冲未过期”则切到 `JUMP`。
+- `_unhandled_input` 中，只有空心形态（`solid = false`）会处理 `jump` 输入并启动 `JumpRequestTimer`（0.1 秒输入缓冲）。
+- `get_next_state` 中，若“空心 + 在地面 + 缓冲未过期”则切到 `JUMP`。
 - `transition_state` 进入 `JUMP` 时会设置 `velocity.y = JUMP_VELOCITY`，并停止缓冲计时器。
 - 松开 `jump` 时有短跳处理（削减向上速度）。
 
-### 当前代码里“已声明但未完成”的点
+### 冲刺（Dash）逻辑
 
-- `DASH` 状态已建，但无独立逻辑（和其他状态表现相同）。
-- `DashTimer` 节点存在，但 `player.gd` 未使用。
-- `solid` 变量目前只用于“是否处理跳跃输入”的门控，未看到受击切形态流程。
-- `Dot/Cut/AnimatedSprite2D/AnimationPlayer` 在 `player.gd` 中暂无显式驱动逻辑。
+- 输入 `dash` 会请求进入 `DASH` 状态。
+- 进入 `DASH` 会清掉跳跃缓冲并启动 `DashTimer`（0.18 秒）。
+- 实心形态：只做水平冲刺（由左右输入或当前速度决定方向）。
+- 空心形态：按“玩家位置 -> 鼠标位置”方向冲刺（无目标时退化为水平方向）。
+- `DashTimer` 未结束前保持 `DASH`；结束后回到 `IDLE/RUNNING/JUMP`。
+
+### 受击（Hurt）逻辑
+
+- 输入 `hurt` 会请求进入 `HURT` 状态（用于现在的受击流程/调试触发）。
+- `HURT` 状态有 0.4 秒硬直（与 Cut 动画同长），期间执行 `hurt_move`。
+- 第一次受击（实心）：
+  - `solid: true -> false`（切为空心）。
+  - `Dot` 贴图切到 `ring.png`。
+  - 显示 `Cut` 并播放 `AnimationPlayer` 的 `Cut` 动画。
+- 第二次受击（已空心）：
+  - 标记死亡并 `queue_free()`。
 
 ## 状态机是如何工作的（`classes/StateMachin.gd`）
 
@@ -60,5 +74,6 @@
 
 ## 现在可理解成的“实际玩家体验”
 
-- 目前核心是：左右移动 + 跳跃（有输入缓冲和短跳）。
-- 状态机已经接好，但更像“基础骨架”；`DASH`、形态切换、受击切换动画还没在 `player.gd` 里落地完整行为。
+- 开局实心：可左右移动、水平冲刺、不能跳跃。
+- 首次受击后切为空心：可跳跃（含输入缓冲/短跳）并可鼠标指向冲刺。
+- 空心再次受击会死亡（当前实现为移除玩家节点）。

@@ -9,6 +9,7 @@ enum State {
 	RUNNING, # 奔跑状态
 	JUMP, # 跳跃状态
 	DASH, # 冲刺状态
+	HURT, # 受击状态
 }
 
 # 地面状态数组（用于判断是否在地面状态）
@@ -19,20 +20,49 @@ const RUN_SPEED := 200.0 # 奔跑速度
 const JUMP_VELOCITY := -300.0 # 跳跃初速度（负值表示向上）
 const FLOOR_ACCELERATION := RUN_SPEED / 0.1 # 地面加速度
 const AIR_ACCELERATION := RUN_SPEED / 0.05 # 空中加速度
-const DASH_VELOCITY := 200 # 冲刺速度
+const DASH_VELOCITY := 400.0 # 冲刺速度
+const DASH_DURATION := 0.18 # 冲刺持续时间
+const HURT_DURATION := 0.4 # 受击硬直时间（与Cut动画长度一致）
+const DOT_TEXTURE := preload("res://player/Dot.png")
+const RING_TEXTURE := preload("res://player/ring.png")
 
 # 角色变量
 var gravity := ProjectSettings.get("physics/2d/default_gravity") as float # 从项目设置获取重力值
 var solid := true # 空心与实心状态的标记
 var is_first_tick := false
+var dash_direction := Vector2.RIGHT
+var dash_requested := false
+var hurt_requested := false
+var is_dead := false
 
 # 节点引用
 @onready var jump_request_timer: Timer = $JumpRequestTimer # 跳跃输入缓冲计时器
+@onready var dash_timer: Timer = $DashTimer
+@onready var dot_sprite: Sprite2D = $Dot
+@onready var cut_sprite: Sprite2D = $Cut
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var state_machine: StateMachine = $StateMachine
+
+
+func _ready() -> void:
+	dash_timer.one_shot = true
+	dash_timer.wait_time = DASH_DURATION
+	cut_sprite.visible = false
+	_update_form_visual()
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	# 只有在solid为true时才处理输入
-	if solid:
+	if is_dead:
+		return
+
+	if event.is_action_pressed("dash"):
+		dash_requested = true
+
+	if event.is_action_pressed("hurt"):
+		hurt_requested = true
+
+	# 只有空心形态（solid=false）才处理跳跃输入
+	if not solid:
 		# 按下跳跃键时启动跳跃缓冲计时器
 		if event.is_action_pressed("jump"):
 			jump_request_timer.start()
@@ -55,7 +85,10 @@ func tick_physics(state: State, delta: float) -> void:
 			move(delta) # 跳跃状态下的移动
 			
 		State.DASH:
-			move(delta) # 冲刺状态下的移动
+			dash_move() # 冲刺状态下的移动
+
+		State.HURT:
+			hurt_move(delta) # 受击状态下的移动
 
 
 func move(delta: float) -> void:
@@ -75,9 +108,37 @@ func move(delta: float) -> void:
 	move_and_slide()
 
 
+func dash_move() -> void:
+	velocity = dash_direction * DASH_VELOCITY
+	move_and_slide()
+
+
+func hurt_move(delta: float) -> void:
+	velocity.x = move_toward(velocity.x, 0.0, FLOOR_ACCELERATION * delta)
+	velocity.y += gravity * delta
+	move_and_slide()
+
+
 func get_next_state(state: State) -> State:
+	if is_dead:
+		return State.HURT
+
+	if hurt_requested and state != State.HURT:
+		return State.HURT
+
+	if state == State.HURT:
+		hurt_requested = false
+		if state_machine.state_time < HURT_DURATION:
+			return State.HURT
+
+	if state == State.DASH and dash_timer.time_left > 0.0:
+		return State.DASH
+
+	if dash_requested:
+		return State.DASH
+
 	# 判断是否可以跳跃：在地面且跳跃计时器正在运行
-	var can_jump := is_on_floor() and jump_request_timer.time_left > 0
+	var can_jump := not solid and is_on_floor() and jump_request_timer.time_left > 0
 	
 	# 如果可以跳跃，优先转换为跳跃状态
 	if can_jump:
@@ -106,14 +167,23 @@ func get_next_state(state: State) -> State:
 				return State.IDLE
 		
 		State.DASH:
-			# 冲刺状态逻辑（待实现）
-			pass
+			if is_on_floor():
+				return State.IDLE if is_still else State.RUNNING
+			return State.JUMP
+
+		State.HURT:
+			if is_on_floor():
+				return State.IDLE if is_still else State.RUNNING
+			return State.JUMP
 	
 	# 默认保持当前状态
 	return state
 
 
-func transition_state(_from: State, to: State) -> void:
+func transition_state(from: State, to: State) -> void:
+	if from == State.HURT and to != State.HURT:
+		cut_sprite.visible = false
+
 	# 状态转换时的处理逻辑
 	match to:
 		State.IDLE:
@@ -130,5 +200,45 @@ func transition_state(_from: State, to: State) -> void:
 			jump_request_timer.stop()
 			
 		State.DASH:
-			# 进入冲刺状态（待实现）
-			pass
+			dash_requested = false
+			jump_request_timer.stop()
+			dash_direction = _get_dash_direction()
+			dash_timer.start(DASH_DURATION)
+
+		State.HURT:
+			hurt_requested = false
+			jump_request_timer.stop()
+			dash_timer.stop()
+			if solid:
+				solid = false
+				cut_sprite.visible = true
+				animation_player.play(&"Cut")
+				_update_form_visual()
+			else:
+				is_dead = true
+				call_deferred("queue_free")
+
+
+func _get_dash_direction() -> Vector2:
+	if solid:
+		var direction := Input.get_axis("move_left", "move_right")
+		if not is_zero_approx(direction):
+			return Vector2(sign(direction), 0.0)
+		if not is_zero_approx(velocity.x):
+			return Vector2(sign(velocity.x), 0.0)
+		return Vector2.RIGHT
+
+	var mouse_direction := get_global_mouse_position() - global_position
+	if mouse_direction.length_squared() > 0.0001:
+		return mouse_direction.normalized()
+
+	var fallback_direction := Input.get_axis("move_left", "move_right")
+	if not is_zero_approx(fallback_direction):
+		return Vector2(sign(fallback_direction), 0.0)
+	if not is_zero_approx(velocity.x):
+		return Vector2(sign(velocity.x), 0.0)
+	return Vector2.RIGHT
+
+
+func _update_form_visual() -> void:
+	dot_sprite.texture = DOT_TEXTURE if solid else RING_TEXTURE
