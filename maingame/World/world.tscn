@@ -39,7 +39,7 @@ texture = ExtResource("2_k8do8")
 scale = Vector2(0.5, 0.5)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
-position = Vector2(0, 76)
+position = Vector2(0, 70)
 shape = SubResource("WorldBoundaryShape2D_8a836")
 
 [node name="RightWall" type="StaticBody2D" parent="."]
@@ -59,10 +59,10 @@ scale = Vector2(0.5, 0.5)
 shape = SubResource("WorldBoundaryShape2D_3f78f")
 
 [node name="X" type="Sprite2D" parent="."]
-scale = Vector2(10, 0.2)
+scale = Vector2(10, 0.3)
 texture = ExtResource("4_k8do8")
 
 [node name="Y" type="Sprite2D" parent="."]
 rotation = 1.5707964
-scale = Vector2(5, 0.2)
+scale = Vector2(5, 0.3)
 texture = ExtResource("4_k8do8")
