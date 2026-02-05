@@ -60,7 +60,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	if event.is_action_pressed("dash"):
-		dash_requested = true
+		if state_machine.current_state != State.DASH and state_machine.current_state != State.HURT:
+			dash_requested = true
 
 	var mouse_event := event as InputEventMouseButton
 	if event.is_action_pressed("attack") or (mouse_event != null and mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_RIGHT):
@@ -136,8 +137,11 @@ func get_next_state(state: State) -> State:
 		if state_machine.state_time < HURT_DURATION:
 			return State.HURT
 
-	if state == State.DASH and dash_timer.time_left > 0.0:
-		return State.DASH
+	if state == State.DASH:
+		if dash_timer.time_left > 0.0:
+			return State.DASH
+		# 防止冲刺中再次点按导致请求残留，避免状态卡在 DASH。
+		dash_requested = false
 
 	if dash_requested:
 		return State.DASH
