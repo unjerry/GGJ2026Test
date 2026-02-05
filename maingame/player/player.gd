@@ -34,6 +34,7 @@ var dash_direction := Vector2.RIGHT
 var dash_requested := false
 var hurt_requested := false
 var is_dead := false
+var keep_cut_visible := false
 
 # 节点引用
 @onready var jump_request_timer: Timer = $JumpRequestTimer # 跳跃输入缓冲计时器
@@ -45,9 +46,12 @@ var is_dead := false
 
 
 func _ready() -> void:
+	_ensure_attack_action()
 	dash_timer.one_shot = true
 	dash_timer.wait_time = DASH_DURATION
 	cut_sprite.visible = false
+	if not animation_player.animation_finished.is_connected(_on_animation_finished):
+		animation_player.animation_finished.connect(_on_animation_finished)
 	_update_form_visual()
 
 
@@ -58,8 +62,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("dash"):
 		dash_requested = true
 
-	if event.is_action_pressed("hurt"):
-		hurt_requested = true
+	var mouse_event := event as InputEventMouseButton
+	if event.is_action_pressed("attack") or (mouse_event != null and mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_RIGHT):
+		attack()
 
 	# 只有空心形态（solid=false）才处理跳跃输入
 	if not solid:
@@ -182,6 +187,7 @@ func get_next_state(state: State) -> State:
 
 func transition_state(from: State, to: State) -> void:
 	if from == State.HURT and to != State.HURT:
+		keep_cut_visible = false
 		cut_sprite.visible = false
 
 	# 状态转换时的处理逻辑
@@ -211,12 +217,48 @@ func transition_state(from: State, to: State) -> void:
 			dash_timer.stop()
 			if solid:
 				solid = false
+				keep_cut_visible = true
 				cut_sprite.visible = true
 				animation_player.play(&"Cut")
 				_update_form_visual()
 			else:
 				is_dead = true
 				call_deferred("queue_free")
+
+
+func hurt() -> void:
+	if is_dead:
+		return
+	hurt_requested = true
+
+
+func attack() -> void:
+	if is_dead:
+		return
+	if state_machine.current_state == State.HURT:
+		return
+	keep_cut_visible = false
+	cut_sprite.visible = true
+	animation_player.play(&"Cut")
+
+
+func _on_animation_finished(anim_name: StringName) -> void:
+	if anim_name == &"Cut" and not keep_cut_visible:
+		cut_sprite.visible = false
+
+
+func _ensure_attack_action() -> void:
+	if not InputMap.has_action(&"attack"):
+		InputMap.add_action(&"attack")
+
+	var existing := InputMap.action_get_events(&"attack")
+	for ev in existing:
+		if ev is InputEventMouseButton and ev.button_index == MOUSE_BUTTON_RIGHT:
+			return
+
+	var attack_event := InputEventMouseButton.new()
+	attack_event.button_index = MOUSE_BUTTON_RIGHT
+	InputMap.action_add_event(&"attack", attack_event)
 
 
 func _get_dash_direction() -> Vector2:

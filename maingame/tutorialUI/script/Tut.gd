@@ -13,11 +13,11 @@ signal tutorial_finished
 @onready var _panel_ad: PanelContainer = $panel_AD
 @onready var _panel_space: PanelContainer = $panel_Space
 
-# AD/Space/Dash/Hurt 输入动作名
+# AD/Space/Dash/Attack 输入动作名
 var _actions_ad: Array[StringName] = [&"move_left", &"move_right"]
 var _actions_space: Array[StringName] = [&"jump"]
 var _actions_dash: Array[StringName] = [&"dash"]
-var _actions_hurt: Array[StringName] = [&"hurt"]
+var _actions_hurt: Array[StringName] = [&"attack"]
 
 const _HINT_SPACE: PackedScene = preload("res://tutorialUI/Hints/hint_space.tscn")
 const _HINT_DASH: PackedScene = preload("res://tutorialUI/Hints/hint_dash.tscn")
@@ -192,7 +192,7 @@ func _ensure_input_actions() -> void:
 	_add_action(&"move_right", [KEY_D, KEY_RIGHT])
 	_add_action(&"jump", [KEY_SPACE])
 	_add_mouse_button_action(&"dash", MOUSE_BUTTON_LEFT)
-	_add_mouse_button_action(&"hurt", MOUSE_BUTTON_RIGHT)
+	_add_mouse_button_action(&"attack", MOUSE_BUTTON_RIGHT)
 
 
 func _add_action(action_name: StringName, keycodes: Array) -> void:

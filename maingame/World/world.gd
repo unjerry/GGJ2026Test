@@ -19,6 +19,11 @@ func _ready() -> void:
 var can_move := true
 
 func _physics_process(_delta: float) -> void:
+	if not is_instance_valid(player):
+		return
+	if not is_instance_valid(camera_2d):
+		return
+
 	# 当玩家位置超过250时，调整相机范围和墙壁位置
 	if player.global_position.x > 250:
 		# 设置相机左右边界
@@ -31,5 +36,4 @@ func _physics_process(_delta: float) -> void:
 		
 	# 如果玩家不能移动，将相机固定在指定位置
 	if not can_move:
-		if player and camera_2d:
-			camera_2d.global_position.x = 193  # 固定相机X坐标为193
+		camera_2d.global_position.x = 193  # 固定相机X坐标为193
