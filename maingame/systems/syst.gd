@@ -52,9 +52,8 @@ func _show_start() -> void:
 
 func _show_restart() -> void:
 	_mode = Mode.RESTART
-	get_tree().paused = false
+	get_tree().paused = true
 	_clear_menu()
-	_free_game()
 	_menu_instance = _spawn_menu(restart)
 
 
@@ -111,6 +110,7 @@ func _spawn_menu(scene: PackedScene) -> Control:
 	control.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(control)
 	_connect_menu_buttons(control)
+	_apply_menu_labels(control)
 	return control
 
 
@@ -161,6 +161,9 @@ func _on_menu_start_pressed() -> void:
 
 
 func _on_menu_setting_pressed() -> void:
+	if _mode == Mode.PAUSE or _mode == Mode.RESTART:
+		_show_start()
+		return
 	print("Syst: settings not implemented yet.")
 
 
@@ -172,3 +175,35 @@ func _on_player_died() -> void:
 	if _mode != Mode.GAME:
 		return
 	_show_restart()
+
+
+func _apply_menu_labels(menu_root: Control) -> void:
+	if menu_root == null:
+		return
+
+	var start_btn := menu_root.get_node_or_null(_BTN_START) as Button
+	var setting_btn := menu_root.get_node_or_null(_BTN_SETTING) as Button
+	var exit_btn := menu_root.get_node_or_null(_BTN_EXIT) as Button
+
+	match _mode:
+		Mode.START:
+			if start_btn != null:
+				start_btn.text = tr("SYS.start")
+			if setting_btn != null:
+				setting_btn.text = tr("SYS.setting")
+			if exit_btn != null:
+				exit_btn.text = tr("SYS.exit")
+		Mode.PAUSE:
+			if start_btn != null:
+				start_btn.text = tr("SYS.continue")
+			if setting_btn != null:
+				setting_btn.text = tr("SYS.back")
+			if exit_btn != null:
+				exit_btn.text = tr("SYS.exit")
+		Mode.RESTART:
+			if start_btn != null:
+				start_btn.text = tr("SYS.restart")
+			if setting_btn != null:
+				setting_btn.text = tr("SYS.back")
+			if exit_btn != null:
+				exit_btn.text = tr("SYS.exit")

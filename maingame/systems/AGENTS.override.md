@@ -51,6 +51,12 @@
 
 连接使用 `pressed` 信号，并且在重复连接前进行 `is_connected` 检查，避免多次绑定。
 
+按钮文案会根据当前 `Mode` 在 `_apply_menu_labels()` 中动态设置：
+
+- `START`：`SYS.start / SYS.setting / SYS.exit`
+- `PAUSE`：`SYS.continue / SYS.back / SYS.exit`
+- `RESTART`：`SYS.restart / SYS.back / SYS.exit`
+
 ## 跳转流程
 
 开始/重开按钮（`_on_menu_start_pressed`）：
@@ -69,7 +75,12 @@
 - `_try_connect_game_signals()` 在游戏实例化后查找根下 `Player` 节点并连接 `died` 信号。
 - `Player.died` 触发 `_on_player_died()` → `_show_restart()` → 进入 `RESTART`
 
+返回开始界面：
+
+- `PAUSE` / `RESTART` 状态下点击 `Panel/Button2`（Back）会调用 `_show_start()` 返回开始菜单。
+
 ## 现状注意点
 
 - 游戏场景中必须存在根下的 `Player` 节点，否则 `died` 信号不会连接，死亡重开不会触发。
-- `start` 与 `restart` 当前复用 `cover.tscn`，因此按钮与布局完全一致。
+- `start` 与 `restart` 当前复用 `cover.tscn`，按钮文案由脚本按模式覆盖。
+- `RESTART` 会暂停树并显示弹出菜单，但不立即释放游戏实例。
