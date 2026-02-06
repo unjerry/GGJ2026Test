@@ -57,6 +57,14 @@ backdash={
 
 locale/translations=PackedStringArray("res://trans/trans.en.translation", "res://trans/trans.zh_CN.translation")
 
+[layer_names]
+
+2d_render/layer_1="Environment"
+2d_render/layer_2="Player"
+2d_render/layer_3="Enemy"
+2d_render/layer_4="PlayerHurtbox"
+2d_render/layer_5="EnemyHurtbox"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
