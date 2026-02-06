@@ -1,11 +1,23 @@
-[gd_scene load_steps=2 format=3 uid="uid://bfy2m6r2qmdd0"]
+[gd_scene load_steps=4 format=3 uid="uid://bfy2m6r2qmdd0"]
 
+[ext_resource type="Script" uid="uid://db7yj7vo6ccdw" path="res://systems/testworld.gd" id="1_e5g8a"]
 [ext_resource type="Texture2D" uid="uid://7ew8amp0hyl2" path="res://assets/Pictures/Whiteground.png" id="1_pg5s7"]
+[ext_resource type="PackedScene" uid="uid://cn4tdklhwm6o3" path="res://player/player.tscn" id="3_m8j6l"]
 
 [node name="Testworld" type="Node2D"]
+script = ExtResource("1_e5g8a")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(0.35686275, 1, 1, 1)
 position = Vector2(960, 539.99994)
 scale = Vector2(12, 6.7499995)
 texture = ExtResource("1_pg5s7")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[node name="Player" parent="." instance=ExtResource("3_m8j6l")]
+position = Vector2(626, 410)
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

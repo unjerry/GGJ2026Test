@@ -3,6 +3,8 @@
 
 extends CharacterBody2D
 
+signal died
+
 # 状态枚举定义
 enum State {
 	IDLE, # 闲置状态
@@ -225,6 +227,7 @@ func transition_state(from: State, to: State) -> void:
 				_update_form_visual()
 			else:
 				is_dead = true
+				died.emit()
 				call_deferred("queue_free")
 
 
