@@ -43,7 +43,7 @@ var has_backdash := false
 var hurt_requested := false
 var is_dead := false
 var keep_cut_visible := false
-var mouse_global_pos := get_global_mouse_position()
+#var mouse_global_pos := get_global_mouse_position()
 
 # 节点引用
 @onready var jump_request_timer: Timer = $JumpRequestTimer # 跳跃输入缓冲计时器
