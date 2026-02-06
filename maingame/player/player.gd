@@ -11,6 +11,7 @@ enum State {
 	RUNNING, # 奔跑状态
 	JUMP, # 跳跃状态
 	DASH, # 冲刺状态
+	BACHDASH, # 反向冲刺状态
 	HURT, # 受击状态
 }
 
@@ -19,25 +20,30 @@ const GROUND_STATES := [State.IDLE, State.RUNNING]
 
 # 角色属性常量
 const RUN_SPEED := 1000.0 # 奔跑速度
-const JUMP_VELOCITY := -300.0 # 跳跃初速度（负值表示向上）
+const JUMP_VELOCITY := -1500.0 # 跳跃初速度（负值表示向上）
 const FLOOR_ACCELERATION := RUN_SPEED / 0.1 # 地面加速度
 const AIR_ACCELERATION := RUN_SPEED / 0.05 # 空中加速度
-const DASH_ACCELERATION := RUN_SPEED * 0.001 # 冲刺加速度
-const DASH_VELOCITY := 2000.0 # 冲刺速度
-const DASH_DURATION := 0.18 # 冲刺持续时间
+const DASH_ACCELERATION := 5 # 冲刺加速度
+const DASH_VELOCITY := 3000.0 # 冲刺速度
 const HURT_DURATION := 0.4 # 受击硬直时间（与Cut动画长度一致）
 const DOT_TEXTURE := preload("res://assets/Pictures/ball.png")
 const RING_TEXTURE := preload("res://assets/Pictures/circle.png")
+const DASH_DURATION := 0.1
+const DASH_FULL_SPEED_RATIO := 0.2 # 70%时间全速，30%时间减速
 
 # 角色变量
-var gravity := ProjectSettings.get("physics/2d/default_gravity") as float # 从项目设置获取重力值
+var gravity := ProjectSettings.get("physics/2d/default_gravity") * 5 as float # 从项目设置获取重力值
 var solid := true # 空心与实心状态的标记
 var is_first_tick := false
 var dash_direction := Vector2.RIGHT
 var dash_requested := false
+var has_dash := false
+var backdash_requested := false
+var has_backdash := false
 var hurt_requested := false
 var is_dead := false
 var keep_cut_visible := false
+var mouse_global_pos := get_global_mouse_position()
 
 # 节点引用
 @onready var jump_request_timer: Timer = $JumpRequestTimer # 跳跃输入缓冲计时器
@@ -49,9 +55,7 @@ var keep_cut_visible := false
 
 
 func _ready() -> void:
-	_ensure_attack_action()
 	dash_timer.one_shot = true
-	dash_timer.wait_time = DASH_DURATION
 	if not animation_player.animation_finished.is_connected(_on_animation_finished):
 		animation_player.animation_finished.connect(_on_animation_finished)
 	_update_form_visual()
@@ -62,13 +66,19 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	if event.is_action_pressed("dash"):
-		if state_machine.current_state != State.DASH:
+		if state_machine.current_state != State.DASH and not has_dash:
+			if not dash_requested:
+				dash_direction = calculate_dash_direction()
+			has_dash = true
 			dash_requested = true
-
-	var mouse_event := event as InputEventMouseButton
-	if event.is_action_pressed("attack") or (mouse_event != null and mouse_event.pressed and mouse_event.button_index == MOUSE_BUTTON_RIGHT):
-		attack()
-
+	
+	if event.is_action_pressed("backdash"):
+		if state_machine.current_state != State.BACHDASH and not has_backdash:
+			if not backdash_requested:
+				dash_direction = -1 * calculate_dash_direction()
+			has_backdash = true
+			backdash_requested = true
+		
 	# 只有空心形态（solid=false）才处理跳跃输入
 	if not solid:
 		# 按下跳跃键时启动跳跃缓冲计时器
@@ -94,6 +104,9 @@ func tick_physics(state: State, delta: float) -> void:
 			
 		State.DASH:
 			dash_move() # 冲刺状态下的移动
+		
+		State.BACHDASH:
+			dash_move() # 冲刺状态下的移动
 
 		State.HURT:
 			hurt_move(delta) # 受击状态下的移动
@@ -117,7 +130,30 @@ func move(delta: float) -> void:
 
 
 func dash_move() -> void:
-	velocity = dash_direction * DASH_VELOCITY
+	var time_left = dash_timer.time_left
+	
+	# 计算全速阶段和减速阶段的分界点
+	var full_speed_time = DASH_DURATION * DASH_FULL_SPEED_RATIO
+	
+	if time_left > DASH_DURATION - full_speed_time:
+		# 全速阶段：刚开始的20%时间
+		velocity = dash_direction * DASH_VELOCITY
+	else:
+		# 减速阶段：最后的80%时间
+		var decel_duration = DASH_DURATION * (1.0 - DASH_FULL_SPEED_RATIO)
+		var time_in_decel = decel_duration - time_left
+		
+		# 计算减速进度（0到1）
+		var decel_progress = clamp(time_in_decel / decel_duration, 0.0, 1.0)
+		
+		# 使用缓动函数让减速更自然
+		# easeOutCubic: 1 - (1 - t)^3
+		var eased_progress = 1.0 - pow(1.0 - decel_progress, 3.0)
+		
+		# 计算当前速度
+		var current_speed = DASH_VELOCITY * (1.0 - eased_progress)
+		velocity = dash_direction * current_speed
+	
 	move_and_slide()
 
 
@@ -128,6 +164,10 @@ func hurt_move(delta: float) -> void:
 
 
 func get_next_state(state: State) -> State:
+	if is_on_floor():
+		has_dash = false
+		has_backdash = false
+	
 	if is_dead:
 		return State.HURT
 
@@ -144,9 +184,18 @@ func get_next_state(state: State) -> State:
 			return State.DASH
 		# 防止冲刺中再次点按导致请求残留，避免状态卡在 DASH。
 		dash_requested = false
+	
+	if state == State.BACHDASH:
+		if dash_timer.time_left > 0.0:
+			return State.BACHDASH
+		# 防止冲刺中再次点按导致请求残留，避免状态卡在 DASH。
+		backdash_requested = false
 
 	if dash_requested:
 		return State.DASH
+
+	if backdash_requested:
+		return State.BACHDASH
 
 	# 判断是否可以跳跃：在地面且跳跃计时器正在运行
 	var can_jump := not solid and is_on_floor() and jump_request_timer.time_left > 0
@@ -178,10 +227,15 @@ func get_next_state(state: State) -> State:
 				return State.IDLE
 		
 		State.DASH:
-			if is_on_floor():
-				return State.IDLE if is_still else State.RUNNING
-			return State.JUMP
+			if is_still:
+				return State.IDLE  
+			else:
+				velocity.x = RUN_SPEED * direction
+				return State.RUNNING
 
+		State.BACHDASH:
+			return State.IDLE if is_still else State.RUNNING
+			
 		State.HURT:
 			if is_on_floor():
 				return State.IDLE if is_still else State.RUNNING
@@ -207,14 +261,16 @@ func transition_state(from: State, to: State) -> void:
 		
 		State.JUMP:
 			# 进入跳跃状态：设置跳跃速度并停止计时器
-			velocity.y = JUMP_VELOCITY
 			jump_request_timer.stop()
+			velocity.y = JUMP_VELOCITY
 			
 		State.DASH:
-			dash_requested = false
 			jump_request_timer.stop()
-			dash_direction = _get_dash_direction()
-			dash_timer.start(DASH_DURATION)
+			dash_timer.start()
+						
+		State.BACHDASH:
+			jump_request_timer.stop()
+			dash_timer.start()
 
 		State.HURT:
 			hurt_requested = false
@@ -249,40 +305,20 @@ func attack() -> void:
 func _on_animation_finished(_anim_name: StringName) -> void:
 	pass
 
-
-func _ensure_attack_action() -> void:
-	if not InputMap.has_action(&"attack"):
-		InputMap.add_action(&"attack")
-
-	var existing := InputMap.action_get_events(&"attack")
-	for ev in existing:
-		if ev is InputEventMouseButton and ev.button_index == MOUSE_BUTTON_RIGHT:
-			return
-
-	var attack_event := InputEventMouseButton.new()
-	attack_event.button_index = MOUSE_BUTTON_RIGHT
-	InputMap.action_add_event(&"attack", attack_event)
-
-
-func _get_dash_direction() -> Vector2:
-	if solid:
-		var direction := Input.get_axis("move_left", "move_right")
-		if not is_zero_approx(direction):
-			return Vector2(sign(direction), 0.0)
-		if not is_zero_approx(velocity.x):
-			return Vector2(sign(velocity.x), 0.0)
-		return Vector2.RIGHT
-
-	var mouse_direction := get_global_mouse_position() - global_position
-	if mouse_direction.length_squared() > 0.0001:
-		return mouse_direction.normalized()
-
-	var fallback_direction := Input.get_axis("move_left", "move_right")
-	if not is_zero_approx(fallback_direction):
-		return Vector2(sign(fallback_direction), 0.0)
-	if not is_zero_approx(velocity.x):
-		return Vector2(sign(velocity.x), 0.0)
-	return Vector2.RIGHT
+func calculate_dash_direction() -> Vector2:
+	var mouse_pos = get_global_mouse_position()
+	var to_mouse = mouse_pos - global_position
+	
+	if solid:  # 实心点：水平方向
+		var x_direction = sign(to_mouse.x)
+		# 如果x为0，使用默认方向
+		if x_direction == 0:
+			x_direction = 1 if velocity.x >= 0 else -1
+		return Vector2(x_direction, 0)
+	else:  # 空心环：向鼠标方向
+		if to_mouse.length_squared() > 0.001:  # 避免除零
+			return to_mouse.normalized()
+		return Vector2.RIGHT  # 默认方向
 
 
 func _update_form_visual() -> void:
