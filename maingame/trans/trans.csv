@@ -7,3 +7,9 @@ ui.space_hint,to jump,来跳跃
 ui.dash_hint,to dash,来冲刺
 ui.hurt_hint,to attack,来攻击
 ui.period,.,。
+SYS.restart,Restart,重新开始
+SYS.setting,Settings,设置
+SYS.back,Back,返回
+SYS.continue,Continue,继续
+SYS.start,Start,开始
+SYS.exit,Exit,退出
