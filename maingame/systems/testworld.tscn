@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bfy2m6r2qmdd0"]
+
+[ext_resource type="Texture2D" uid="uid://7ew8amp0hyl2" path="res://assets/Pictures/Whiteground.png" id="1_pg5s7"]
+
+[node name="Testworld" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.35686275, 1, 1, 1)
+position = Vector2(960, 539.99994)
+scale = Vector2(12, 6.7499995)
+texture = ExtResource("1_pg5s7")

@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://d4k2p5eel57f1"]
+
+[ext_resource type="Script" uid="uid://wim5w15wbhco" path="res://systems/syst.gd" id="1_t0bb8"]
+[ext_resource type="PackedScene" uid="uid://bfy2m6r2qmdd0" path="res://systems/testworld.tscn" id="2_h8tr4"]
+[ext_resource type="PackedScene" uid="uid://dxogr0sknf0c6" path="res://systems/paus.tscn" id="3_kbxug"]
+[ext_resource type="PackedScene" uid="uid://2x7yfojfemxg" path="res://systems/cover.tscn" id="4_bo040"]
+
+[node name="Syst" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_t0bb8")
+game = ExtResource("2_h8tr4")
+pause = ExtResource("3_kbxug")
+start = ExtResource("4_bo040")
+restart = ExtResource("4_bo040")
