@@ -12,7 +12,7 @@
 - game：`systems/testworld.tscn`
 - pause：`systems/paus.tscn`
 - start：`systems/cover.tscn`
-- restart：`systems/cover.tscn`（与 start 复用）
+- restart：`systems/restart.tscn`
 
 `systems/cover.tscn` / `systems/paus.tscn`:
 
@@ -54,8 +54,8 @@
 按钮文案会根据当前 `Mode` 在 `_apply_menu_labels()` 中动态设置：
 
 - `START`：`SYS.start / SYS.setting / SYS.exit`
-- `PAUSE`：`SYS.continue / SYS.back / SYS.exit`
-- `RESTART`：`SYS.restart / SYS.back / SYS.exit`
+- `PAUSE`：`SYS.continue / SYS.setting / SYS.back`
+- `RESTART`：`SYS.restart / SYS.setting / SYS.back`
 
 ## 跳转流程
 
@@ -77,7 +77,7 @@
 
 返回开始界面：
 
-- `PAUSE` / `RESTART` 状态下点击 `Panel/Button2`（Back）会调用 `_show_start()` 返回开始菜单。
+- `PAUSE` / `RESTART` 状态下点击 `Panel/Button3`（Back）会调用 `_show_start()` 返回开始菜单。
 
 ## 现状注意点
 

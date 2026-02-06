@@ -161,13 +161,13 @@ func _on_menu_start_pressed() -> void:
 
 
 func _on_menu_setting_pressed() -> void:
-	if _mode == Mode.PAUSE or _mode == Mode.RESTART:
-		_show_start()
-		return
 	print("Syst: settings not implemented yet.")
 
 
 func _on_menu_exit_pressed() -> void:
+	if _mode == Mode.PAUSE or _mode == Mode.RESTART:
+		_show_start()
+		return
 	get_tree().quit()
 
 
@@ -197,13 +197,13 @@ func _apply_menu_labels(menu_root: Control) -> void:
 			if start_btn != null:
 				start_btn.text = tr("SYS.continue")
 			if setting_btn != null:
-				setting_btn.text = tr("SYS.back")
+				setting_btn.text = tr("SYS.setting")
 			if exit_btn != null:
-				exit_btn.text = tr("SYS.exit")
+				exit_btn.text = tr("SYS.back")
 		Mode.RESTART:
 			if start_btn != null:
 				start_btn.text = tr("SYS.restart")
 			if setting_btn != null:
-				setting_btn.text = tr("SYS.back")
+				setting_btn.text = tr("SYS.setting")
 			if exit_btn != null:
-				exit_btn.text = tr("SYS.exit")
+				exit_btn.text = tr("SYS.back")
