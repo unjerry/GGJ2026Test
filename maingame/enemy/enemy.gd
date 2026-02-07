@@ -5,8 +5,7 @@ extends CharacterBody2D
 var default_gravity := ProjectSettings.get("physics/2d/default_gravity") as float
 
 
-@onready var dot: Sprite2D = $Dot
-@onready var ring: Sprite2D = $Ring
+@onready var graphics: Node2D = $Graphics
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var state_machine: StateMachine = $StateMachine
 

@@ -3,8 +3,6 @@
 
 extends CharacterBody2D
 
-signal died
-
 # 状态枚举定义
 enum State {
 	IDLE, # 闲置状态
@@ -33,7 +31,7 @@ const DASH_FULL_SPEED_RATIO := 0.2 # 70%时间全速，30%时间减速
 
 # 角色变量
 var gravity := ProjectSettings.get("physics/2d/default_gravity") * 5 as float # 从项目设置获取重力值
-var solid := true # 空心与实心状态的标记
+var solid := false # 空心与实心状态的标记
 var is_first_tick := false
 var dash_direction := Vector2.RIGHT
 var dash_requested := false
@@ -43,13 +41,13 @@ var has_backdash := false
 var hurt_requested := false
 var is_dead := false
 var keep_cut_visible := false
-#var mouse_global_pos := get_global_mouse_position()
+
 
 # 节点引用
 @onready var jump_request_timer: Timer = $JumpRequestTimer # 跳跃输入缓冲计时器
 @onready var dash_timer: Timer = $DashTimer
-@onready var ball: Sprite2D = $Ball
-@onready var circle: Sprite2D = $Circle
+@onready var ball: Sprite2D = $Graphics/Ball
+@onready var circle: Sprite2D = $Graphics/Circle
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var state_machine: StateMachine = $StateMachine
 
@@ -283,7 +281,6 @@ func transition_state(from: State, to: State) -> void:
 				_update_form_visual()
 			else:
 				is_dead = true
-				died.emit()
 				call_deferred("queue_free")
 
 
@@ -302,7 +299,7 @@ func attack() -> void:
 	animation_player.play(&"Cut")
 
 
-func _on_animation_finished(_anim_name: StringName) -> void:
+func _on_animation_finished(anim_name: StringName) -> void:
 	pass
 
 func calculate_dash_direction() -> Vector2:

@@ -1,12 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://cn4tdklhwm6o3"]
+[gd_scene load_steps=11 format=3 uid="uid://cn4tdklhwm6o3"]
 
 [ext_resource type="Script" uid="uid://bjjylwy61hlix" path="res://player/player.gd" id="1_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://gqpe71qjnvnw" path="res://assets/Pictures/ball.png" id="3_qjkh3"]
+[ext_resource type="Script" uid="uid://brl075mnp6tye" path="res://classes/Hurtbox.gd" id="4_qjkh3"]
 [ext_resource type="Script" uid="uid://bd7ush4653ea" path="res://classes/StateMachin.gd" id="4_yw30f"]
 [ext_resource type="Texture2D" uid="uid://bx4tsthoww5w" path="res://assets/Pictures/circle.png" id="5_qjkh3"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_g6k8r"]
+radius = 22.8
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_qjkh3"]
-radius = 11.0000925
 
 [sub_resource type="Animation" id="Animation_g6k8r"]
 resource_name = "Cut"
@@ -23,18 +26,30 @@ _data = {
 }
 
 [node name="Player" type="CharacterBody2D"]
+collision_layer = 2
 script = ExtResource("1_g1dw6")
 
-[node name="Ball" type="Sprite2D" parent="."]
-visible = false
+[node name="Graphics" type="Node2D" parent="."]
+
+[node name="Ball" type="Sprite2D" parent="Graphics"]
 texture = ExtResource("3_qjkh3")
 
-[node name="Circle" type="Sprite2D" parent="."]
-modulate = Color(0, 0, 0, 1)
+[node name="Circle" type="Sprite2D" parent="Graphics"]
+visible = false
 texture = ExtResource("5_qjkh3")
 
+[node name="Hurtbox" type="Area2D" parent="Graphics"]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("4_qjkh3")
+metadata/_custom_type_script = "uid://brl075mnp6tye"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Graphics/Hurtbox"]
+scale = Vector2(10, 10)
+shape = SubResource("CircleShape2D_g6k8r")
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-scale = Vector2(22, 22)
+scale = Vector2(24, 24)
 shape = SubResource("CircleShape2D_qjkh3")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
