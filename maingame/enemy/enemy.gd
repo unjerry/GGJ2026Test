@@ -12,3 +12,4 @@ var default_gravity := ProjectSettings.get("physics/2d/default_gravity") as floa
 
 func move(speed: float, delta: float) -> void:
 	velocity.y += default_gravity * delta
+	move_and_slide()

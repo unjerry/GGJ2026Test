@@ -21,12 +21,11 @@ const RUN_SPEED := 1000.0 # 奔跑速度
 const JUMP_VELOCITY := -1500.0 # 跳跃初速度（负值表示向上）
 const FLOOR_ACCELERATION := RUN_SPEED / 0.1 # 地面加速度
 const AIR_ACCELERATION := RUN_SPEED / 0.05 # 空中加速度
-const DASH_VELOCITY := 2000.0 # 冲刺速度
+const DASH_VELOCITY := 5000.0 # 冲刺速度
 const HURT_DURATION := 0.4 # 受击硬直时间（与Cut动画长度一致）
 const DOT_TEXTURE := preload("res://assets/Pictures/ball.png")
 const RING_TEXTURE := preload("res://assets/Pictures/circle.png")
-const DASH_DURATION := 0.1
-const DASH_FULL_SPEED_RATIO := 0.1 # 1%时间全速，90%时间减速
+const DASH_FULL_SPEED_RATIO := 0.05 # 10%时间全速，90%时间减速
 
 # 角色变量
 var gravity := ProjectSettings.get("physics/2d/default_gravity") * 5 as float # 从项目设置获取重力值
@@ -40,6 +39,7 @@ var has_backdash := false
 var hurt_requested := false
 var is_dead := false
 var keep_cut_visible := false
+var dash_duration := 0.0
 
 
 # 节点引用
@@ -49,6 +49,7 @@ var keep_cut_visible := false
 @onready var circle: Sprite2D = $Graphics/Circle
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var state_machine: StateMachine = $StateMachine
+@onready var hurtbox: CollisionShape2D = $Graphics/Hurtbox/Hurtbox
 
 
 func _ready() -> void:
@@ -130,14 +131,14 @@ func dash_move() -> void:
 	var time_left = dash_timer.time_left
 	
 	# 计算全速阶段和减速阶段的分界点
-	var full_speed_time = DASH_DURATION * DASH_FULL_SPEED_RATIO
+	var full_speed_time = dash_duration * DASH_FULL_SPEED_RATIO
 	
-	if time_left > DASH_DURATION - full_speed_time:
+	if time_left > dash_duration - full_speed_time:
 		# 全速阶段：刚开始的20%时间
 		velocity = dash_direction * DASH_VELOCITY
 	else:
 		# 减速阶段：最后的80%时间
-		var decel_duration = DASH_DURATION * (1.0 - DASH_FULL_SPEED_RATIO)
+		var decel_duration = dash_duration * (1.0 - DASH_FULL_SPEED_RATIO)
 		var time_in_decel = decel_duration - time_left
 		
 		# 计算减速进度（0到1）
@@ -269,11 +270,14 @@ func transition_state(from: State, to: State) -> void:
 			
 		State.DASH:
 			jump_request_timer.stop()
+			hurtbox.disabled
 			dash_timer.start()
+			dash_duration = dash_timer.time_left
 						
 		State.BACHDASH:
 			jump_request_timer.stop()
 			dash_timer.start()
+			dash_duration = dash_timer.time_left
 
 		State.HURT:
 			hurt_requested = false

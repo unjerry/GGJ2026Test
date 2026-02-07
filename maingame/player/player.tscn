@@ -1,14 +1,17 @@
-[gd_scene load_steps=11 format=3 uid="uid://cn4tdklhwm6o3"]
+[gd_scene load_steps=14 format=3 uid="uid://cn4tdklhwm6o3"]
 
 [ext_resource type="Script" uid="uid://bjjylwy61hlix" path="res://player/player.gd" id="1_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://gqpe71qjnvnw" path="res://assets/Pictures/ball.png" id="3_qjkh3"]
 [ext_resource type="Script" uid="uid://brl075mnp6tye" path="res://classes/Hurtbox.gd" id="4_qjkh3"]
 [ext_resource type="Script" uid="uid://bd7ush4653ea" path="res://classes/StateMachin.gd" id="4_yw30f"]
+[ext_resource type="Script" uid="uid://brmrcqtfnucf8" path="res://classes/Hitbox.gd" id="5_g6k8r"]
 [ext_resource type="Texture2D" uid="uid://bx4tsthoww5w" path="res://assets/Pictures/circle.png" id="5_qjkh3"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qjkh3"]
-radius = 6.9999995
-height = 50.999996
+[sub_resource type="CircleShape2D" id="CircleShape2D_g6k8r"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_boad6"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rgyib"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qjkh3"]
 
@@ -45,10 +48,24 @@ collision_mask = 0
 script = ExtResource("4_qjkh3")
 metadata/_custom_type_script = "uid://brl075mnp6tye"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Graphics/Hurtbox"]
+[node name="Hurtbox" type="CollisionShape2D" parent="Graphics/Hurtbox"]
 rotation = 1.5707964
-scale = Vector2(10, 10)
-shape = SubResource("CapsuleShape2D_qjkh3")
+scale = Vector2(22, 22)
+shape = SubResource("CircleShape2D_g6k8r")
+
+[node name="DashHurtbox" type="CollisionShape2D" parent="Graphics/Hurtbox"]
+scale = Vector2(15, 15)
+shape = SubResource("CircleShape2D_boad6")
+
+[node name="Hitbox" type="Area2D" parent="Graphics"]
+collision_layer = 0
+collision_mask = 16
+script = ExtResource("5_g6k8r")
+metadata/_custom_type_script = "uid://brmrcqtfnucf8"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Graphics/Hitbox"]
+scale = Vector2(26, 26)
+shape = SubResource("CircleShape2D_rgyib")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(24, 24)

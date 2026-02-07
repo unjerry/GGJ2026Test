@@ -41,7 +41,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# 状态转换循环：持续检查直到状态稳定
 	while true:
-		print(current_state)
+		#print(current_state)
 		# 从宿主获取下一个状态
 		var next := actor.get_next_state(current_state) as int
 		
