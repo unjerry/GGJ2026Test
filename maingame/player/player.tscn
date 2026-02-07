@@ -6,8 +6,9 @@
 [ext_resource type="Script" uid="uid://bd7ush4653ea" path="res://classes/StateMachin.gd" id="4_yw30f"]
 [ext_resource type="Texture2D" uid="uid://bx4tsthoww5w" path="res://assets/Pictures/circle.png" id="5_qjkh3"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_g6k8r"]
-radius = 22.8
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qjkh3"]
+radius = 6.9999995
+height = 50.999996
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qjkh3"]
 
@@ -45,8 +46,9 @@ script = ExtResource("4_qjkh3")
 metadata/_custom_type_script = "uid://brl075mnp6tye"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Graphics/Hurtbox"]
+rotation = 1.5707964
 scale = Vector2(10, 10)
-shape = SubResource("CircleShape2D_g6k8r")
+shape = SubResource("CapsuleShape2D_qjkh3")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(24, 24)

@@ -21,13 +21,12 @@ const RUN_SPEED := 1000.0 # 奔跑速度
 const JUMP_VELOCITY := -1500.0 # 跳跃初速度（负值表示向上）
 const FLOOR_ACCELERATION := RUN_SPEED / 0.1 # 地面加速度
 const AIR_ACCELERATION := RUN_SPEED / 0.05 # 空中加速度
-const DASH_ACCELERATION := 5 # 冲刺加速度
-const DASH_VELOCITY := 3000.0 # 冲刺速度
+const DASH_VELOCITY := 2000.0 # 冲刺速度
 const HURT_DURATION := 0.4 # 受击硬直时间（与Cut动画长度一致）
 const DOT_TEXTURE := preload("res://assets/Pictures/ball.png")
 const RING_TEXTURE := preload("res://assets/Pictures/circle.png")
 const DASH_DURATION := 0.1
-const DASH_FULL_SPEED_RATIO := 0.2 # 70%时间全速，30%时间减速
+const DASH_FULL_SPEED_RATIO := 0.1 # 1%时间全速，90%时间减速
 
 # 角色变量
 var gravity := ProjectSettings.get("physics/2d/default_gravity") * 5 as float # 从项目设置获取重力值
@@ -149,7 +148,13 @@ func dash_move() -> void:
 		var eased_progress = 1.0 - pow(1.0 - decel_progress, 3.0)
 		
 		# 计算当前速度
-		var current_speed = DASH_VELOCITY * (1.0 - eased_progress)
+		# 从 DASH_VELOCITY 减速到 RUN_SPEED
+		var speed_range = DASH_VELOCITY - RUN_SPEED
+		var current_speed = DASH_VELOCITY - (speed_range * eased_progress)
+		
+		# 确保速度不低于 RUN_SPEED
+		current_speed = max(current_speed, RUN_SPEED)
+		
 		velocity = dash_direction * current_speed
 	
 	move_and_slide()
