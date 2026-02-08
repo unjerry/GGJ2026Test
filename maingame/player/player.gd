@@ -11,6 +11,7 @@ enum State {
 	DASH, # 冲刺状态
 	BACHDASH, # 反向冲刺状态
 	HURT, # 受击状态
+	DYING
 }
 
 # 地面状态数组（用于判断是否在地面状态）
@@ -26,10 +27,11 @@ const HURT_DURATION := 0.4 # 受击硬直时间（与Cut动画长度一致）
 const DOT_TEXTURE := preload("res://assets/Pictures/ball.png")
 const RING_TEXTURE := preload("res://assets/Pictures/circle.png")
 const DASH_FULL_SPEED_RATIO := 0.05 # 10%时间全速，90%时间减速
+const KNOCKBACK_AMOUNT := 500
+
 
 # 角色变量
 var gravity := ProjectSettings.get("physics/2d/default_gravity") * 5 as float # 从项目设置获取重力值
-var solid := false # 空心与实心状态的标记
 var is_first_tick := false
 var dash_direction := Vector2.RIGHT
 var dash_requested := false
@@ -42,18 +44,20 @@ var keep_cut_visible := false
 var dash_duration := 0.0
 
 
+@export var solid := true # 空心与实心状态的标记
+
+
 # 节点引用
 @onready var jump_request_timer: Timer = $JumpRequestTimer # 跳跃输入缓冲计时器
 @onready var dash_timer: Timer = $DashTimer
 @onready var ball: Sprite2D = $Graphics/Ball
-@onready var circle: Sprite2D = $Graphics/Circle
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var state_machine: StateMachine = $StateMachine
 @onready var hurtbox: CollisionShape2D = $Graphics/Hurtbox/Hurtbox
+@onready var hitbox: CollisionShape2D = $Graphics/Hitbox/Hitbox
 
 
 func _ready() -> void:
-	dash_timer.one_shot = true
 	if not animation_player.animation_finished.is_connected(_on_animation_finished):
 		animation_player.animation_finished.connect(_on_animation_finished)
 	_update_form_visual()
@@ -186,12 +190,16 @@ func get_next_state(state: State) -> State:
 	if state == State.DASH:
 		if dash_timer.time_left > 0.0:
 			return State.DASH
+		hurtbox.disabled = false
+		hitbox.disabled = true
 		# 防止冲刺中再次点按导致请求残留，避免状态卡在 DASH。
 		dash_requested = false
 	
 	if state == State.BACHDASH:
 		if dash_timer.time_left > 0.0:
 			return State.BACHDASH
+		hurtbox.disabled = false
+		hitbox.disabled = true
 		# 防止冲刺中再次点按导致请求残留，避免状态卡在 DASH。
 		backdash_requested = false
 
@@ -270,12 +278,15 @@ func transition_state(from: State, to: State) -> void:
 			
 		State.DASH:
 			jump_request_timer.stop()
-			hurtbox.disabled
+			hurtbox.disabled = true
+			hitbox.disabled = false
 			dash_timer.start()
 			dash_duration = dash_timer.time_left
 						
 		State.BACHDASH:
 			jump_request_timer.stop()
+			hurtbox.disabled = true
+			hitbox.disabled = false
 			dash_timer.start()
 			dash_duration = dash_timer.time_left
 
@@ -285,8 +296,6 @@ func transition_state(from: State, to: State) -> void:
 			dash_timer.stop()
 			if solid:
 				solid = false
-				keep_cut_visible = true
-				animation_player.play(&"Cut")
 				_update_form_visual()
 			else:
 				is_dead = true

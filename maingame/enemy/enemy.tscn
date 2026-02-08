@@ -1,9 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://bverj00ttxftq"]
+[gd_scene load_steps=8 format=3 uid="uid://bverj00ttxftq"]
 
 [ext_resource type="Script" uid="uid://cah5thajpgbld" path="res://enemy/enemy.gd" id="1_ofsxj"]
 [ext_resource type="Script" uid="uid://bd7ush4653ea" path="res://classes/StateMachin.gd" id="2_ppra6"]
 [ext_resource type="Script" uid="uid://brmrcqtfnucf8" path="res://classes/Hitbox.gd" id="3_p200p"]
-[ext_resource type="Texture2D" uid="uid://bx4tsthoww5w" path="res://assets/Pictures/circle.png" id="3_pmsee"]
 [ext_resource type="Texture2D" uid="uid://gqpe71qjnvnw" path="res://assets/Pictures/ball.png" id="3_ppra6"]
 [ext_resource type="Script" uid="uid://brl075mnp6tye" path="res://classes/Hurtbox.gd" id="5_1wwld"]
 
@@ -15,13 +14,14 @@
 collision_layer = 4
 script = ExtResource("1_ofsxj")
 
+[node name="HurtTimer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
 [node name="Graphics" type="Node2D" parent="."]
 
 [node name="Ball" type="Sprite2D" parent="Graphics"]
 texture = ExtResource("3_ppra6")
-
-[node name="Circle" type="Sprite2D" parent="Graphics"]
-texture = ExtResource("3_pmsee")
 
 [node name="Hitbox" type="Area2D" parent="Graphics"]
 collision_layer = 0

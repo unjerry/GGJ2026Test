@@ -5,3 +5,5 @@
 
 [node name="Test" instance=ExtResource("1_3oeby")]
 script = ExtResource("2_o0xci")
+
+[connection signal="hurt" from="Graphics/Hurtbox" to="." method="_on_hurtbox_hurt"]

@@ -21,6 +21,7 @@ script = ExtResource("1_j8job")
 scale = Vector2(0.15, 0.15)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
+limit_left = -200
 limit_top = -880
 limit_bottom = 200
 
