@@ -1,12 +1,10 @@
-[gd_scene load_steps=15 format=3 uid="uid://cn4tdklhwm6o3"]
+[gd_scene load_steps=13 format=3 uid="uid://cn4tdklhwm6o3"]
 
 [ext_resource type="Script" uid="uid://bjjylwy61hlix" path="res://player/player.gd" id="1_g1dw6"]
-[ext_resource type="Script" uid="uid://isus6kqfhedr" path="res://player/ball.gd" id="3_boad6"]
 [ext_resource type="Texture2D" uid="uid://gqpe71qjnvnw" path="res://assets/Pictures/ball.png" id="3_qjkh3"]
 [ext_resource type="Script" uid="uid://brl075mnp6tye" path="res://classes/Hurtbox.gd" id="4_qjkh3"]
 [ext_resource type="Script" uid="uid://bd7ush4653ea" path="res://classes/StateMachin.gd" id="4_yw30f"]
 [ext_resource type="Script" uid="uid://brmrcqtfnucf8" path="res://classes/Hitbox.gd" id="5_g6k8r"]
-[ext_resource type="Script" uid="uid://cajjjv8pluqxn" path="res://player/sprite_trail.gd" id="6_g6k8r"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g6k8r"]
 
@@ -38,7 +36,6 @@ script = ExtResource("1_g1dw6")
 
 [node name="Ball" type="Sprite2D" parent="Graphics"]
 texture = ExtResource("3_qjkh3")
-script = ExtResource("3_boad6")
 
 [node name="Hurtbox" type="Area2D" parent="Graphics"]
 collision_layer = 8
@@ -97,8 +94,4 @@ metadata/_custom_type_script = "uid://bd7ush4653ea"
 [node name="HurtTimer" type="Timer" parent="."]
 wait_time = 0.05
 
-[node name="SpriteTrail" type="Node" parent="."]
-script = ExtResource("6_g6k8r")
-
 [connection signal="hurt" from="Graphics/Hurtbox" to="." method="_on_hurtbox_hurt"]
-[connection signal="hit" from="Graphics/Hitbox" to="." method="_on_hitbox_hit"]

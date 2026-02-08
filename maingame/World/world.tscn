@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://b3tw005pgghb3"]
+[gd_scene load_steps=11 format=3 uid="uid://b3tw005pgghb3"]
 
 [ext_resource type="Script" uid="uid://dbnfhngc1mt7a" path="res://World/world.gd" id="1_j8job"]
 [ext_resource type="Texture2D" uid="uid://7ew8amp0hyl2" path="res://assets/Pictures/Whiteground.png" id="2_k8do8"]
+[ext_resource type="Script" uid="uid://cg8pc62lgsmej" path="res://classes/ShakyCamera.gd" id="3_yf0ba"]
 [ext_resource type="Texture2D" uid="uid://cr2nr5u4ha4sh" path="res://assets/Pictures/stick.png" id="4_k8do8"]
 [ext_resource type="PackedScene" uid="uid://cn4tdklhwm6o3" path="res://player/player.tscn" id="5_bkhv4"]
 [ext_resource type="PackedScene" uid="uid://bc88h4q2xmvod" path="res://tutorialUI/popup.tscn" id="5_k8do8"]
@@ -21,9 +22,11 @@ script = ExtResource("1_j8job")
 scale = Vector2(0.15, 0.15)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
+process_callback = 0
 limit_left = -200
 limit_top = -880
 limit_bottom = 200
+script = ExtResource("3_yf0ba")
 
 [node name="Parallax2D" type="Parallax2D" parent="."]
 z_index = -1

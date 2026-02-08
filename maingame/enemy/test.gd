@@ -15,7 +15,7 @@ var solid := true
 var knockback_direction := Vector2.ZERO
 var hurt := false
 var dying := false
-
+var panding_damage: Damage
 
 @onready var ball: Sprite2D = $Graphics/Ball
 @onready var hurt_timer: Timer = $HurtTimer
@@ -33,17 +33,13 @@ func get_next_state(state: State) -> State:
 		return State.DYING
 	
 	# 如果hurt_timer还在运行，保持HURT状态
-	if hurt:
-		if hurt_timer.time_left > 0.0:
-			return State.HURT
-		else:
-			hurt = false
-			return State.IDLE
+	if panding_damage:
+		return State.HURT
 	
 	match state:
 		State.HURT:
-			# 计时器结束了，回到IDLE
-			return State.IDLE
+			if not hurt_timer.time_left > 0.0:
+				return State.IDLE
 		State.IDLE:
 			# 可以添加其他转换条件
 			pass
@@ -58,7 +54,6 @@ func transition_state(from: State, to: State) -> void:
 	# 状态转换时的处理逻辑
 	match to:
 		State.IDLE:
-			print("iiiiiiiiiiiiiiii")
 			# 进入闲置状态（暂无特殊处理）
 			pass
 			
@@ -78,6 +73,9 @@ func move(speed: float, delta: float) -> void:
 
 
 func _on_hurtbox_hurt(hitbox: Hitbox) -> void:
+	panding_damage = Damage.new()
+	panding_damage.source = hitbox.owner
+	
 	if dying:
 		return
 	
