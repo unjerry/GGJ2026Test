@@ -15,14 +15,22 @@ enum Mode {
 const _BTN_START := ^"Panel/Button"
 const _BTN_SETTING := ^"Panel/Button2"
 const _BTN_EXIT := ^"Panel/Button3"
+const _TRANSITION_VIDEO_CANDIDATES := [
+	"res://assets/tansphase.ogv",
+	"res://assets/tansphase.webm",
+	"res://assets/tansphase.mp4",
+]
 
 var _mode: Mode = Mode.START
 var _game_instance: Node = null
 var _menu_instance: Control = null
+var _transition_player: VideoStreamPlayer = null
+var _transition_stream_ready := false
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_setup_transition_player()
 	_show_start()
 
 
@@ -48,6 +56,7 @@ func _show_start() -> void:
 	_clear_menu()
 	_free_game()
 	_menu_instance = _spawn_menu(start)
+	_play_transition()
 
 
 func _show_restart() -> void:
@@ -55,6 +64,7 @@ func _show_restart() -> void:
 	get_tree().paused = true
 	_clear_menu()
 	_menu_instance = _spawn_menu(restart)
+	_play_transition()
 
 
 func _start_game(restart_game: bool) -> void:
@@ -64,6 +74,7 @@ func _start_game(restart_game: bool) -> void:
 	if restart_game or _game_instance == null:
 		_free_game()
 		_game_instance = _spawn_game(game)
+	_play_transition()
 
 
 func _show_pause() -> void:
@@ -72,6 +83,7 @@ func _show_pause() -> void:
 	_mode = Mode.PAUSE
 	get_tree().paused = true
 	_menu_instance = _spawn_menu(pause)
+	_play_transition()
 
 
 func _resume_game() -> void:
@@ -80,6 +92,7 @@ func _resume_game() -> void:
 	_mode = Mode.GAME
 	get_tree().paused = false
 	_clear_menu()
+	_play_transition()
 
 
 func _spawn_game(scene: PackedScene) -> Node:
@@ -175,6 +188,49 @@ func _on_player_died() -> void:
 	if _mode != Mode.GAME:
 		return
 	_show_restart()
+
+
+func _setup_transition_player() -> void:
+	_transition_player = VideoStreamPlayer.new()
+	_transition_player.name = &"TransitionVideo"
+	_transition_player.process_mode = Node.PROCESS_MODE_ALWAYS
+	_transition_player.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_transition_player.offset_left = 0.0
+	_transition_player.offset_top = 0.0
+	_transition_player.offset_right = 0.0
+	_transition_player.offset_bottom = 0.0
+	_transition_player.mouse_filter = Control.MOUSE_FILTER_STOP
+	_transition_player.visible = false
+	_transition_player.z_index = 1000
+	add_child(_transition_player)
+	if not _transition_player.finished.is_connected(_on_transition_finished):
+		_transition_player.finished.connect(_on_transition_finished)
+
+	for candidate_path in _TRANSITION_VIDEO_CANDIDATES:
+		var stream := load(candidate_path) as VideoStream
+		if stream == null:
+			continue
+		_transition_player.stream = stream
+		_transition_stream_ready = true
+		return
+
+	push_warning("Syst: transition video missing or unsupported. Tried: %s" % ", ".join(_TRANSITION_VIDEO_CANDIDATES))
+
+
+func _play_transition() -> void:
+	if _transition_player == null or not _transition_stream_ready:
+		return
+	move_child(_transition_player, -1)
+	_transition_player.visible = true
+	_transition_player.stop()
+	_transition_player.play()
+
+
+func _on_transition_finished() -> void:
+	if _transition_player == null:
+		return
+	_transition_player.stop()
+	_transition_player.visible = false
 
 
 func _apply_menu_labels(menu_root: Control) -> void:

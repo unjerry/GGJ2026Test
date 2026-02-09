@@ -9,7 +9,7 @@
 `systems/syst.tscn`:
 
 - 脚本：`systems/syst.gd`
-- game：`systems/testworld.tscn`
+- game：`World/world.tscn`
 - pause：`systems/paus.tscn`
 - start：`systems/cover.tscn`
 - restart：`systems/restart.tscn`
@@ -38,7 +38,7 @@
 
 脚本初始化：
 
-- `_ready` 中设置 `process_mode = ALWAYS` 并调用 `_show_start()`。
+- `_ready` 中设置 `process_mode = ALWAYS`，初始化过场播放器，并调用 `_show_start()`。
 - `_show_start()` 会清理菜单、释放游戏实例并生成开始菜单。
 
 ## 按钮信号连接
@@ -82,5 +82,6 @@
 ## 现状注意点
 
 - 游戏场景中必须存在根下的 `Player` 节点，否则 `died` 信号不会连接，死亡重开不会触发。
-- `start` 与 `restart` 当前复用 `cover.tscn`，按钮文案由脚本按模式覆盖。
+- `start` 与 `restart` 是两个独立场景，按钮文案仍会被脚本按模式覆盖。
 - `RESTART` 会暂停树并显示弹出菜单，但不立即释放游戏实例。
+- 每次状态切换会播放过场视频，优先加载 `assets/tansphase.ogv`（其次尝试 `webm/mp4`）。
