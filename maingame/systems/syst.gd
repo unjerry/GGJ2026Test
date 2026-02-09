@@ -15,6 +15,7 @@ enum Mode {
 const _BTN_START := ^"Panel/Button"
 const _BTN_SETTING := ^"Panel/Button2"
 const _BTN_EXIT := ^"Panel/Button3"
+const _TRANSITION_DURATION := 1.0
 const _TRANSITION_VIDEO_CANDIDATES := [
 	"res://assets/tansphase.ogv",
 	"res://assets/tansphase.webm",
@@ -25,6 +26,7 @@ var _mode: Mode = Mode.START
 var _game_instance: Node = null
 var _menu_instance: Control = null
 var _transition_player: VideoStreamPlayer = null
+var _transition_timer: Timer = null
 var _transition_stream_ready := false
 
 
@@ -206,6 +208,15 @@ func _setup_transition_player() -> void:
 	if not _transition_player.finished.is_connected(_on_transition_finished):
 		_transition_player.finished.connect(_on_transition_finished)
 
+	_transition_timer = Timer.new()
+	_transition_timer.name = &"TransitionTimer"
+	_transition_timer.one_shot = true
+	_transition_timer.wait_time = _TRANSITION_DURATION
+	_transition_timer.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(_transition_timer)
+	if not _transition_timer.timeout.is_connected(_on_transition_timeout):
+		_transition_timer.timeout.connect(_on_transition_timeout)
+
 	for candidate_path in _TRANSITION_VIDEO_CANDIDATES:
 		var stream := load(candidate_path) as VideoStream
 		if stream == null:
@@ -224,13 +235,25 @@ func _play_transition() -> void:
 	_transition_player.visible = true
 	_transition_player.stop()
 	_transition_player.play()
+	if _transition_timer != null:
+		_transition_timer.start(_TRANSITION_DURATION)
 
 
 func _on_transition_finished() -> void:
+	_hide_transition()
+
+
+func _on_transition_timeout() -> void:
+	_hide_transition()
+
+
+func _hide_transition() -> void:
 	if _transition_player == null:
 		return
 	_transition_player.stop()
 	_transition_player.visible = false
+	if _transition_timer != null and _transition_timer.time_left > 0.0:
+		_transition_timer.stop()
 
 
 func _apply_menu_labels(menu_root: Control) -> void:
