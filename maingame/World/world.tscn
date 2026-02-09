@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b3tw005pgghb3"]
+[gd_scene load_steps=12 format=3 uid="uid://b3tw005pgghb3"]
 
 [ext_resource type="Script" uid="uid://dbnfhngc1mt7a" path="res://World/world.gd" id="1_j8job"]
 [ext_resource type="Texture2D" uid="uid://7ew8amp0hyl2" path="res://assets/Pictures/Whiteground.png" id="2_k8do8"]
@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" uid="uid://bs3apdfuibdg8" path="res://enemy/test.tscn" id="6_bkhv4"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_8a836"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_yf0ba"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_j8job"]
 
@@ -48,6 +50,13 @@ scale = Vector2(0.5, 0.5)
 position = Vector2(0, 70)
 shape = SubResource("WorldBoundaryShape2D_8a836")
 
+[node name="Ceiling" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ceiling"]
+position = Vector2(0, -880)
+rotation = 3.1415927
+shape = SubResource("WorldBoundaryShape2D_yf0ba")
+
 [node name="RightWall" type="StaticBody2D" parent="."]
 position = Vector2(-37.5, 0)
 scale = Vector2(0.5, 0.5)
@@ -74,5 +83,5 @@ scale = Vector2(5, 0.3)
 texture = ExtResource("4_k8do8")
 
 [node name="Test" parent="." instance=ExtResource("6_bkhv4")]
-position = Vector2(1120, -161)
+position = Vector2(1837, -123.00001)
 scale = Vector2(0.15, 0.15)

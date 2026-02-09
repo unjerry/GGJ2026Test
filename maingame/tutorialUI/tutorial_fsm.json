@@ -1,147 +1,147 @@
 {
   "initial_state": "idle",
   "states": {
-    "idle": {
-      "enter": "",
-      "update": "",
-      "exit": ""
-    },
-    "show_ad": {
-      "enter": "_enter_show_ad",
-      "update": "",
-      "exit": ""
-    },
-    "wait_ad": {
-      "enter": "",
-      "update": "_update_wait_ad",
-      "exit": ""
-    },
-    "hide_ad": {
-      "enter": "_enter_hide_ad",
-      "update": "",
-      "exit": ""
-    },
-    "show_space": {
-      "enter": "_enter_show_space",
-      "update": "",
-      "exit": ""
-    },
-    "wait_space": {
-      "enter": "",
-      "update": "_update_wait_space",
-      "exit": ""
-    },
-    "hide_space": {
-      "enter": "_enter_hide_space",
-      "update": "",
-      "exit": ""
-    },
-    "show_dash": {
-      "enter": "_enter_show_dash",
-      "update": "",
-      "exit": ""
-    },
-    "wait_dash": {
-      "enter": "",
-      "update": "_update_wait_dash",
-      "exit": ""
-    },
-    "hide_dash": {
-      "enter": "_enter_hide_dash",
-      "update": "",
-      "exit": ""
-    },
-    "show_hurt": {
-      "enter": "_enter_show_hurt",
-      "update": "",
-      "exit": ""
-    },
-    "wait_hurt": {
-      "enter": "",
-      "update": "_update_wait_hurt",
-      "exit": ""
-    },
-    "hide_hurt": {
-      "enter": "_enter_hide_hurt",
-      "update": "",
-      "exit": ""
-    },
-    "end": {
-      "enter": "_enter_end",
-      "update": "",
-      "exit": ""
-    }
+	"idle": {
+	  "enter": "",
+	  "update": "",
+	  "exit": ""
+	},
+	"show_ad": {
+	  "enter": "_enter_show_ad",
+	  "update": "",
+	  "exit": ""
+	},
+	"wait_ad": {
+	  "enter": "",
+	  "update": "_update_wait_ad",
+	  "exit": ""
+	},
+	"hide_ad": {
+	  "enter": "_enter_hide_ad",
+	  "update": "",
+	  "exit": ""
+	},
+	"show_space": {
+	  "enter": "_enter_show_space",
+	  "update": "",
+	  "exit": ""
+	},
+	"wait_space": {
+	  "enter": "",
+	  "update": "_update_wait_space",
+	  "exit": ""
+	},
+	"hide_space": {
+	  "enter": "_enter_hide_space",
+	  "update": "",
+	  "exit": ""
+	},
+	"show_dash": {
+	  "enter": "_enter_show_dash",
+	  "update": "",
+	  "exit": ""
+	},
+	"wait_dash": {
+	  "enter": "",
+	  "update": "_update_wait_dash",
+	  "exit": ""
+	},
+	"hide_dash": {
+	  "enter": "_enter_hide_dash",
+	  "update": "",
+	  "exit": ""
+	},
+	"show_hurt": {
+	  "enter": "_enter_show_hurt",
+	  "update": "",
+	  "exit": ""
+	},
+	"wait_hurt": {
+	  "enter": "",
+	  "update": "_update_wait_hurt",
+	  "exit": ""
+	},
+	"hide_hurt": {
+	  "enter": "_enter_hide_hurt",
+	  "update": "",
+	  "exit": ""
+	},
+	"end": {
+	  "enter": "_enter_end",
+	  "update": "",
+	  "exit": ""
+	}
   },
   "transitions": [
-    {
-      "from": "idle",
-      "event": "start_tutorial",
-      "to": "show_ad"
-    },
-    {
-      "from": "show_ad",
-      "event": "anim_done",
-      "to": "wait_ad"
-    },
-    {
-      "from": "wait_ad",
-      "event": "action_done",
-      "to": "hide_ad"
-    },
-    {
-      "from": "hide_ad",
-      "event": "anim_done",
-      "to": "show_space"
-    },
-    {
-      "from": "show_space",
-      "event": "anim_done",
-      "to": "wait_space"
-    },
-    {
-      "from": "wait_space",
-      "event": "action_done",
-      "to": "hide_space"
-    },
-    {
-      "from": "hide_space",
-      "event": "anim_done",
-      "to": "show_dash"
-    },
-    {
-      "from": "show_dash",
-      "event": "anim_done",
-      "to": "wait_dash"
-    },
-    {
-      "from": "wait_dash",
-      "event": "action_done",
-      "to": "hide_dash"
-    },
-    {
-      "from": "hide_dash",
-      "event": "anim_done",
-      "to": "show_hurt"
-    },
-    {
-      "from": "show_hurt",
-      "event": "anim_done",
-      "to": "wait_hurt"
-    },
-    {
-      "from": "wait_hurt",
-      "event": "action_done",
-      "to": "hide_hurt"
-    },
-    {
-      "from": "hide_hurt",
-      "event": "anim_done",
-      "to": "end"
-    },
-    {
-      "from": "*",
-      "event": "skip",
-      "to": "end"
-    }
+	{
+	  "from": "idle",
+	  "event": "start_tutorial",
+	  "to": "show_ad"
+	},
+	{
+	  "from": "show_ad",
+	  "event": "anim_done",
+	  "to": "wait_ad"
+	},
+	{
+	  "from": "wait_ad",
+	  "event": "action_done",
+	  "to": "hide_ad"
+	},
+	{
+	  "from": "hide_ad",
+	  "event": "anim_done",
+	  "to": "show_space"
+	},
+	{
+	  "from": "show_space",
+	  "event": "anim_done",
+	  "to": "wait_space"
+	},
+	{
+	  "from": "wait_space",
+	  "event": "action_done",
+	  "to": "hide_space"
+	},
+	{
+	  "from": "hide_space",
+	  "event": "anim_done",
+	  "to": "show_dash"
+	},
+	{
+	  "from": "show_dash",
+	  "event": "anim_done",
+	  "to": "wait_dash"
+	},
+	{
+	  "from": "wait_dash",
+	  "event": "action_done",
+	  "to": "hide_dash"
+	},
+	{
+	  "from": "hide_dash",
+	  "event": "anim_done",
+	  "to": "show_hurt"
+	},
+	{
+	  "from": "show_hurt",
+	  "event": "anim_done",
+	  "to": "wait_hurt"
+	},
+	{
+	  "from": "wait_hurt",
+	  "event": "action_done",
+	  "to": "hide_hurt"
+	},
+	{
+	  "from": "hide_hurt",
+	  "event": "anim_done",
+	  "to": "end"
+	},
+	{
+	  "from": "*",
+	  "event": "skip",
+	  "to": "end"
+	}
   ]
 }

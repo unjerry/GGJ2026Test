@@ -20,12 +20,12 @@ const RUN_SPEED := 1000.0               # 奔跑速度
 const JUMP_VELOCITY := -1500.0          # 跳跃初速度
 const FLOOR_ACCELERATION := RUN_SPEED / 0.1   # 地面加速度
 const AIR_ACCELERATION := RUN_SPEED / 0.05    # 空中加速度
-const DASH_VELOCITY := 5000.0           # 冲刺速度
+const DASH_VELOCITY := 3000.0           # 冲刺速度
 const HURT_DURATION := 0.4              # 受击硬直时间
 const DOT_TEXTURE := preload("res://assets/Pictures/ball.png")
 const RING_TEXTURE := preload("res://assets/Pictures/circle.png")
 const DASH_FULL_SPEED_RATIO := 0.05     # 5%时间全速，95%时间减速
-const KNOCKBACK_AMOUNT := 5000          # 击退力度
+const KNOCKBACK_AMOUNT := 4500          # 击退力度
 const INVINCIBLE_DURATION := 1.0        # 无敌时间（秒）
 const HURT_ACCELERATION := 3000   		# 受击加速度
 
@@ -37,7 +37,6 @@ var gravity := ProjectSettings.get("physics/2d/default_gravity") * 5 as float
 var dash_direction := Vector2.RIGHT
 var dash_duration := 0.0
 var pending_damage: Damage
-var is_dead := false
 var dash_requested := false
 var backdash_requested := false
 var hurt_requested := false
@@ -65,9 +64,6 @@ func _ready() -> void:
 
 # 输入处理函数
 func _unhandled_input(event: InputEvent) -> void:
-	if is_dead:
-		return
-	
 	_handle_dash_input(event)
 	_handle_backdash_input(event)
 	_handle_jump_input(event)
@@ -88,9 +84,6 @@ func get_next_state(state: State) -> State:
 	_reset_ground_abilities()
 	
 	# 状态优先级检查
-	if _should_transition_to_dead():
-		return State.HURT
-	
 	if hurt_requested and state != State.HURT:
 		return State.HURT
 	
@@ -176,8 +169,6 @@ func _reset_ground_abilities() -> void:
 		has_dash = false
 		has_backdash = false
 
-func _should_transition_to_dead() -> bool:
-	return is_dead
 
 func _process_current_state(state: State) -> State:
 	# 处理HURT状态
@@ -283,8 +274,6 @@ func _handle_jump_input(event: InputEvent) -> void:
 
 # 动作函数
 func hurt() -> void:
-	if is_dead:
-		return
 	hurt_requested = true
 
 
@@ -309,9 +298,6 @@ func _on_hurtbox_hurt(hitbox: Variant) -> void:
 		pending_damage = null
 		return
 	
-	if is_dead:
-		return
-	
 	# 处理受击逻辑
 	if solid:
 		Game.shake_camera(6)
@@ -322,9 +308,17 @@ func _on_hurtbox_hurt(hitbox: Variant) -> void:
 		hurt_direction = pending_damage.source.global_position.direction_to(global_position)
 		
 	else:
-		is_dead = true
+		die()
 	
 	_update_form_visual()
+
+
+func die() -> void:
+	get_tree().paused = true
+	animation_player.play("die")
+	await animation_player.animation_finished
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://ui/title_screen.tscn")
 
 
 func _on_invincibility_timer_timeout() -> void:
@@ -334,6 +328,8 @@ func _on_invincibility_timer_timeout() -> void:
 
 
 func _on_hitbox_hit(hurtbox: Variant) -> void:
+	solid = true
+	_update_form_visual()
 	Game.shake_camera(3)
 	Engine.time_scale = 0.01
 	await get_tree().create_timer(0.1, true, false, true).timeout

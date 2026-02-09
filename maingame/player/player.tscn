@@ -1,12 +1,25 @@
-[gd_scene load_steps=15 format=3 uid="uid://cn4tdklhwm6o3"]
+[gd_scene load_steps=17 format=3 uid="uid://cn4tdklhwm6o3"]
 
 [ext_resource type="Script" uid="uid://bjjylwy61hlix" path="res://player/player.gd" id="1_g1dw6"]
-[ext_resource type="Script" uid="uid://isus6kqfhedr" path="res://player/ball.gd" id="3_boad6"]
 [ext_resource type="Texture2D" uid="uid://gqpe71qjnvnw" path="res://assets/Pictures/ball.png" id="3_qjkh3"]
 [ext_resource type="Script" uid="uid://brl075mnp6tye" path="res://classes/Hurtbox.gd" id="4_qjkh3"]
 [ext_resource type="Script" uid="uid://bd7ush4653ea" path="res://classes/StateMachin.gd" id="4_yw30f"]
 [ext_resource type="Script" uid="uid://brmrcqtfnucf8" path="res://classes/Hitbox.gd" id="5_g6k8r"]
 [ext_resource type="Script" uid="uid://cajjjv8pluqxn" path="res://player/sprite_trail.gd" id="6_g6k8r"]
+[ext_resource type="Texture2D" uid="uid://bjbxvx4io4iev" path="res://assets/Pictures/whiteball.png" id="8_hg6s5"]
+[ext_resource type="Texture2D" uid="uid://bx4tsthoww5w" path="res://assets/Pictures/circle.png" id="9_8t03j"]
+
+[sub_resource type="GDScript" id="GDScript_rgyib"]
+script/source = "extends Sprite2D
+
+func UpdateAlpha(newValue: float):
+	modulate.a = newValue
+	
+
+func StartFading():
+	var newTween = get_tree().create_tween()
+	newTween.tween_method(UpdateAlpha, 0.2, 0.0, 0.5)
+"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g6k8r"]
 
@@ -16,18 +29,65 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qjkh3"]
 
-[sub_resource type="Animation" id="Animation_g6k8r"]
-resource_name = "Cut"
-length = 0.4
-step = 0.05
-
-[sub_resource type="Animation" id="Animation_boad6"]
+[sub_resource type="Animation" id="Animation_ebec5"]
 length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Whiteball:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.01, 0.01)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Whiteball:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_rgyib"]
+[sub_resource type="Animation" id="Animation_2ieo8"]
+resource_name = "die"
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Whiteball:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.3, 1),
+"transitions": PackedFloat32Array(0.32987702, 1),
+"update": 0,
+"values": [Vector2(0.01, 0.01), Vector2(50, 50)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Whiteball:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_yllr7"]
 _data = {
-&"Cut": SubResource("Animation_g6k8r"),
-&"RESET": SubResource("Animation_boad6")
+&"RESET": SubResource("Animation_ebec5"),
+&"die": SubResource("Animation_2ieo8")
 }
 
 [node name="Player" type="CharacterBody2D"]
@@ -38,7 +98,11 @@ script = ExtResource("1_g1dw6")
 
 [node name="Ball" type="Sprite2D" parent="Graphics"]
 texture = ExtResource("3_qjkh3")
-script = ExtResource("3_boad6")
+script = SubResource("GDScript_rgyib")
+
+[node name="Circle" type="Sprite2D" parent="Graphics"]
+visible = false
+texture = ExtResource("9_8t03j")
 
 [node name="Hurtbox" type="Area2D" parent="Graphics"]
 collision_layer = 8
@@ -78,8 +142,9 @@ scale = Vector2(24, 24)
 shape = SubResource("CircleShape2D_qjkh3")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+process_mode = 3
 libraries = {
-&"": SubResource("AnimationLibrary_rgyib")
+&"": SubResource("AnimationLibrary_yllr7")
 }
 
 [node name="JumpRequestTimer" type="Timer" parent="."]
@@ -87,7 +152,7 @@ wait_time = 0.1
 one_shot = true
 
 [node name="DashTimer" type="Timer" parent="."]
-wait_time = 0.15
+wait_time = 0.2
 one_shot = true
 
 [node name="StateMachine" type="Node" parent="."]
@@ -95,10 +160,19 @@ script = ExtResource("4_yw30f")
 metadata/_custom_type_script = "uid://bd7ush4653ea"
 
 [node name="HurtTimer" type="Timer" parent="."]
-wait_time = 0.05
+wait_time = 0.1
 
-[node name="SpriteTrail" type="Node" parent="."]
+[node name="SpriteTrail" type="Node" parent="." node_paths=PackedStringArray("ball_sprite")]
 script = ExtResource("6_g6k8r")
+ball_sprite = NodePath("../Graphics/Ball")
+spawn_rate = 6
+dash_fade_start_alpha = 0.4
+dash_scale_multiplier = 0.5
+
+[node name="Whiteball" type="Sprite2D" parent="."]
+z_index = 10
+scale = Vector2(0.01, 0.01)
+texture = ExtResource("8_hg6s5")
 
 [connection signal="hurt" from="Graphics/Hurtbox" to="." method="_on_hurtbox_hurt"]
 [connection signal="hit" from="Graphics/Hitbox" to="." method="_on_hitbox_hit"]
