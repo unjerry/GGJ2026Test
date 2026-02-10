@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=7 format=3 uid="uid://whniqrf86x53"]
+[gd_resource type="SpriteFrames" load_steps=7 format=3 uid="uid://6c785ia1lano"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_dnseu"]
 load_path = "res://.godot/imported/Cut.png-9c7bea9a96c5eabf04085a2336739111.ctex"

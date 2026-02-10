@@ -1,0 +1,34 @@
+[gd_scene load_steps=7 format=3 uid="uid://cmul333mcn1mu"]
+
+[ext_resource type="AudioStream" uid="uid://c5xo3x64qgqu0" path="res://assets/Audio/dash.wav" id="1_7m4p4"]
+[ext_resource type="Script" uid="uid://tnmwo6lew7ob" path="res://globals/sound_manager.gd" id="1_yqr7p"]
+[ext_resource type="AudioStream" uid="uid://7mep6jct7yri" path="res://assets/Audio/Prime Directive.mp3" id="2_61b4e"]
+[ext_resource type="AudioStream" uid="uid://bq10i664jc0mg" path="res://assets/Audio/Hit_Punch.wav" id="2_yqr7p"]
+[ext_resource type="AudioStream" uid="uid://b5xix28atbptk" path="res://assets/Audio/Break_Glass.wav" id="3_61b4e"]
+[ext_resource type="AudioStream" uid="uid://duuyek4w6ggk5" path="res://assets/Audio/Transform_Gears.wav" id="6_61b4e"]
+
+[node name="SoundManager" type="Node"]
+script = ExtResource("1_yqr7p")
+
+[node name="BGM" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_61b4e")
+max_polyphony = 100
+bus = &"BGM"
+
+[node name="SFX" type="Node" parent="."]
+
+[node name="dash" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("1_7m4p4")
+bus = &"SFX"
+
+[node name="jump" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("2_yqr7p")
+bus = &"SFX"
+
+[node name="hit" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("3_61b4e")
+bus = &"SFX"
+
+[node name="hurt" type="AudioStreamPlayer" parent="SFX"]
+stream = ExtResource("6_61b4e")
+bus = &"SFX"

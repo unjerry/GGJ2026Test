@@ -6,16 +6,22 @@ extends Control
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 
+@export var bgm: AudioStream
+
+
 var waiting_for_input: bool = true  # 标志位，表示正在等待玩家输入
 
 
 func _ready() -> void:
-	# 初始时隐藏按钮，等待按键
 	begin.grab_focus()
 	
-	# 连接按钮信号
 	for button: Button in v.get_children():
 		button.mouse_entered.connect(button.grab_focus)
+	
+	if bgm:
+		# 先停止再播放，确保从头开始
+		SoundManager.stop_bgm()
+		SoundManager.play_bgm(bgm)
 
 
 func _unhandled_input(event: InputEvent) -> void:

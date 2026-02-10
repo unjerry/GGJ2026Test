@@ -18,6 +18,7 @@ config/icon="res://World/icon.svg"
 [autoload]
 
 Game="*res://globals/game.tscn"
+SoundManager="*res://globals/sound_manager.tscn"
 
 [display]
 

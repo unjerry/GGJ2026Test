@@ -12,6 +12,7 @@ extends Node
 @export var fade_duration: float = 0.5
 @export var return_delay: float = 0.1  # 残影返回池子的延迟
 @export var normal_scale_multiplier: float = 1.0  # 正常状态大小倍数
+@export var normal_end_scale_multiplier: float = 0.8  # 正常状态结束时大小倍数
 
 # 冲刺状态参数
 @export var dash_spawn_rate: int = 1  # 冲刺时每帧生成一个残影
@@ -20,13 +21,32 @@ extends Node
 @export var dash_fade_duration: float = 0.2  # 冲刺时淡出时间更短
 @export var dash_return_delay: float = 0.05  # 冲刺时返回池子延迟更短
 @export var dash_scale_multiplier: float = 1.2  # 冲刺时大小倍数
+@export var dash_end_scale_multiplier: float = 0.9  # 冲刺状态结束时大小倍数
 
 var sprite_pool: Array[Sprite2D] = []
 var _frame_counter: int = 0
+var active_trail_sprites: Array[Sprite2D] = []
 
 
 func _ready() -> void:
+	# 清理可能残留的旧残影
+	cleanup_all_trails()
 	setup_sprite_pool()
+
+
+# 添加清理函数
+func cleanup_all_trails() -> void:
+	# 清理所有活跃的残影
+	for sprite in active_trail_sprites:
+		if is_instance_valid(sprite):
+			sprite.queue_free()
+	active_trail_sprites.clear()
+	
+	# 清理池中的残影
+	for sprite in sprite_pool:
+		if is_instance_valid(sprite):
+			sprite.queue_free()
+	sprite_pool.clear()
 
 
 func setup_sprite_pool() -> void:
@@ -74,16 +94,53 @@ func _return_sprite_to_pool(sprite: Sprite2D, is_dashing: bool) -> void:
 
 
 func _start_sprite_fading(sprite: Sprite2D, is_dashing: bool) -> void:
-	# 根据是否冲刺设置不同的起始透明度
+	# 添加到活跃列表
+	active_trail_sprites.append(sprite)
+	
 	var start_alpha = dash_fade_start_alpha if is_dashing else fade_start_alpha
 	var end_alpha = dash_fade_end_alpha if is_dashing else fade_end_alpha
 	var duration = dash_fade_duration if is_dashing else fade_duration
 	
+	# 设置起始缩放值
+	var start_scale = sprite.scale
+	# 计算结束缩放值
+	var end_scale_multiplier = dash_end_scale_multiplier if is_dashing else normal_end_scale_multiplier
+	var end_scale = player.scale * end_scale_multiplier
+	
+	# 设置起始透明度
 	sprite.modulate.a = start_alpha
+	
+	# 创建并行动画：同时淡出和缩小
 	var tween = get_tree().create_tween()
-	tween.tween_method(_update_sprite_alpha.bind(sprite), start_alpha, end_alpha, duration)
-	tween.play()
+	
+	# 透明度动画
+	tween.parallel().tween_method(
+		_update_sprite_alpha.bind(sprite), 
+		start_alpha, 
+		end_alpha, 
+		duration
+	)
+	
+	# 缩放动画 - 同时进行
+	tween.parallel().tween_method(
+		_update_sprite_scale.bind(sprite), 
+		start_scale, 
+		end_scale, 
+		duration
+	).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_SINE)
+	
+	tween.finished.connect(_on_trail_finished.bind(sprite))  # 添加完成回调
 
 
 func _update_sprite_alpha(alpha_value: float, sprite: Sprite2D) -> void:
 	sprite.modulate.a = alpha_value
+
+
+func _update_sprite_scale(scale_value: Vector2, sprite: Sprite2D) -> void:
+	sprite.scale = scale_value
+
+
+func _on_trail_finished(sprite: Sprite2D) -> void:
+	# 从活跃列表中移除
+	if sprite in active_trail_sprites:
+		active_trail_sprites.erase(sprite)

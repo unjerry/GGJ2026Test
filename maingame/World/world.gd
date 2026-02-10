@@ -3,6 +3,8 @@
 
 extends Node2D
 
+
+
 # 节点引用
 @onready var right_wall: StaticBody2D = $RightWall
 @onready var left_wall: StaticBody2D = $LeftWall
@@ -14,9 +16,11 @@ func _ready() -> void:
 	# 重置相机平滑效果，确保相机立即定位到正确位置
 	camera_2d.reset_smoothing()
 	tutorial_popup.start_tutorial()
+	
 
 # 控制玩家是否可移动的标志变量
 var can_move := true
+
 
 func _physics_process(_delta: float) -> void:
 	if not is_instance_valid(player):

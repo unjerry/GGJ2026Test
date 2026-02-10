@@ -1,10 +1,10 @@
-[gd_scene load_steps=17 format=3 uid="uid://cn4tdklhwm6o3"]
+[gd_scene load_steps=18 format=3 uid="uid://cn4tdklhwm6o3"]
 
 [ext_resource type="Script" uid="uid://bjjylwy61hlix" path="res://player/player.gd" id="1_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://gqpe71qjnvnw" path="res://assets/Pictures/ball.png" id="3_qjkh3"]
-[ext_resource type="Script" uid="uid://brl075mnp6tye" path="res://classes/Hurtbox.gd" id="4_qjkh3"]
+[ext_resource type="Script" path="res://classes/Hurtbox.gd" id="4_qjkh3"]
 [ext_resource type="Script" uid="uid://bd7ush4653ea" path="res://classes/StateMachin.gd" id="4_yw30f"]
-[ext_resource type="Script" uid="uid://brmrcqtfnucf8" path="res://classes/Hitbox.gd" id="5_g6k8r"]
+[ext_resource type="Script" path="res://classes/Hitbox.gd" id="5_g6k8r"]
 [ext_resource type="Script" uid="uid://cajjjv8pluqxn" path="res://player/sprite_trail.gd" id="6_g6k8r"]
 [ext_resource type="Texture2D" uid="uid://bjbxvx4io4iev" path="res://assets/Pictures/whiteball.png" id="8_hg6s5"]
 [ext_resource type="Texture2D" uid="uid://bx4tsthoww5w" path="res://assets/Pictures/circle.png" id="9_8t03j"]
@@ -34,7 +34,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Whiteball:scale")
+tracks/0/path = NodePath("Graphics/Whiteball:scale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -46,7 +46,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Whiteball:visible")
+tracks/1/path = NodePath("Graphics/Whiteball:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -55,6 +55,30 @@ tracks/1/keys = {
 "update": 1,
 "values": [true]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Graphics/Circle:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.1, 0.1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Graphics/Circle:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
 
 [sub_resource type="Animation" id="Animation_2ieo8"]
 resource_name = "die"
@@ -62,7 +86,7 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Whiteball:scale")
+tracks/0/path = NodePath("Graphics/Whiteball:scale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -74,7 +98,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Whiteball:visible")
+tracks/1/path = NodePath("Graphics/Whiteball:visible")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -84,10 +108,40 @@ tracks/1/keys = {
 "values": [true]
 }
 
+[sub_resource type="Animation" id="Animation_rgyib"]
+resource_name = "hurt"
+length = 0.5
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Graphics/Circle:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.1961461, 1),
+"update": 0,
+"values": [Vector2(0.1, 0.1), Vector2(2, 2)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Graphics/Circle:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(0.24999972, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_yllr7"]
 _data = {
 &"RESET": SubResource("Animation_ebec5"),
-&"die": SubResource("Animation_2ieo8")
+&"die": SubResource("Animation_2ieo8"),
+&"hurt": SubResource("Animation_rgyib")
 }
 
 [node name="Player" type="CharacterBody2D"]
@@ -101,14 +155,18 @@ texture = ExtResource("3_qjkh3")
 script = SubResource("GDScript_rgyib")
 
 [node name="Circle" type="Sprite2D" parent="Graphics"]
-visible = false
+scale = Vector2(0.1, 0.1)
 texture = ExtResource("9_8t03j")
+
+[node name="Whiteball" type="Sprite2D" parent="Graphics"]
+z_index = 10
+scale = Vector2(0.01, 0.01)
+texture = ExtResource("8_hg6s5")
 
 [node name="Hurtbox" type="Area2D" parent="Graphics"]
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("4_qjkh3")
-metadata/_custom_type_script = "uid://brl075mnp6tye"
 
 [node name="Hurtbox" type="CollisionShape2D" parent="Graphics/Hurtbox"]
 rotation = 1.5707964
@@ -119,7 +177,6 @@ shape = SubResource("CircleShape2D_g6k8r")
 collision_layer = 0
 collision_mask = 16
 script = ExtResource("5_g6k8r")
-metadata/_custom_type_script = "uid://brmrcqtfnucf8"
 
 [node name="Hitbox" type="CollisionShape2D" parent="Graphics/Hitbox"]
 scale = Vector2(26, 26)
@@ -130,7 +187,6 @@ disabled = true
 collision_layer = 32
 collision_mask = 0
 script = ExtResource("4_qjkh3")
-metadata/_custom_type_script = "uid://brl075mnp6tye"
 
 [node name="DashHurtbox" type="CollisionShape2D" parent="Graphics/DashHurtbox"]
 scale = Vector2(15, 15)
@@ -155,24 +211,29 @@ one_shot = true
 wait_time = 0.2
 one_shot = true
 
+[node name="DashCooldownTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="BackdashCooldownTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="HurtTimer" type="Timer" parent="."]
+wait_time = 0.15
+
 [node name="StateMachine" type="Node" parent="."]
 script = ExtResource("4_yw30f")
 metadata/_custom_type_script = "uid://bd7ush4653ea"
-
-[node name="HurtTimer" type="Timer" parent="."]
-wait_time = 0.1
 
 [node name="SpriteTrail" type="Node" parent="." node_paths=PackedStringArray("ball_sprite")]
 script = ExtResource("6_g6k8r")
 ball_sprite = NodePath("../Graphics/Ball")
 spawn_rate = 6
+normal_end_scale_multiplier = 0.2
 dash_fade_start_alpha = 0.4
 dash_scale_multiplier = 0.5
-
-[node name="Whiteball" type="Sprite2D" parent="."]
-z_index = 10
-scale = Vector2(0.01, 0.01)
-texture = ExtResource("8_hg6s5")
+dash_end_scale_multiplier = 0.5
 
 [connection signal="hurt" from="Graphics/Hurtbox" to="." method="_on_hurtbox_hurt"]
 [connection signal="hit" from="Graphics/Hitbox" to="." method="_on_hitbox_hit"]

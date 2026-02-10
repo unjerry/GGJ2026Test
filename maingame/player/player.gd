@@ -27,7 +27,8 @@ const RING_TEXTURE := preload("res://assets/Pictures/circle.png")
 const DASH_FULL_SPEED_RATIO := 0.05     # 5%时间全速，95%时间减速
 const KNOCKBACK_AMOUNT := 4500          # 击退力度
 const INVINCIBLE_DURATION := 1.0        # 无敌时间（秒）
-const HURT_ACCELERATION := 3000   		# 受击加速度
+const HURT_ACCELERATION := 3500   		# 受击加速度
+const DASH_COOLDOWN := 0.5              # 冲刺冷却时间（秒）
 
 # 导出变量
 @export var solid := true               # 空心与实心状态的标记
@@ -45,6 +46,8 @@ var has_backdash := false
 var invincible := false  # 无敌状态标记
 var hurt_direction := Vector2.RIGHT
 var interacting_with : Interactable
+var dash_on_cooldown := false           # 普通冲刺冷却中
+var backdash_on_cooldown := false       # 反向冲刺冷却中
 
 # 节点引用
 @onready var jump_request_timer: Timer = $JumpRequestTimer  # 跳跃输入缓冲计时器
@@ -55,11 +58,18 @@ var interacting_with : Interactable
 @onready var hurtbox: CollisionShape2D = $Graphics/Hurtbox/Hurtbox
 @onready var hitbox: CollisionShape2D = $Graphics/Hitbox/Hitbox
 @onready var hurt_timer: Timer = $HurtTimer
+@onready var sprite_trail: Node = $SpriteTrail
+@onready var dash_cooldown_timer: Timer = $DashCooldownTimer  # 普通冲刺冷却计时器
+@onready var backdash_cooldown_timer: Timer = $BackdashCooldownTimer  # 反向冲刺冷却计时器
 
 # 初始化函数
 func _ready() -> void:
 	if not animation_player.animation_finished.is_connected(_on_animation_finished):
 		animation_player.animation_finished.connect(_on_animation_finished)
+	if not dash_cooldown_timer.timeout.is_connected(_on_dash_cooldown_timeout):
+		dash_cooldown_timer.timeout.connect(_on_dash_cooldown_timeout)
+	if not backdash_cooldown_timer.timeout.is_connected(_on_backdash_cooldown_timeout):
+		backdash_cooldown_timer.timeout.connect(_on_backdash_cooldown_timeout)
 	_update_form_visual()
 
 # 输入处理函数
@@ -99,10 +109,14 @@ func transition_state(from: State, to: State) -> void:
 			# 无特殊处理
 			pass
 		State.JUMP:
+			SoundManager.play_sfx("jump")
 			_start_jump()
 		State.DASH, State.BACHDASH:
+			SoundManager.play_sfx("dash")
 			_start_dash()
 		State.HURT:
+			SoundManager.play_sfx("hurt")
+			animation_player.play("hurt")
 			_start_hurt()
 
 # 移动函数
@@ -169,7 +183,6 @@ func _reset_ground_abilities() -> void:
 		has_dash = false
 		has_backdash = false
 
-
 func _process_current_state(state: State) -> State:
 	# 处理HURT状态
 	if state == State.HURT:
@@ -184,9 +197,9 @@ func _process_current_state(state: State) -> State:
 		return state
 	
 	# 处理请求状态
-	if dash_requested:
+	if dash_requested and not dash_on_cooldown:
 		return State.DASH
-	if backdash_requested:
+	if backdash_requested and not backdash_on_cooldown:
 		return State.BACHDASH
 	
 	# 处理跳跃
@@ -206,6 +219,11 @@ func _handle_dash_states(state: State) -> bool:
 		hitbox.disabled = true
 		dash_requested = false
 		backdash_requested = false
+		# 冲刺结束后启动冷却
+		if state == State.DASH:
+			_start_dash_cooldown()
+		elif state == State.BACHDASH:
+			_start_backdash_cooldown()
 	
 	return false
 
@@ -250,16 +268,33 @@ func _start_hurt() -> void:
 	jump_request_timer.stop()
 	dash_timer.stop()
 
+# 冲刺冷却相关函数
+func _start_dash_cooldown() -> void:
+	dash_on_cooldown = true
+	dash_cooldown_timer.wait_time = DASH_COOLDOWN
+	dash_cooldown_timer.start()
+
+func _start_backdash_cooldown() -> void:
+	backdash_on_cooldown = true
+	backdash_cooldown_timer.wait_time = DASH_COOLDOWN
+	backdash_cooldown_timer.start()
+
+func _on_dash_cooldown_timeout() -> void:
+	dash_on_cooldown = false
+
+func _on_backdash_cooldown_timeout() -> void:
+	backdash_on_cooldown = false
+
 # 输入处理辅助函数
 func _handle_dash_input(event: InputEvent) -> void:
-	if event.is_action_pressed("dash") and state_machine.current_state != State.DASH and not has_dash:
+	if event.is_action_pressed("dash") and state_machine.current_state != State.DASH and not has_dash and not dash_on_cooldown:
 		if not dash_requested:
 			dash_direction = calculate_dash_direction()
 		has_dash = true
 		dash_requested = true
 
 func _handle_backdash_input(event: InputEvent) -> void:
-	if event.is_action_pressed("backdash") and state_machine.current_state != State.BACHDASH and not has_backdash:
+	if event.is_action_pressed("backdash") and state_machine.current_state != State.BACHDASH and not has_backdash and not backdash_on_cooldown:
 		if not backdash_requested:
 			dash_direction = -1 * calculate_dash_direction()
 		has_backdash = true
@@ -282,11 +317,8 @@ func _on_animation_finished(anim_name: StringName) -> void:
 	pass
 
 func _on_hurtbox_hurt(hitbox: Variant) -> void:
-	print("=== 开始处理伤害 ===")
-	print("无敌状态:", invincible, " 已请求受伤:", hurt_requested)
 	
 	if invincible or hurt_requested:
-		print("跳过伤害：无敌或已请求受伤")
 		return
 	
 	# 创建伤害数据
@@ -294,7 +326,6 @@ func _on_hurtbox_hurt(hitbox: Variant) -> void:
 	pending_damage.source = hitbox.owner
 	
 	if pending_damage.source == null:
-		print("错误: 无法设置 damage source")
 		pending_damage = null
 		return
 	
@@ -314,6 +345,10 @@ func _on_hurtbox_hurt(hitbox: Variant) -> void:
 
 
 func die() -> void:
+	# 清理残影
+	if sprite_trail:
+		sprite_trail.cleanup_all_trails()
+	
 	get_tree().paused = true
 	animation_player.play("die")
 	await animation_player.animation_finished
@@ -328,6 +363,7 @@ func _on_invincibility_timer_timeout() -> void:
 
 
 func _on_hitbox_hit(hurtbox: Variant) -> void:
+	SoundManager.play_sfx("hit")
 	solid = true
 	_update_form_visual()
 	Game.shake_camera(3)
