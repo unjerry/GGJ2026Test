@@ -23,9 +23,7 @@ var panding_damage: Damage
 
 
 func tick_physics(state: State, delta: float) -> void:
-	match state:
-		State.IDLE, State.DYING, State.HURT:
-			move(0.0, delta)
+	pass
 
 
 func get_next_state(state: State) -> State:
@@ -65,12 +63,6 @@ func transition_state(from: State, to: State) -> void:
 			# 死亡状态：可以播放死亡动画
 			queue_free()
 			pass
-
-
-func move(speed: float, delta: float) -> void:
-	velocity.x = speed
-	velocity.y += default_gravity * delta
-	move_and_slide()
 
 
 func _on_hurtbox_hurt(hitbox: Hitbox) -> void:
