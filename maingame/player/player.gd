@@ -11,7 +11,8 @@ enum State {
 	DASH,      # 冲刺状态
 	BACHDASH,  # 反向冲刺状态
 	HURT,      # 受击状态
-	DYING      # 死亡状态
+	DYING,     # 死亡状态
+	MID,       # 中间状态
 }
 
 # 常量定义
@@ -20,13 +21,13 @@ const RUN_SPEED := 1000.0               # 奔跑速度
 const JUMP_VELOCITY := -1500.0          # 跳跃初速度
 const FLOOR_ACCELERATION := RUN_SPEED / 0.1   # 地面加速度
 const AIR_ACCELERATION := RUN_SPEED / 0.05    # 空中加速度
-const DASH_VELOCITY := 3000.0           # 冲刺速度
+const DASH_VELOCITY := 2500.0           # 冲刺速度
 const HURT_DURATION := 0.4              # 受击硬直时间
 const DOT_TEXTURE := preload("res://assets/Pictures/ball.png")
 const RING_TEXTURE := preload("res://assets/Pictures/circle.png")
 const DASH_FULL_SPEED_RATIO := 0.05     # 5%时间全速，95%时间减速
-const KNOCKBACK_AMOUNT := 4500          # 击退力度
-const INVINCIBLE_DURATION := 1.0        # 无敌时间（秒）
+const KNOCKBACK_AMOUNT := 4000          # 击退力度
+const INVINCIBLE_DURATION := 0.4        # 无敌时间（秒）
 const HURT_ACCELERATION := 3500   		# 受击加速度
 const DASH_COOLDOWN := 0.5              # 冲刺冷却时间（秒）
 
@@ -34,7 +35,7 @@ const DASH_COOLDOWN := 0.5              # 冲刺冷却时间（秒）
 @export var solid := true               # 空心与实心状态的标记
 
 # 变量声明
-var gravity := ProjectSettings.get("physics/2d/default_gravity") * 5 as float
+var gravity := ProjectSettings.get("physics/2d/default_gravity") * 4 as float
 var dash_direction := Vector2.RIGHT
 var dash_duration := 0.0
 var pending_damage: Damage
@@ -48,6 +49,7 @@ var hurt_direction := Vector2.RIGHT
 var interacting_with : Interactable
 var dash_on_cooldown := false           # 普通冲刺冷却中
 var backdash_on_cooldown := false       # 反向冲刺冷却中
+var mid := false
 
 # 节点引用
 @onready var jump_request_timer: Timer = $JumpRequestTimer  # 跳跃输入缓冲计时器
@@ -61,6 +63,8 @@ var backdash_on_cooldown := false       # 反向冲刺冷却中
 @onready var sprite_trail: Node = $SpriteTrail
 @onready var dash_cooldown_timer: Timer = $DashCooldownTimer  # 普通冲刺冷却计时器
 @onready var backdash_cooldown_timer: Timer = $BackdashCooldownTimer  # 反向冲刺冷却计时器
+@onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
+
 
 # 初始化函数
 func _ready() -> void:
@@ -97,17 +101,15 @@ func get_next_state(state: State) -> State:
 	if hurt_requested and state != State.HURT:
 		return State.HURT
 	
+	if mid:
+		return State.MID
+	
 	# 处理当前状态
 	return _process_current_state(state)
 
 func transition_state(from: State, to: State) -> void:
-	# 清理HURT状态标记
-	
 	# 执行状态转换逻辑
 	match to:
-		State.IDLE, State.RUNNING:
-			# 无特殊处理
-			pass
 		State.JUMP:
 			SoundManager.play_sfx("jump")
 			_start_jump()
@@ -118,6 +120,8 @@ func transition_state(from: State, to: State) -> void:
 			SoundManager.play_sfx("hurt")
 			animation_player.play("hurt")
 			_start_hurt()
+		State.MID:
+			animation_player.play("mid")
 
 # 移动函数
 func _move_with_input(delta: float) -> void:
@@ -166,16 +170,30 @@ func calculate_dash_direction() -> Vector2:
 	else:  # 空心环：向鼠标方向
 		return mouse_dir if mouse_dir.length_squared() > 0.001 else Vector2.RIGHT
 
+
+# 只修改 _update_form_visual 函数
 func _update_form_visual() -> void:
 	ball.texture = DOT_TEXTURE if solid else RING_TEXTURE
 	_update_invincibility_visual()  # 更新无敌状态视觉
+	
+	# 更新碰撞掩码
+	if solid:
+		# 实心时：只与第1层碰撞
+		collision_mask = 1  # 二进制 001
+	elif not solid and mid:
+		# 中间态
+		collision_mask = 3  
+		# 空心时：只与第2层碰撞
+	else:
+		collision_mask = 2  # 二进制 010
+
 
 func _update_invincibility_visual() -> void:
 	if invincible:
-		# 闪烁效果或其他视觉效果
 		ball.modulate = Color(1, 1, 1, 0.5)  # 半透明
 	else:
 		ball.modulate = Color(1, 1, 1, 1)  # 恢复正常
+
 
 # 辅助函数
 func _reset_ground_abilities() -> void:
@@ -183,13 +201,23 @@ func _reset_ground_abilities() -> void:
 		has_dash = false
 		has_backdash = false
 
+
 func _process_current_state(state: State) -> State:
 	# 处理HURT状态
 	if state == State.HURT:
 		hurt_requested = false
 		if hurt_timer.time_left > 0.01:
 			return State.HURT
-		_on_invincibility_timer_timeout()
+		invincible = false
+		_update_form_visual()
+		if is_on_floor():
+			return State.MID
+		return State.IDLE
+	
+	if state == State.MID:
+		if is_on_floor():
+			return State.MID
+		mid = false
 		return State.IDLE
 	
 	# 处理冲刺状态
@@ -241,9 +269,7 @@ func _determine_state_by_input_and_physics(state: State) -> State:
 			return State.IDLE if is_still else State.RUNNING
 		State.JUMP:
 			return State.IDLE if is_on_floor() else State.JUMP
-		State.DASH:
-			return State.IDLE if is_still else State.RUNNING
-		State.BACHDASH:
+		State.DASH, State.BACHDASH:
 			return State.IDLE if is_still else State.RUNNING
 		State.HURT:
 			if is_on_floor():
@@ -287,14 +313,14 @@ func _on_backdash_cooldown_timeout() -> void:
 
 # 输入处理辅助函数
 func _handle_dash_input(event: InputEvent) -> void:
-	if event.is_action_pressed("dash") and state_machine.current_state != State.DASH and not has_dash and not dash_on_cooldown:
+	if event.is_action_pressed("dash") and not has_dash and not dash_on_cooldown:
 		if not dash_requested:
 			dash_direction = calculate_dash_direction()
 		has_dash = true
 		dash_requested = true
 
 func _handle_backdash_input(event: InputEvent) -> void:
-	if event.is_action_pressed("backdash") and state_machine.current_state != State.BACHDASH and not has_backdash and not backdash_on_cooldown:
+	if event.is_action_pressed("backdash") and not has_backdash and not backdash_on_cooldown:
 		if not backdash_requested:
 			dash_direction = -1 * calculate_dash_direction()
 		has_backdash = true
@@ -316,8 +342,8 @@ func hurt() -> void:
 func _on_animation_finished(anim_name: StringName) -> void:
 	pass
 
+
 func _on_hurtbox_hurt(hitbox: Variant) -> void:
-	
 	if invincible or hurt_requested:
 		return
 	
@@ -335,14 +361,12 @@ func _on_hurtbox_hurt(hitbox: Variant) -> void:
 		solid = false
 		hurt_requested = true
 		invincible = true  # 进入无敌状态
-		hurt_timer.start()  # 启动计时器
+		hurt_timer.start(HURT_DURATION)  # 启动计时器，使用正确的受击硬直时间
 		hurt_direction = pending_damage.source.global_position.direction_to(global_position)
-		
 	else:
 		die()
 	
 	_update_form_visual()
-
 
 func die() -> void:
 	# 清理残影
@@ -354,12 +378,6 @@ func die() -> void:
 	await animation_player.animation_finished
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://ui/title_screen.tscn")
-
-
-func _on_invincibility_timer_timeout() -> void:
-	invincible = false
-	_update_form_visual()  # 更新视觉
-	print("无敌状态结束")
 
 
 func _on_hitbox_hit(hurtbox: Variant) -> void:

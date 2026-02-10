@@ -12,7 +12,7 @@ dest_files=["res://.godot/imported/Prime Directive.mp3-9bd5a96bd422de5589ef420cc
 
 [params]
 
-loop=false
+loop=true
 loop_offset=0
 bpm=0
 beat_count=0

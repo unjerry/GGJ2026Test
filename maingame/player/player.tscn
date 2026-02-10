@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://bjjylwy61hlix" path="res://player/player.gd" id="1_g1dw6"]
 [ext_resource type="Texture2D" uid="uid://gqpe71qjnvnw" path="res://assets/Pictures/ball.png" id="3_qjkh3"]
-[ext_resource type="Script" path="res://classes/Hurtbox.gd" id="4_qjkh3"]
+[ext_resource type="Script" uid="uid://brl075mnp6tye" path="res://classes/Hurtbox.gd" id="4_qjkh3"]
 [ext_resource type="Script" uid="uid://bd7ush4653ea" path="res://classes/StateMachin.gd" id="4_yw30f"]
-[ext_resource type="Script" path="res://classes/Hitbox.gd" id="5_g6k8r"]
+[ext_resource type="Script" uid="uid://brmrcqtfnucf8" path="res://classes/Hitbox.gd" id="5_g6k8r"]
 [ext_resource type="Script" uid="uid://cajjjv8pluqxn" path="res://player/sprite_trail.gd" id="6_g6k8r"]
 [ext_resource type="Texture2D" uid="uid://bjbxvx4io4iev" path="res://assets/Pictures/whiteball.png" id="8_hg6s5"]
 [ext_resource type="Texture2D" uid="uid://bx4tsthoww5w" path="res://assets/Pictures/circle.png" id="9_8t03j"]
@@ -24,8 +24,6 @@ func StartFading():
 [sub_resource type="CircleShape2D" id="CircleShape2D_g6k8r"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rgyib"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_boad6"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qjkh3"]
 
@@ -137,20 +135,26 @@ tracks/1/keys = {
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_hg6s5"]
+resource_name = "mid"
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_yllr7"]
 _data = {
 &"RESET": SubResource("Animation_ebec5"),
 &"die": SubResource("Animation_2ieo8"),
-&"hurt": SubResource("Animation_rgyib")
+&"hurt": SubResource("Animation_rgyib"),
+&"mid": SubResource("Animation_hg6s5")
 }
 
 [node name="Player" type="CharacterBody2D"]
-collision_layer = 2
+z_index = 4
+collision_layer = 4
 script = ExtResource("1_g1dw6")
 
 [node name="Graphics" type="Node2D" parent="."]
 
 [node name="Ball" type="Sprite2D" parent="Graphics"]
+visible = false
 texture = ExtResource("3_qjkh3")
 script = SubResource("GDScript_rgyib")
 
@@ -164,6 +168,7 @@ scale = Vector2(0.01, 0.01)
 texture = ExtResource("8_hg6s5")
 
 [node name="Hurtbox" type="Area2D" parent="Graphics"]
+visible = false
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("4_qjkh3")
@@ -174,6 +179,7 @@ scale = Vector2(22, 22)
 shape = SubResource("CircleShape2D_g6k8r")
 
 [node name="Hitbox" type="Area2D" parent="Graphics"]
+visible = false
 collision_layer = 0
 collision_mask = 16
 script = ExtResource("5_g6k8r")
@@ -183,17 +189,8 @@ scale = Vector2(26, 26)
 shape = SubResource("CircleShape2D_rgyib")
 disabled = true
 
-[node name="DashHurtbox" type="Area2D" parent="Graphics"]
-collision_layer = 32
-collision_mask = 0
-script = ExtResource("4_qjkh3")
-
-[node name="DashHurtbox" type="CollisionShape2D" parent="Graphics/DashHurtbox"]
-scale = Vector2(15, 15)
-shape = SubResource("CircleShape2D_boad6")
-disabled = true
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 scale = Vector2(24, 24)
 shape = SubResource("CircleShape2D_qjkh3")
 
@@ -234,6 +231,10 @@ normal_end_scale_multiplier = 0.2
 dash_fade_start_alpha = 0.4
 dash_scale_multiplier = 0.5
 dash_end_scale_multiplier = 0.5
+
+[node name="BlackBall" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_qjkh3")
 
 [connection signal="hurt" from="Graphics/Hurtbox" to="." method="_on_hurtbox_hurt"]
 [connection signal="hit" from="Graphics/Hitbox" to="." method="_on_hitbox_hit"]
