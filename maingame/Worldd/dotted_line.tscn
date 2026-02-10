@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://rbljohtfiwf4"]
+
+[ext_resource type="Texture2D" uid="uid://bv1iv8ih1nktl" path="res://assets/Pictures/DottedLine.png" id="1_5sax3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mxv1v"]
+size = Vector2(500, 50)
+
+[node name="DottedLine" type="Node2D"]
+scale = Vector2(1.2, 0.3)
+
+[node name="DottedLine" type="Sprite2D" parent="."]
+scale = Vector2(1, 5)
+texture = ExtResource("1_5sax3")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("RectangleShape2D_mxv1v")

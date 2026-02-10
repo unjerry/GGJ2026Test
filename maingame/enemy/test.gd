@@ -68,7 +68,7 @@ func transition_state(from: State, to: State) -> void:
 
 func move(speed: float, delta: float) -> void:
 	velocity.x = speed
-	velocity.y += default_gravity * delta
+	#velocity.y += default_gravity * delta
 	move_and_slide()
 
 
