@@ -11,8 +11,7 @@ enum State {
 	DASH,      # 冲刺状态
 	BACHDASH,  # 反向冲刺状态
 	HURT,      # 受击状态
-	DYING,     # 死亡状态
-	MID,       # 中间状态
+	DYING     # 死亡状态
 }
 
 # 常量定义
@@ -101,13 +100,12 @@ func get_next_state(state: State) -> State:
 	if hurt_requested and state != State.HURT:
 		return State.HURT
 	
-	if mid:
-		return State.MID
-	
 	# 处理当前状态
 	return _process_current_state(state)
 
 func transition_state(from: State, to: State) -> void:
+	if mid:
+		animation_player.play("mid")
 	# 执行状态转换逻辑
 	match to:
 		State.JUMP:
@@ -120,8 +118,6 @@ func transition_state(from: State, to: State) -> void:
 			SoundManager.play_sfx("hurt")
 			animation_player.play("hurt")
 			_start_hurt()
-		State.MID:
-			animation_player.play("mid")
 
 # 移动函数
 func _move_with_input(delta: float) -> void:
@@ -200,24 +196,21 @@ func _reset_ground_abilities() -> void:
 	if is_on_floor():
 		has_dash = false
 		has_backdash = false
+	else:
+		mid = false
+		_update_form_visual()
 
 
 func _process_current_state(state: State) -> State:
 	# 处理HURT状态
 	if state == State.HURT:
+		if not is_on_floor():
+			mid = false
 		hurt_requested = false
 		if hurt_timer.time_left > 0.01:
 			return State.HURT
 		invincible = false
 		_update_form_visual()
-		if is_on_floor():
-			return State.MID
-		return State.IDLE
-	
-	if state == State.MID:
-		if is_on_floor():
-			return State.MID
-		mid = false
 		return State.IDLE
 	
 	# 处理冲刺状态
