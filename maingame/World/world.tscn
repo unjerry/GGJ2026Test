@@ -57,4 +57,5 @@ scale = Vector2(500, 1)
 shape = SubResource("RectangleShape2D_bkhv4")
 
 [node name="DottedLine" parent="." instance=ExtResource("7_eidgh")]
-position = Vector2(2973, 0)
+position = Vector2(3300, 0)
+scale = Vector2(3, 0.3)
