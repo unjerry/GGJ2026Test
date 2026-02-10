@@ -108,6 +108,7 @@ func transition_state(from: State, to: State) -> void:
 		animation_player.play("mid")
 	else:
 		animation_player.stop()
+		animation_player.play("RESET")
 	# 执行状态转换逻辑
 	match to:
 		State.JUMP:

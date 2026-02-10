@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://crt1jn6ewx1ex"
-path="res://.godot/imported/9.png-ad2b3217071f50799c3fd8cbbb13c519.ctex"
+uid="uid://c0c58ryl61u86"
+path="res://.godot/imported/donghua.png-ab6f24963217b28aed45f49ce9d849ca.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Videos/9.png"
-dest_files=["res://.godot/imported/9.png-ad2b3217071f50799c3fd8cbbb13c519.ctex"]
+source_file="res://assets/Videos/donghua.png"
+dest_files=["res://.godot/imported/donghua.png-ab6f24963217b28aed45f49ce9d849ca.ctex"]
 
 [params]
 
