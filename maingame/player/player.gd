@@ -101,6 +101,9 @@ func get_next_state(state: State) -> State:
 	if hurt_requested and state != State.HURT:
 		return State.HURT
 	
+	if mid:
+		return State.MID
+	
 	# 处理当前状态
 	return _process_current_state(state)
 
@@ -202,22 +205,20 @@ func _reset_ground_abilities() -> void:
 func _process_current_state(state: State) -> State:
 	# 处理HURT状态
 	if state == State.HURT:
-		if not is_on_floor():
-			mid = false
 		hurt_requested = false
 		if hurt_timer.time_left > 0.01:
 			return State.HURT
 		invincible = false
-		if mid:
-			return State.MID
 		_update_form_visual()
+		if is_on_floor():
+			return State.MID
 		return State.IDLE
 	
 	if state == State.MID:
-		if not mid:  # 如果mid标志被清除
-			_update_form_visual()
-			return State.IDLE
-		return State.MID  # 保持MID状态
+		if is_on_floor():
+			return State.MID
+		mid = false
+		return State.IDLE
 	
 	# 处理冲刺状态
 	if _handle_dash_states(state):
@@ -251,6 +252,7 @@ func _handle_dash_states(state: State) -> bool:
 			_start_dash_cooldown()
 		elif state == State.BACHDASH:
 			_start_backdash_cooldown()
+	
 	return false
 
 func _can_jump() -> bool:
@@ -273,17 +275,8 @@ func _determine_state_by_input_and_physics(state: State) -> State:
 			if is_on_floor():
 				return State.IDLE if is_still else State.RUNNING
 			return State.JUMP
-		State.MID:
-			if is_on_floor():
-				return State.MID
-			mid = false
-			return State.IDLE
 	
 	return state
-
-func clear_mid_state():
-	mid = false
-	_update_form_visual()
 
 func _start_jump() -> void:
 	jump_request_timer.stop()

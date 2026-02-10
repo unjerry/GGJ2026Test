@@ -242,6 +242,7 @@ scale = Vector2(0.01, 0.01)
 texture = ExtResource("8_hg6s5")
 
 [node name="BlackBall" type="Sprite2D" parent="Graphics"]
+visible = false
 texture = ExtResource("3_qjkh3")
 
 [node name="Hurtbox" type="Area2D" parent="Graphics"]
