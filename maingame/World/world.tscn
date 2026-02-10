@@ -12,6 +12,11 @@
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_j8job")
+metadata/_edit_vertical_guides_ = [5749.0]
+
+[node name="Test2" parent="." instance=ExtResource("6_bkhv4")]
+position = Vector2(2700, -45)
+scale = Vector2(0.15, 0.15)
 
 [node name="Player" parent="." instance=ExtResource("5_bkhv4")]
 position = Vector2(1000, -300)
@@ -37,11 +42,11 @@ scale = Vector2(12.3125, 7.0625)
 texture = ExtResource("2_k8do8")
 
 [node name="Test" parent="." instance=ExtResource("6_bkhv4")]
-position = Vector2(2211, 0)
+position = Vector2(3600, -645)
 scale = Vector2(0.15, 0.15)
 
 [node name="X" parent="." instance=ExtResource("7_yf0ba")]
-scale = Vector2(10, 0.3)
+scale = Vector2(12, 0.3)
 
 [node name="Y" parent="." instance=ExtResource("7_yf0ba")]
 rotation = 1.5707964
@@ -57,4 +62,17 @@ scale = Vector2(500, 1)
 shape = SubResource("RectangleShape2D_bkhv4")
 
 [node name="DottedLine" parent="." instance=ExtResource("7_eidgh")]
-position = Vector2(3300, 0)
+position = Vector2(3600.0002, 0)
+
+[node name="DottedLine3" parent="." instance=ExtResource("7_eidgh")]
+position = Vector2(4200, -300)
+rotation = 1.5707964
+
+[node name="DottedLine2" parent="." instance=ExtResource("7_eidgh")]
+position = Vector2(4800, 0)
+
+[node name="FullLine" parent="." instance=ExtResource("7_yf0ba")]
+position = Vector2(3300, -600)
+
+[node name="FullLine2" parent="." instance=ExtResource("7_yf0ba")]
+position = Vector2(3900, -600)
