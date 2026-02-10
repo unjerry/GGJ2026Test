@@ -106,6 +106,8 @@ func get_next_state(state: State) -> State:
 func transition_state(from: State, to: State) -> void:
 	if mid:
 		animation_player.play("mid")
+	else:
+		animation_player.stop()
 	# 执行状态转换逻辑
 	match to:
 		State.JUMP:
