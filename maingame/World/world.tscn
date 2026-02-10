@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dbnfhngc1mt7a" path="res://World/world.gd" id="1_j8job"]
 [ext_resource type="Texture2D" uid="uid://7ew8amp0hyl2" path="res://assets/Pictures/Whiteground.png" id="2_k8do8"]
-[ext_resource type="Script" uid="uid://cg8pc62lgsmej" path="res://classes/ShakyCamera.gd" id="3_yf0ba"]
+[ext_resource type="Script" path="res://classes/ShakyCamera.gd" id="3_yf0ba"]
 [ext_resource type="PackedScene" uid="uid://cn4tdklhwm6o3" path="res://player/player.tscn" id="5_bkhv4"]
 [ext_resource type="PackedScene" uid="uid://bs3apdfuibdg8" path="res://enemy/test.tscn" id="6_bkhv4"]
 [ext_resource type="PackedScene" uid="uid://rbljohtfiwf4" path="res://World/dotted_line.tscn" id="7_eidgh"]
@@ -37,13 +37,13 @@ scale = Vector2(12.3125, 7.0625)
 texture = ExtResource("2_k8do8")
 
 [node name="Test" parent="." instance=ExtResource("6_bkhv4")]
-position = Vector2(2186, -86)
+position = Vector2(2211, 0)
 scale = Vector2(0.15, 0.15)
 
-[node name="FullLine" parent="." instance=ExtResource("7_yf0ba")]
+[node name="X" parent="." instance=ExtResource("7_yf0ba")]
 scale = Vector2(10, 0.3)
 
-[node name="FullLine2" parent="." instance=ExtResource("7_yf0ba")]
+[node name="Y" parent="." instance=ExtResource("7_yf0ba")]
 rotation = 1.5707964
 scale = Vector2(5, 0.3)
 
@@ -58,4 +58,3 @@ shape = SubResource("RectangleShape2D_bkhv4")
 
 [node name="DottedLine" parent="." instance=ExtResource("7_eidgh")]
 position = Vector2(3300, 0)
-scale = Vector2(3, 0.3)

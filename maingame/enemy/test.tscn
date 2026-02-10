@@ -5,5 +5,7 @@
 
 [node name="Test" instance=ExtResource("1_3oeby")]
 script = ExtResource("2_o0xci")
+metadata/_edit_horizontal_guides_ = [-249.0]
 
+[connection signal="hit" from="Graphics/Hitbox" to="." method="_on_hitbox_hit"]
 [connection signal="hurt" from="Graphics/Hurtbox" to="." method="_on_hurtbox_hurt"]

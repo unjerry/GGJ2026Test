@@ -27,3 +27,5 @@ func _on_death_boundary_body_entered(body: Node) -> void:
 	# 确保只有玩家会触发
 	if body == player:
 		player.die()
+	else:
+		body.queue_free()
