@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://dr77t0nmn4ycw"]
+[gd_scene load_steps=3 format=3 uid="uid://dr77t0nmn4ycw"]
 
 [ext_resource type="Script" uid="uid://c0wjsh8labint" path="res://globals/game.gd" id="1_qdmn5"]
+[ext_resource type="Script" uid="uid://dtvtnp75qll86" path="res://classes/Stats.gd" id="2_j4t3q"]
 
 [node name="Game" type="Node"]
 script = ExtResource("1_qdmn5")
+
+[node name="PlayerStats" type="Node" parent="."]
+script = ExtResource("2_j4t3q")
+metadata/_custom_type_script = "uid://dtvtnp75qll86"

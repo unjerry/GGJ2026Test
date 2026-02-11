@@ -1,16 +1,17 @@
-[gd_scene load_steps=8 format=3 uid="uid://bverj00ttxftq"]
+[gd_scene load_steps=9 format=3 uid="uid://bverj00ttxftq"]
 
 [ext_resource type="Script" uid="uid://cah5thajpgbld" path="res://enemy/enemy.gd" id="1_ofsxj"]
 [ext_resource type="Script" uid="uid://bd7ush4653ea" path="res://classes/StateMachin.gd" id="2_ppra6"]
-[ext_resource type="Script" uid="uid://brmrcqtfnucf8" path="res://classes/Hitbox.gd" id="3_p200p"]
+[ext_resource type="Script" path="res://classes/Hitbox.gd" id="3_p200p"]
 [ext_resource type="Texture2D" uid="uid://gqpe71qjnvnw" path="res://assets/Pictures/ball.png" id="3_ppra6"]
-[ext_resource type="Script" uid="uid://brl075mnp6tye" path="res://classes/Hurtbox.gd" id="5_1wwld"]
+[ext_resource type="Script" path="res://classes/Hurtbox.gd" id="5_1wwld"]
+[ext_resource type="Script" uid="uid://dtvtnp75qll86" path="res://classes/Stats.gd" id="6_1wwld"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pmsee"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ppra6"]
 
-[node name="Enemy" type="CharacterBody2D"]
+[node name="Enemy" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 4
 script = ExtResource("1_ofsxj")
 
@@ -27,7 +28,6 @@ texture = ExtResource("3_ppra6")
 collision_layer = 0
 collision_mask = 8
 script = ExtResource("3_p200p")
-metadata/_custom_type_script = "uid://brmrcqtfnucf8"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Graphics/Hitbox"]
 scale = Vector2(25, 25)
@@ -37,7 +37,6 @@ shape = SubResource("CircleShape2D_pmsee")
 collision_layer = 16
 collision_mask = 0
 script = ExtResource("5_1wwld")
-metadata/_custom_type_script = "uid://brl075mnp6tye"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Graphics/Hurtbox"]
 scale = Vector2(25, 25)
@@ -52,3 +51,7 @@ metadata/_custom_type_script = "uid://bd7ush4653ea"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(24, 24)
 shape = SubResource("CircleShape2D_ppra6")
+
+[node name="Stats" type="Node" parent="."]
+script = ExtResource("6_1wwld")
+metadata/_custom_type_script = "uid://dtvtnp75qll86"

@@ -18,8 +18,12 @@ var panding_damage: Damage
 @onready var ball: Sprite2D = $Graphics/Ball
 @onready var hurt_timer: Timer = $HurtTimer
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
-@onready var hitbox: CollisionShape2D = $Graphics/Hitbox/Hitbox
-@onready var hurtbox: CollisionShape2D = $Graphics/Hurtbox/Hurtbox
+@onready var hitbox: Hitbox = $Graphics/Hitbox
+@onready var hurtbox: Hurtbox = $Graphics/Hurtbox
+
+
+func _ready() -> void:
+	_update_form_visual()
 
 
 func tick_physics(state: State, delta: float) -> void:
@@ -66,6 +70,7 @@ func transition_state(from: State, to: State) -> void:
 
 
 func _on_hurtbox_hurt(hitbox: Hitbox) -> void:
+	stats.current_solid = false
 	panding_damage = Damage.new()
 	panding_damage.source = hitbox.owner
 	
@@ -78,7 +83,6 @@ func _on_hurtbox_hurt(hitbox: Hitbox) -> void:
 		hurt_timer.start()  # 0.3秒受击硬直
 	else:
 		dying = true
-	print(solid)
 	_update_form_visual()
 
 
@@ -96,5 +100,6 @@ func _update_form_visual() -> void:
 
 # 当敌人的攻击盒击中玩家时调用
 func _on_hitbox_hit(hurtbox: Hurtbox) -> void:
+	stats.current_solid = true
 	solid = true
 	_update_form_visual()

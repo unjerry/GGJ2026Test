@@ -302,8 +302,9 @@ one_shot = true
 script = ExtResource("4_yw30f")
 metadata/_custom_type_script = "uid://bd7ush4653ea"
 
-[node name="SpriteTrail" type="Node" parent="."]
+[node name="SpriteTrail" type="Node" parent="." node_paths=PackedStringArray("ball_sprite")]
 script = ExtResource("6_g6k8r")
+ball_sprite = NodePath("../Graphics/Ball")
 spawn_rate = 6
 normal_end_scale_multiplier = 0.2
 dash_fade_start_alpha = 0.4

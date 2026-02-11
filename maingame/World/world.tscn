@@ -15,8 +15,7 @@ script = ExtResource("1_j8job")
 metadata/_edit_vertical_guides_ = [5749.0]
 
 [node name="Player" parent="." instance=ExtResource("5_bkhv4")]
-position = Vector2(1000, -300)
-scale = Vector2(0.15, 0.15)
+position = Vector2(44, -44)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 process_callback = 0
@@ -38,7 +37,7 @@ scale = Vector2(12.3125, 7.0625)
 texture = ExtResource("2_k8do8")
 
 [node name="X" parent="." instance=ExtResource("7_yf0ba")]
-scale = Vector2(12, 0.3)
+scale = Vector2(6, 0.3)
 
 [node name="Y" parent="." instance=ExtResource("7_yf0ba")]
 rotation = 1.5707964
@@ -56,51 +55,69 @@ shape = SubResource("RectangleShape2D_bkhv4")
 [node name="Test" type="Node2D" parent="."]
 
 [node name="Test" parent="Test" instance=ExtResource("6_bkhv4")]
-visible = true
-position = Vector2(2700, -600)
-scale = Vector2(0.15, 0.15)
+position = Vector2(1800, -45)
 
 [node name="Test2" parent="Test" instance=ExtResource("6_bkhv4")]
-visible = true
-position = Vector2(2700, -45)
-scale = Vector2(0.15, 0.15)
+position = Vector2(2400, -300)
 
 [node name="Test3" parent="Test" instance=ExtResource("6_bkhv4")]
-visible = true
-position = Vector2(3600.0002, -300)
-scale = Vector2(0.15, 0.15)
+position = Vector2(3000, -45)
 
 [node name="Test4" parent="Test" instance=ExtResource("6_bkhv4")]
-visible = true
-position = Vector2(3600, -645)
-scale = Vector2(0.15, 0.15)
+position = Vector2(3600, -300)
 
 [node name="Test5" parent="Test" instance=ExtResource("6_bkhv4")]
-visible = true
-position = Vector2(2700, -345)
-scale = Vector2(0.15, 0.15)
+position = Vector2(4200, -45)
+
+[node name="Test6" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(5400, -45)
 
 [node name="Test7" parent="Test" instance=ExtResource("6_bkhv4")]
-visible = true
-position = Vector2(2700, -1200)
-scale = Vector2(0.15, 0.15)
+position = Vector2(6150, -300)
+
+[node name="Test10" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(6150, -1050)
+
+[node name="Test12" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(5400, -645)
+
+[node name="Test11" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(6600, -945)
+
+[node name="Test8" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(6600, -345)
+
+[node name="Test9" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(5850, -600)
 
 [node name="FullLine" type="Node2D" parent="."]
 
 [node name="FullLine" parent="FullLine" instance=ExtResource("7_yf0ba")]
-position = Vector2(2700, -300)
+position = Vector2(3000, 0)
 
 [node name="FullLine2" parent="FullLine" instance=ExtResource("7_yf0ba")]
 position = Vector2(4200, 0)
 
 [node name="FullLine3" parent="FullLine" instance=ExtResource("7_yf0ba")]
-position = Vector2(3600, -600)
+position = Vector2(1800.0001, 0)
 
-[node name="DottedLine2" type="Node2D" parent="."]
+[node name="FullLine4" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(5400, 0)
 
-[node name="DottedLine" parent="DottedLine2" instance=ExtResource("7_eidgh")]
-position = Vector2(3600.0002, 0)
+[node name="FullLine5" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(6600, -300)
 
-[node name="DottedLine2" parent="DottedLine2" instance=ExtResource("7_eidgh")]
-position = Vector2(3900, -300)
-rotation = 1.5707964
+[node name="FullLine6" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(5400, -600)
+
+[node name="FullLine7" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(6600, -900)
+
+[node name="FullLine8" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(5400, -1200)
+
+[node name="DottedLine" type="Node2D" parent="."]
+
+[node name="DottedLine" parent="DottedLine" instance=ExtResource("7_eidgh")]
+visible = false
+position = Vector2(1800, -592)

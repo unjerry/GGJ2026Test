@@ -26,7 +26,7 @@ const DOT_TEXTURE := preload("res://assets/Pictures/ball.png")
 const RING_TEXTURE := preload("res://assets/Pictures/circle.png")
 const DASH_FULL_SPEED_RATIO := 0.05     # 5%时间全速，95%时间减速
 const KNOCKBACK_AMOUNT := 4000          # 击退力度
-const INVINCIBLE_DURATION := 0.4        # 无敌时间（秒）
+const INVINCIBLE_DURATION := 1        # 无敌时间（秒）
 const HURT_ACCELERATION := 3500   		# 受击加速度
 const DASH_COOLDOWN := 0.5              # 冲刺冷却时间（秒）
 const MIN_VELOCITY := 5.0               # 最小速度阈值
@@ -64,6 +64,7 @@ var mid := false
 @onready var dash_cooldown_timer: Timer = $DashCooldownTimer  # 普通冲刺冷却计时器
 @onready var backdash_cooldown_timer: Timer = $BackdashCooldownTimer  # 反向冲刺冷却计时器
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
+@onready var stats: Stats = Game.player_stats
 
 # 初始化函数
 func _ready() -> void:
@@ -258,7 +259,7 @@ func _process_current_state(state: State) -> State:
 
 func _process_hurt_state() -> State:
 	hurt_requested = false
-	if hurt_timer.time_left > 0.01:
+	if hurt_timer.time_left > 0.0:
 		return State.HURT
 	
 	invincible = false
@@ -353,6 +354,7 @@ func _on_animation_finished(anim_name: StringName) -> void:
 	pass
 
 func _on_hurtbox_hurt(hitbox: Variant) -> void:
+	stats.current_solid = false
 	if invincible or hurt_requested:
 		return
 	
@@ -378,7 +380,6 @@ func _on_hurtbox_hurt(hitbox: Variant) -> void:
 		_reset_dash_cooldowns()
 	else:
 		die()
-	
 	_update_form_visual()
 
 func die() -> void:
@@ -390,7 +391,10 @@ func die() -> void:
 	animation_player.play("die")
 	await animation_player.animation_finished
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://ui/title_screen.tscn")
+	if Game.has_save():
+		Game.load_game()
+	else:
+		Game.back_to_title()
 
 func _on_hitbox_hit(hurtbox: Variant) -> void:
 	SoundManager.play_sfx("hit")
@@ -398,13 +402,12 @@ func _on_hitbox_hit(hurtbox: Variant) -> void:
 	_update_form_visual()
 	Game.shake_camera(3)
 	
-	# 攻击到敌人时刷新冲刺冷却
-	_reset_dash_cooldowns()
-	
 	# 慢动作效果
 	Engine.time_scale = 0.01
 	await get_tree().create_timer(0.1, true, false, true).timeout
 	Engine.time_scale = 1
+	stats.current_solid = true
+
 
 # 冷却计时器回调
 func _on_dash_cooldown_timeout() -> void:
