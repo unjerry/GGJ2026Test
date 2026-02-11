@@ -1,11 +1,61 @@
-[gd_scene load_steps=3 format=3 uid="uid://dr77t0nmn4ycw"]
+[gd_scene load_steps=7 format=3 uid="uid://dr77t0nmn4ycw"]
 
 [ext_resource type="Script" uid="uid://c0wjsh8labint" path="res://globals/game.gd" id="1_qdmn5"]
 [ext_resource type="Script" uid="uid://dtvtnp75qll86" path="res://classes/Stats.gd" id="2_j4t3q"]
+[ext_resource type="Texture2D" uid="uid://bjbxvx4io4iev" path="res://assets/Pictures/whiteball.png" id="3_3q0u3"]
 
-[node name="Game" type="Node"]
+[sub_resource type="Animation" id="Animation_nqac0"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Whiteball:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_ehmke"]
+resource_name = "loading_animation"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Whiteball:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_y5hx0"]
+_data = {
+&"RESET": SubResource("Animation_nqac0"),
+&"loading_animation": SubResource("Animation_ehmke")
+}
+
+[node name="Game" type="CanvasLayer"]
+layer = 99
 script = ExtResource("1_qdmn5")
 
 [node name="PlayerStats" type="Node" parent="."]
 script = ExtResource("2_j4t3q")
 metadata/_custom_type_script = "uid://dtvtnp75qll86"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_y5hx0")
+}
+
+[node name="Whiteball" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(960, 540)
+scale = Vector2(5, 5)
+texture = ExtResource("3_3q0u3")

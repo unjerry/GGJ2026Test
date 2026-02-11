@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cgww1cdm0gu01"]
+[gd_scene load_steps=17 format=3 uid="uid://cgww1cdm0gu01"]
 
 [ext_resource type="FontFile" uid="uid://t5cvwda8jqbb" path="res://assets/SmileySans-Oblique.otf" id="1_7xhpk"]
 [ext_resource type="Texture2D" uid="uid://c4k5jh4v856m4" path="res://ui/Base-01.png" id="1_bor1v"]
@@ -7,6 +7,7 @@
 [ext_resource type="AudioStream" uid="uid://7mep6jct7yri" path="res://assets/Audio/Prime Directive.mp3" id="4_wa5rm"]
 [ext_resource type="Texture2D" uid="uid://gqpe71qjnvnw" path="res://assets/Pictures/ball.png" id="5_wa5rm"]
 [ext_resource type="Texture2D" uid="uid://7ew8amp0hyl2" path="res://assets/Pictures/Whiteground.png" id="6_sfunj"]
+[ext_resource type="Texture2D" uid="uid://bjbxvx4io4iev" path="res://assets/Pictures/whiteball.png" id="7_sfunj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7xhpk"]
 bg_color = Color(1, 1, 1, 0)
@@ -134,38 +135,38 @@ tracks/6/keys = {
 tracks/7/type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("world/Ball:position")
+tracks/7/path = NodePath("Whiteground:z_index")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 0)]
+"update": 1,
+"values": [1]
 }
 tracks/8/type = "value"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("Whiteground:z_index")
+tracks/8/path = NodePath("world/Whiteball:scale")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [1]
+"update": 0,
+"values": [Vector2(0.01, 0.01)]
 }
 tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("Camera2D:position")
+tracks/9/path = NodePath("world/Whiteball:visible")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(960, 880)]
+"update": 1,
+"values": [false]
 }
 
 [sub_resource type="Animation" id="Animation_sfunj"]
@@ -187,26 +188,26 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("world/Ball:position")
+tracks/1/path = NodePath("world/Whiteball:scale")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(0.43527535, 1),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(0, 0), Vector2(1000, -300)]
+"values": [Vector2(0.01, 0.01), Vector2(4.5, 4.5)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Camera2D:position")
+tracks/2/path = NodePath("world/Whiteball:visible")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(2.3784142, 1),
-"update": 0,
-"values": [Vector2(960, 880), Vector2(1960, 880)]
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
 }
 
 [sub_resource type="Animation" id="Animation_6qcwj"]
@@ -370,6 +371,11 @@ metadata/_edit_lock_ = true
 scale = Vector2(0.15, 0.15)
 texture = ExtResource("5_wa5rm")
 
+[node name="Whiteball" type="Sprite2D" parent="world"]
+visible = false
+scale = Vector2(0.01, 0.01)
+texture = ExtResource("7_sfunj")
+
 [node name="Whiteground" type="TextureRect" parent="."]
 z_index = 1
 layout_mode = 1
@@ -389,9 +395,8 @@ libraries = {
 }
 
 [node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(960, 880)
+position = Vector2(960, 540)
 scale = Vector2(0.15, 0.15)
-limit_bottom = 1080
 
 [connection signal="pressed" from="V/begin" to="." method="_on_begin_pressed"]
 [connection signal="pressed" from="V/Quit" to="." method="_on_quit_pressed"]

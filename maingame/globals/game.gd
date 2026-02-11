@@ -5,6 +5,8 @@ var world_states := {}
 const SAVE_PATH := "user://data.sav"
 
 @onready var player_stats: Stats = $PlayerStats
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var whiteball: Sprite2D = $Whiteball
 
 signal camera_should_shake(amount: float)
 
@@ -12,6 +14,8 @@ func change_scene(path: String, params := {}) -> void:
 	var tree := get_tree()
 	tree.paused = true
 	
+	whiteball.visible = true
+	animation_player.play("loading_animation")
 	for trail in get_tree().get_nodes_in_group("sprite_trails"):
 		if trail.has_method("cleanup_all_trails"):
 			trail.cleanup_all_trails()
@@ -35,6 +39,8 @@ func change_scene(path: String, params := {}) -> void:
 			tree.current_scene.update_player(params.position)
 	
 	tree.paused = false
+	whiteball.visible = false
+	animation_player.play("loading_animation")
 
 
 func new_game() -> void:
@@ -76,6 +82,7 @@ func save_game() -> void:
 func load_game() -> void:
 	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
 	if not file:
+		change_scene("res://ui/title_screen.tscn")
 		return
 	
 	var json := file.get_as_text()

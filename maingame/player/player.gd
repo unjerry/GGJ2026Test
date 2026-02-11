@@ -379,11 +379,11 @@ func _on_hurtbox_hurt(hitbox: Variant) -> void:
 		# 受击时刷新冲刺冷却
 		_reset_dash_cooldowns()
 	else:
-		die()
+		die(0)
 	_update_form_visual()
 
-func die() -> void:
-	# 清理残影
+
+func die(scene: int) -> void:
 	if sprite_trail:
 		sprite_trail.cleanup_all_trails()
 	
@@ -391,10 +391,19 @@ func die() -> void:
 	animation_player.play("die")
 	await animation_player.animation_finished
 	get_tree().paused = false
-	if Game.has_save():
-		Game.load_game()
-	else:
-		Game.back_to_title()
+	
+	# 根据参数执行唯一动作
+	match scene:
+		1:
+			Game.load_game()
+		2:
+			Game.change_scene("res://ui/title_screen.tscn")
+		_:
+			if Game.has_save():
+				Game.load_game()
+			else:
+				Game.back_to_title()
+
 
 func _on_hitbox_hit(hurtbox: Variant) -> void:
 	SoundManager.play_sfx("hit")
@@ -415,3 +424,10 @@ func _on_dash_cooldown_timeout() -> void:
 
 func _on_backdash_cooldown_timeout() -> void:
 	backdash_on_cooldown = false
+
+
+func play_reverse_death() -> void:
+	get_tree().paused = true
+	animation_player.play("play_reverse_death")
+	await animation_player.animation_finished
+	get_tree().paused = false

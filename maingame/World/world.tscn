@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b3tw005pgghb3"]
+[gd_scene load_steps=12 format=3 uid="uid://b3tw005pgghb3"]
 
 [ext_resource type="Script" uid="uid://dbnfhngc1mt7a" path="res://World/world.gd" id="1_j8job"]
 [ext_resource type="Texture2D" uid="uid://7ew8amp0hyl2" path="res://assets/Pictures/Whiteground.png" id="2_k8do8"]
@@ -10,12 +10,49 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bkhv4"]
 
+[sub_resource type="Animation" id="Animation_yf0ba"]
+resource_name = "new_animation"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player/Whiteground:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="Animation" id="Animation_eidgh"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player/Whiteground:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0009999999),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_oe8m4"]
+_data = {
+&"RESET": SubResource("Animation_eidgh"),
+&"new_animation": SubResource("Animation_yf0ba")
+}
+
 [node name="World" type="Node2D"]
 script = ExtResource("1_j8job")
 metadata/_edit_vertical_guides_ = [5749.0]
 
 [node name="Player" parent="." instance=ExtResource("5_bkhv4")]
-position = Vector2(44, -44)
+position = Vector2(300, -45)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 process_callback = 0
@@ -27,6 +64,10 @@ drag_vertical_enabled = true
 editor_draw_drag_margin = true
 script = ExtResource("3_yf0ba")
 
+[node name="Whiteground" type="Sprite2D" parent="Player"]
+scale = Vector2(80, 80)
+texture = ExtResource("2_k8do8")
+
 [node name="Parallax2D" type="Parallax2D" parent="."]
 z_index = -1
 scroll_scale = Vector2(0, 0)
@@ -35,13 +76,14 @@ scroll_scale = Vector2(0, 0)
 position = Vector2(963, 544)
 scale = Vector2(12.3125, 7.0625)
 texture = ExtResource("2_k8do8")
+metadata/_edit_lock_ = true
 
 [node name="X" parent="." instance=ExtResource("7_yf0ba")]
 scale = Vector2(6, 0.3)
 
 [node name="Y" parent="." instance=ExtResource("7_yf0ba")]
 rotation = 1.5707964
-scale = Vector2(5, 0.3)
+scale = Vector2(15, 0.3)
 
 [node name="DeathBoundary" type="Area2D" parent="."]
 position = Vector2(0, 180)
@@ -58,7 +100,7 @@ shape = SubResource("RectangleShape2D_bkhv4")
 position = Vector2(1800, -45)
 
 [node name="Test2" parent="Test" instance=ExtResource("6_bkhv4")]
-position = Vector2(2400, -300)
+position = Vector2(2400, -450)
 
 [node name="Test3" parent="Test" instance=ExtResource("6_bkhv4")]
 position = Vector2(3000, -45)
@@ -90,6 +132,30 @@ position = Vector2(6600, -345)
 [node name="Test9" parent="Test" instance=ExtResource("6_bkhv4")]
 position = Vector2(5850, -600)
 
+[node name="Test13" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(5400, -1245)
+
+[node name="Test14" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(4800, -1500)
+
+[node name="Test15" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(4200, -1245)
+
+[node name="Test16" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(3001, -1245)
+
+[node name="Test17" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(2400, -1050)
+
+[node name="Test18" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(2400, -1245)
+
+[node name="Test19" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(2700, -2400)
+
+[node name="Test20" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(2400, -3043)
+
 [node name="FullLine" type="Node2D" parent="."]
 
 [node name="FullLine" parent="FullLine" instance=ExtResource("7_yf0ba")]
@@ -116,8 +182,39 @@ position = Vector2(6600, -900)
 [node name="FullLine8" parent="FullLine" instance=ExtResource("7_yf0ba")]
 position = Vector2(5400, -1200)
 
+[node name="FullLine9" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(5100, -1500)
+rotation = 1.5707964
+
+[node name="FullLine10" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(4800, -1200)
+
+[node name="FullLine11" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(3900, -1500)
+rotation = 1.5707964
+
+[node name="FullLine12" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(3000, -1200)
+
+[node name="FullLine13" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(2400, -1200)
+
+[node name="FullLine14" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(2400, -3000)
+
 [node name="DottedLine" type="Node2D" parent="."]
 
 [node name="DottedLine" parent="DottedLine" instance=ExtResource("7_eidgh")]
-visible = false
-position = Vector2(1800, -592)
+position = Vector2(4200, -1200)
+
+[node name="DottedLine2" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(3600, -1200)
+
+[node name="DottedLine3" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(2700, -1500)
+rotation = 1.5707964
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_oe8m4")
+}

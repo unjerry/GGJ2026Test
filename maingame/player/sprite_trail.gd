@@ -39,14 +39,13 @@ func cleanup_all_trails() -> void:
 	# 清理所有活跃的残影
 	for sprite in active_trail_sprites:
 		if is_instance_valid(sprite):
+			sprite.hide()              # 立即隐藏
 			sprite.queue_free()
 	active_trail_sprites.clear()
 	
-	# 清理池中的残影
-	for sprite in sprite_pool:
-		if is_instance_valid(sprite):
-			sprite.queue_free()
-	sprite_pool.clear()
+	for sprite in get_tree().get_nodes_in_group("trail_sprites"):
+		sprite.hide()          # 立即不可见
+		sprite.queue_free()   # 下一帧删除
 
 
 func setup_sprite_pool() -> void:
@@ -54,7 +53,7 @@ func setup_sprite_pool() -> void:
 		var new_sprite = ball_sprite.duplicate()
 		new_sprite.z_index = 0
 		new_sprite.modulate.a = 0
-		
+		new_sprite.add_to_group("trail_sprites")
 		get_tree().root.add_child.call_deferred(new_sprite)
 		sprite_pool.append(new_sprite)
 

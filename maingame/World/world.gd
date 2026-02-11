@@ -9,21 +9,25 @@ extends Node2D
 @onready var death_boundary: Area2D = $DeathBoundary  # 添加死亡边界引用
 @onready var full_line: Node2D = $FullLine
 @onready var dotted_line: Node2D = $DottedLine
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+
 
 func _ready() -> void:
 	# 连接死亡边界的信号
 	if death_boundary and death_boundary.body_entered.is_connected(_on_death_boundary_body_entered):
 		death_boundary.body_entered.disconnect(_on_death_boundary_body_entered)
 	death_boundary.body_entered.connect(_on_death_boundary_body_entered)
+	animation_player.play("new_animation")
+	player.play_reverse_death()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("restart"):
-		Game.back_to_title()
+		player.die(2)
 	if event.is_action_pressed("save"):
 		Game.save_game()
 	if event.is_action_pressed("load"):
-		Game.load_game()
+		player.die(1)
 
 
 func _physics_process(_delta: float) -> void:
@@ -43,7 +47,7 @@ func update_player(pos: Vector2) -> void:
 func _on_death_boundary_body_entered(body: Node) -> void:
 	# 确保只有玩家会触发
 	if body == player:
-		player.die()
+		player.die(0)
 	else:
 		body.queue_free()
 
