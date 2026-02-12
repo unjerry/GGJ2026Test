@@ -517,6 +517,18 @@ rotation = 1.5707964
 position = Vector2(1800, -3900.0002)
 rotation = 1.5707964
 
+[node name="DottedLine41" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1800.0002, -4500)
+rotation = 1.5707964
+
+[node name="DottedLine42" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1800.0001, -5100)
+rotation = 1.5707964
+
+[node name="DottedLine43" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1800, -5700)
+rotation = 1.5707964
+
 [node name="DottedLine12" parent="DottedLine" instance=ExtResource("7_eidgh")]
 position = Vector2(900.00006, -2400)
 
