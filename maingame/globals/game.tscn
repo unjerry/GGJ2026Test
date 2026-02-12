@@ -57,5 +57,5 @@ libraries = {
 [node name="Whiteball" type="Sprite2D" parent="."]
 visible = false
 position = Vector2(960, 540)
-scale = Vector2(5, 5)
+scale = Vector2(7, 7)
 texture = ExtResource("3_3q0u3")

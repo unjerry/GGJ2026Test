@@ -23,7 +23,7 @@ tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.0009999999),
 "transitions": PackedFloat32Array(1, 1),
-"update": 1,
+"update": 0,
 "values": [true, false]
 }
 
@@ -39,7 +39,7 @@ tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(1, 1),
-"update": 1,
+"update": 0,
 "values": [true, false]
 }
 
@@ -81,12 +81,23 @@ scale = Vector2(12.3125, 7.0625)
 texture = ExtResource("2_k8do8")
 metadata/_edit_lock_ = true
 
-[node name="X" parent="." instance=ExtResource("7_yf0ba")]
-scale = Vector2(6, 0.3)
+[node name="X" type="Node2D" parent="."]
+scale = Vector2(5, 1)
 
-[node name="Y" parent="." instance=ExtResource("7_yf0ba")]
+[node name="Full" parent="X" instance=ExtResource("7_yf0ba")]
+
+[node name="Dotted" parent="X" instance=ExtResource("7_eidgh")]
+position = Vector2(0, -0.0012207031)
+
+[node name="Y" type="Node2D" parent="."]
+scale = Vector2(1, 20)
+
+[node name="Dotted" parent="Y" instance=ExtResource("7_eidgh")]
+position = Vector2(0, -6.1035156e-05)
 rotation = 1.5707964
-scale = Vector2(15, 0.3)
+
+[node name="Full" parent="Y" instance=ExtResource("7_yf0ba")]
+rotation = 1.5707964
 
 [node name="DeathBoundary" type="Area2D" parent="."]
 position = Vector2(0, 180)
@@ -144,20 +155,71 @@ position = Vector2(4800, -1500)
 [node name="Test15" parent="Test" instance=ExtResource("6_bkhv4")]
 position = Vector2(4200, -1245)
 
-[node name="Test16" parent="Test" instance=ExtResource("6_bkhv4")]
-position = Vector2(3001, -1245)
-
-[node name="Test17" parent="Test" instance=ExtResource("6_bkhv4")]
-position = Vector2(2400, -1050)
-
 [node name="Test18" parent="Test" instance=ExtResource("6_bkhv4")]
 position = Vector2(2400, -1245)
 
 [node name="Test19" parent="Test" instance=ExtResource("6_bkhv4")]
-position = Vector2(2700, -2400)
+position = Vector2(600, -1500)
+
+[node name="Test21" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(600, -2100)
+
+[node name="Test22" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(600, -2700)
+
+[node name="Test38" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(600, -3300)
 
 [node name="Test20" parent="Test" instance=ExtResource("6_bkhv4")]
-position = Vector2(2400, -3043)
+position = Vector2(2400, -2100)
+
+[node name="Test28" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(2400, -2250)
+
+[node name="Test25" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(2400, -2850)
+
+[node name="Test34" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(2400, -3592.0002)
+
+[node name="Test35" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(3000, -3900)
+
+[node name="Test36" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(3000, -4500)
+
+[node name="Test37" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(600, -4245)
+
+[node name="Test23" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(3000, -1500)
+
+[node name="Test24" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(6600, -1845)
+
+[node name="Test26" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(5400, -3300)
+
+[node name="Test27" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(4800, -3300.0002)
+
+[node name="Test29" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(4200, -3045)
+
+[node name="Test30" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(4200, -3645.0002)
+
+[node name="Test31" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(6300, -4800)
+
+[node name="Test32" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(5700, -5400)
+
+[node name="Test33" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(5100, -6000)
+
+[node name="Test39" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(600, -6045)
 
 [node name="FullLine" type="Node2D" parent="."]
 
@@ -202,13 +264,143 @@ position = Vector2(3000, -1200)
 [node name="FullLine13" parent="FullLine" instance=ExtResource("7_yf0ba")]
 position = Vector2(2400, -1200)
 
+[node name="FullLine17" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(600, -1200)
+
+[node name="FullLine18" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(300, -2400)
+
+[node name="FullLine19" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(900, -2400)
+
+[node name="FullLine36" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(1200, -2700)
+rotation = 1.5707964
+
 [node name="FullLine14" parent="FullLine" instance=ExtResource("7_yf0ba")]
-position = Vector2(2400, -3000)
+position = Vector2(2400, -1800)
+
+[node name="FullLine16" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(3000, -1800.0001)
+
+[node name="FullLine20" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(3600, -1800.0001)
+
+[node name="FullLine21" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(4200, -1800.0001)
+
+[node name="FullLine22" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(4800, -1800.0001)
+
+[node name="FullLine23" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(5400, -1800.0001)
+
+[node name="FullLine24" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(6000, -1800)
+
+[node name="FullLine25" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(6600, -1800.0001)
+
+[node name="FullLine26" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(4200.0005, -3000)
+
+[node name="FullLine27" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(4200, -3600)
+
+[node name="FullLine29" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(3000, -3600.0002)
+
+[node name="FullLine31" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(3300, -3900)
+rotation = 1.5707964
+
+[node name="FullLine30" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(2700, -3900.0002)
+rotation = 1.5707964
+
+[node name="FullLine32" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(2400, -4200)
+
+[node name="FullLine33" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(1800.0001, -4200)
+
+[node name="FullLine34" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(1200.0001, -4200)
+
+[node name="FullLine35" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(600, -4200)
+
+[node name="FullLine37" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(900, -3600)
+
+[node name="FullLine38" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(300.00006, -3600.0002)
+
+[node name="FullLine39" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(3600, -6000)
+
+[node name="FullLine40" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(2400.0002, -6000)
+
+[node name="FullLine41" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(1200, -6000)
 
 [node name="DottedLine" type="Node2D" parent="."]
 
 [node name="DottedLine" parent="DottedLine" instance=ExtResource("7_eidgh")]
 position = Vector2(4200, -1200)
+
+[node name="DottedLine4" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(6000, -2400)
+
+[node name="DottedLine14" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(5400, -3000)
+
+[node name="DottedLine16" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(5400, -3600)
+
+[node name="DottedLine18" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(4800, -3600.0002)
+
+[node name="DottedLine20" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(3600.0002, -3600)
+
+[node name="DottedLine25" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(3000, -4200)
+
+[node name="DottedLine29" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(4200, -6000)
+
+[node name="DottedLine30" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(3000, -6000)
+
+[node name="DottedLine31" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1800, -6000)
+
+[node name="DottedLine32" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(600.0001, -6000)
+
+[node name="DottedLine22" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(3900, -3300.0002)
+rotation = 1.5707964
+
+[node name="DottedLine23" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(4500.0005, -3300.0002)
+rotation = 1.5707964
+
+[node name="DottedLine17" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(6000, -3600.0002)
+
+[node name="DottedLine24" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(6300, -3900.0002)
+rotation = 1.5707964
+
+[node name="DottedLine19" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(5100, -3300.0002)
+rotation = 1.5707964
+
+[node name="DottedLine15" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(4800, -3000)
 
 [node name="DottedLine2" parent="DottedLine" instance=ExtResource("7_eidgh")]
 position = Vector2(3600, -1200)
@@ -217,10 +409,56 @@ position = Vector2(3600, -1200)
 position = Vector2(2700, -1500)
 rotation = 1.5707964
 
+[node name="DottedLine21" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(2100, -1500.0001)
+rotation = 1.5707964
+
+[node name="DottedLine5" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1500, -300)
+rotation = 1.5707964
+
+[node name="DottedLine9" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1500, -900)
+rotation = 1.5707964
+
+[node name="DottedLine10" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1200, -1200)
+
+[node name="DottedLine11" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1800, -1200)
+
+[node name="DottedLine6" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(900.00006, -1800)
+
+[node name="DottedLine13" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1200, -2100)
+rotation = 1.5707964
+
+[node name="DottedLine26" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(900.0001, -3000)
+
+[node name="DottedLine28" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1200, -3300)
+rotation = 1.5707964
+
+[node name="DottedLine27" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(300, -3000)
+
+[node name="DottedLine12" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(300, -1800)
+
+[node name="DottedLine7" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(900, -1500)
+rotation = 1.5707964
+
+[node name="DottedLine8" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(300, -1500)
+rotation = 1.5707964
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_oe8m4")
 }
 
 [node name="END" parent="." instance=ExtResource("8_eidgh")]
-position = Vector2(1689, -45)
+position = Vector2(600, -600)
