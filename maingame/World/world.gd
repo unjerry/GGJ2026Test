@@ -3,6 +3,7 @@
 class_name World
 extends Node2D
 
+@export var bgm: AudioStream
 # 节点引用
 @onready var camera_2d: Camera2D = $Player/Camera2D
 @onready var player: CharacterBody2D = $Player
@@ -19,6 +20,9 @@ func _ready() -> void:
 	death_boundary.body_entered.connect(_on_death_boundary_body_entered)
 	animation_player.play("new_animation")
 	player.play_reverse_death()
+	
+	if bgm:
+		SoundManager.play_bgm(bgm)
 
 
 func _unhandled_input(event: InputEvent) -> void:

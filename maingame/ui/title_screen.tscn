@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://c4k5jh4v856m4" path="res://ui/Base-01.png" id="1_bor1v"]
 [ext_resource type="Script" uid="uid://cc11iamhyv2yj" path="res://ui/title_screen.gd" id="3_qer0c"]
 [ext_resource type="Texture2D" uid="uid://cr2nr5u4ha4sh" path="res://assets/Pictures/stick.png" id="4_6qcwj"]
-[ext_resource type="AudioStream" uid="uid://7mep6jct7yri" path="res://assets/Audio/Prime Directive.mp3" id="4_wa5rm"]
+[ext_resource type="AudioStream" uid="uid://do4arhlbxlbj1" path="res://assets/Audio/BGMEnnPty.wav" id="4_sfunj"]
 [ext_resource type="Texture2D" uid="uid://gqpe71qjnvnw" path="res://assets/Pictures/ball.png" id="5_wa5rm"]
 [ext_resource type="Texture2D" uid="uid://7ew8amp0hyl2" path="res://assets/Pictures/Whiteground.png" id="6_sfunj"]
 [ext_resource type="Texture2D" uid="uid://bjbxvx4io4iev" path="res://assets/Pictures/whiteball.png" id="7_sfunj"]
@@ -329,7 +329,7 @@ grow_vertical = 2
 mouse_filter = 2
 theme = SubResource("Theme_bor1v")
 script = ExtResource("3_qer0c")
-bgm = ExtResource("4_wa5rm")
+bgm = ExtResource("4_sfunj")
 metadata/_edit_vertical_guides_ = [1920.0]
 metadata/_edit_lock_ = true
 metadata/_edit_horizontal_guides_ = [2076.0, 2414.0]

@@ -398,6 +398,8 @@ func die(scene: int) -> void:
 			Game.load_game()
 		2:
 			Game.change_scene("res://ui/title_screen.tscn")
+		3:
+			Game.change_scene("res://ui/end_screen.tscn")
 		_:
 			if Game.has_save():
 				Game.load_game()

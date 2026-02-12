@@ -1,14 +1,31 @@
-[gd_scene load_steps=12 format=3 uid="uid://b3tw005pgghb3"]
+[gd_scene load_steps=14 format=3 uid="uid://b3tw005pgghb3"]
 
 [ext_resource type="Script" uid="uid://dbnfhngc1mt7a" path="res://World/world.gd" id="1_j8job"]
 [ext_resource type="Texture2D" uid="uid://7ew8amp0hyl2" path="res://assets/Pictures/Whiteground.png" id="2_k8do8"]
+[ext_resource type="AudioStream" uid="uid://sw54ydy26n05" path="res://assets/Audio/BGMThe。。。.wav" id="2_oe8m4"]
 [ext_resource type="Script" path="res://classes/ShakyCamera.gd" id="3_yf0ba"]
 [ext_resource type="PackedScene" uid="uid://cn4tdklhwm6o3" path="res://player/player.tscn" id="5_bkhv4"]
 [ext_resource type="PackedScene" uid="uid://bs3apdfuibdg8" path="res://enemy/test.tscn" id="6_bkhv4"]
 [ext_resource type="PackedScene" uid="uid://rbljohtfiwf4" path="res://World/dotted_line.tscn" id="7_eidgh"]
 [ext_resource type="PackedScene" uid="uid://b15obn5atqnt5" path="res://World/full_line.tscn" id="7_yf0ba"]
+[ext_resource type="PackedScene" uid="uid://l4xd8axg32bl" path="res://World/node_2d.tscn" id="8_eidgh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bkhv4"]
+
+[sub_resource type="Animation" id="Animation_eidgh"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player/Whiteground:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0009999999),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
 
 [sub_resource type="Animation" id="Animation_yf0ba"]
 resource_name = "new_animation"
@@ -26,21 +43,6 @@ tracks/0/keys = {
 "values": [true, false]
 }
 
-[sub_resource type="Animation" id="Animation_eidgh"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Player/Whiteground:visible")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.0009999999),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_oe8m4"]
 _data = {
 &"RESET": SubResource("Animation_eidgh"),
@@ -49,6 +51,7 @@ _data = {
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_j8job")
+bgm = ExtResource("2_oe8m4")
 metadata/_edit_vertical_guides_ = [5749.0]
 
 [node name="Player" parent="." instance=ExtResource("5_bkhv4")]
@@ -218,3 +221,6 @@ rotation = 1.5707964
 libraries = {
 &"": SubResource("AnimationLibrary_oe8m4")
 }
+
+[node name="END" parent="." instance=ExtResource("8_eidgh")]
+position = Vector2(1689, -45)

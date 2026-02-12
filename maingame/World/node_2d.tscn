@@ -1,0 +1,88 @@
+[gd_scene load_steps=7 format=3 uid="uid://l4xd8axg32bl"]
+
+[ext_resource type="Script" uid="uid://bkoneg71dc4io" path="res://World/endpoint.gd" id="1_axefv"]
+[ext_resource type="Texture2D" uid="uid://bjbxvx4io4iev" path="res://assets/Pictures/whiteball.png" id="1_e71vw"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_oy74p"]
+
+[sub_resource type="Animation" id="Animation_ulxxt"]
+resource_name = "idle"
+length = 2.0
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Whiteball:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2),
+"transitions": PackedFloat32Array(0.31864062, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(0.78039217, 0.23137255, 0.5568628, 1), Color(0.78039217, 0.23137255, 0.12156863, 1), Color(0.3529412, 0.7176471, 0.12156863, 1), Color(0.8392157, 0.7176471, 0.12156863, 1), Color(0.29803923, 0.7254902, 0.6745098, 1), Color(0.36862746, 0.38431373, 0.90588236, 1), Color(0.627451, 0.38431373, 0.90588236, 1), Color(0.22352941, 0.38431373, 0.90588236, 1), Color(0, 0.38431373, 0, 1), Color(1, 1, 0.9607843, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Whiteball:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(0.32987693, 1),
+"update": 0,
+"values": [Vector2(0.1, 0.1), Vector2(0.2, 0.2)]
+}
+
+[sub_resource type="Animation" id="Animation_lun6m"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Whiteball:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Whiteball:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.1, 0.1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_pdnrq"]
+_data = {
+&"RESET": SubResource("Animation_lun6m"),
+&"idle": SubResource("Animation_ulxxt")
+}
+
+[node name="END" type="Area2D"]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_axefv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(4.2861853, 4.2861853)
+shape = SubResource("CircleShape2D_oy74p")
+
+[node name="Whiteball" type="Sprite2D" parent="."]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_e71vw")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_pdnrq")
+}
+autoplay = "idle"

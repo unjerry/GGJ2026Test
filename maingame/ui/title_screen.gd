@@ -19,8 +19,6 @@ func _ready() -> void:
 		button.mouse_entered.connect(button.grab_focus)
 	
 	if bgm:
-		# 先停止再播放，确保从头开始
-		SoundManager.stop_bgm()
 		SoundManager.play_bgm(bgm)
 
 

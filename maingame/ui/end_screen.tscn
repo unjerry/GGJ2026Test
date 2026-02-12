@@ -1,0 +1,36 @@
+[gd_scene load_steps=4 format=3 uid="uid://cchgx3wk5ugd8"]
+
+[ext_resource type="Script" uid="uid://btjs1kk07h6hl" path="res://ui/end_screen.gd" id="1_70k24"]
+[ext_resource type="AudioStream" uid="uid://clyxl6y3pd7hb" path="res://assets/Audio/BGMReal Way.wav" id="2_7ibj4"]
+[ext_resource type="FontFile" uid="uid://t5cvwda8jqbb" path="res://assets/SmileySans-Oblique.otf" id="2_s243q"]
+
+[node name="EndScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_70k24")
+bgm = ExtResource("2_7ibj4")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="."]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_s243q")
+theme_override_font_sizes/font_size = 100
+horizontal_alignment = 1
+vertical_alignment = 1
