@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b3tw005pgghb3"]
+[gd_scene load_steps=20 format=3 uid="uid://b3tw005pgghb3"]
 
 [ext_resource type="Script" uid="uid://dbnfhngc1mt7a" path="res://World/world.gd" id="1_j8job"]
 [ext_resource type="Texture2D" uid="uid://7ew8amp0hyl2" path="res://assets/Pictures/Whiteground.png" id="2_k8do8"]
@@ -9,6 +9,12 @@
 [ext_resource type="PackedScene" uid="uid://rbljohtfiwf4" path="res://World/dotted_line.tscn" id="7_eidgh"]
 [ext_resource type="PackedScene" uid="uid://b15obn5atqnt5" path="res://World/full_line.tscn" id="7_yf0ba"]
 [ext_resource type="PackedScene" uid="uid://l4xd8axg32bl" path="res://World/node_2d.tscn" id="8_eidgh"]
+[ext_resource type="Texture2D" uid="uid://cbwjf36m5af4d" path="res://assets/Pictures/微信图片_2026-02-12_194127_434.jpg" id="10_f23eu"]
+[ext_resource type="Texture2D" uid="uid://bdfynpxo5jo1y" path="res://assets/Pictures/微信图片_20260212162654_153_27.png" id="11_oeat8"]
+[ext_resource type="Texture2D" uid="uid://dhekfi6xwtxcd" path="res://assets/Pictures/微信图片_20260212162732_155_27.jpg" id="12_5xkvv"]
+[ext_resource type="Texture2D" uid="uid://claalwanh4tdv" path="res://assets/Pictures/微信图片_20260212162828_157_27.png" id="13_kcyjf"]
+[ext_resource type="Texture2D" uid="uid://d0jmf5wuhkxxp" path="res://assets/Pictures/微信图片_20260212173117_165_27.jpg" id="14_xw5lg"]
+[ext_resource type="Texture2D" uid="uid://p7xhlpodveit" path="res://assets/Pictures/微信图片_20260212182735_171_27.jpg" id="15_0lysu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bkhv4"]
 
@@ -158,18 +164,6 @@ position = Vector2(4200, -1245)
 [node name="Test18" parent="Test" instance=ExtResource("6_bkhv4")]
 position = Vector2(2400, -1245)
 
-[node name="Test19" parent="Test" instance=ExtResource("6_bkhv4")]
-position = Vector2(600, -1500)
-
-[node name="Test21" parent="Test" instance=ExtResource("6_bkhv4")]
-position = Vector2(600, -2100)
-
-[node name="Test22" parent="Test" instance=ExtResource("6_bkhv4")]
-position = Vector2(600, -2700)
-
-[node name="Test38" parent="Test" instance=ExtResource("6_bkhv4")]
-position = Vector2(600, -3300)
-
 [node name="Test20" parent="Test" instance=ExtResource("6_bkhv4")]
 position = Vector2(2400, -2100)
 
@@ -189,7 +183,13 @@ position = Vector2(3000, -3900)
 position = Vector2(3000, -4500)
 
 [node name="Test37" parent="Test" instance=ExtResource("6_bkhv4")]
-position = Vector2(600, -4245)
+position = Vector2(300, -4245)
+
+[node name="Test40" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(750, -4050)
+
+[node name="Test41" parent="Test" instance=ExtResource("6_bkhv4")]
+position = Vector2(1050, -2250)
 
 [node name="Test23" parent="Test" instance=ExtResource("6_bkhv4")]
 position = Vector2(3000, -1500)
@@ -265,20 +265,48 @@ position = Vector2(3000, -1200)
 position = Vector2(2400, -1200)
 
 [node name="FullLine17" parent="FullLine" instance=ExtResource("7_yf0ba")]
-position = Vector2(600, -1200)
-
-[node name="FullLine18" parent="FullLine" instance=ExtResource("7_yf0ba")]
-position = Vector2(300, -2400)
+position = Vector2(1200.0001, -2400)
+rotation = 1.5707964
 
 [node name="FullLine19" parent="FullLine" instance=ExtResource("7_yf0ba")]
-position = Vector2(900, -2400)
+position = Vector2(1200.0001, -3600.0002)
 
 [node name="FullLine36" parent="FullLine" instance=ExtResource("7_yf0ba")]
-position = Vector2(1200, -2700)
+position = Vector2(300, -3600.0002)
 rotation = 1.5707964
+
+[node name="FullLine38" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(300.00003, -2700)
+rotation = 1.5707964
+
+[node name="FullLine37" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(600, -3600)
+
+[node name="FullLine18" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(1500, -3600)
+rotation = 1.5707964
+
+[node name="FullLine46" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(300, -4200)
 
 [node name="FullLine14" parent="FullLine" instance=ExtResource("7_yf0ba")]
 position = Vector2(2400, -1800)
+
+[node name="FullLine15" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(2100, -2100)
+rotation = 1.5707964
+
+[node name="FullLine28" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(2100, -2700.0002)
+rotation = 1.5707964
+
+[node name="FullLine42" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(2100, -3300.0002)
+rotation = 1.5707964
+
+[node name="FullLine43" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(2100.0002, -3900.0002)
+rotation = 1.5707964
 
 [node name="FullLine16" parent="FullLine" instance=ExtResource("7_yf0ba")]
 position = Vector2(3000, -1800.0001)
@@ -330,11 +358,14 @@ position = Vector2(1200.0001, -4200)
 [node name="FullLine35" parent="FullLine" instance=ExtResource("7_yf0ba")]
 position = Vector2(600, -4200)
 
-[node name="FullLine37" parent="FullLine" instance=ExtResource("7_yf0ba")]
-position = Vector2(900, -3600)
+[node name="FullLine48" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(300, -2100)
 
-[node name="FullLine38" parent="FullLine" instance=ExtResource("7_yf0ba")]
-position = Vector2(300.00006, -3600.0002)
+[node name="FullLine50" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(900, -2100)
+
+[node name="FullLine49" parent="FullLine" instance=ExtResource("7_yf0ba")]
+position = Vector2(0, -2700)
 
 [node name="FullLine39" parent="FullLine" instance=ExtResource("7_yf0ba")]
 position = Vector2(3600, -6000)
@@ -414,46 +445,91 @@ position = Vector2(2100, -1500.0001)
 rotation = 1.5707964
 
 [node name="DottedLine5" parent="DottedLine" instance=ExtResource("7_eidgh")]
-position = Vector2(1500, -300)
+position = Vector2(1200, -300.00006)
 rotation = 1.5707964
 
 [node name="DottedLine9" parent="DottedLine" instance=ExtResource("7_eidgh")]
-position = Vector2(1500, -900)
+position = Vector2(1200, -900.00006)
 rotation = 1.5707964
 
 [node name="DottedLine10" parent="DottedLine" instance=ExtResource("7_eidgh")]
-position = Vector2(1200, -1200)
+position = Vector2(600, -900)
 
 [node name="DottedLine11" parent="DottedLine" instance=ExtResource("7_eidgh")]
-position = Vector2(1800, -1200)
-
-[node name="DottedLine6" parent="DottedLine" instance=ExtResource("7_eidgh")]
-position = Vector2(900.00006, -1800)
+position = Vector2(300, -2400)
 
 [node name="DottedLine13" parent="DottedLine" instance=ExtResource("7_eidgh")]
-position = Vector2(1200, -2100)
+position = Vector2(900, -2692)
+
+[node name="DottedLine48" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(600, -3000)
+rotation = 1.5707964
+
+[node name="DottedLine49" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1200.0001, -3900)
+
+[node name="DottedLine51" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1800.0001, -3300.0002)
+
+[node name="DottedLine50" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1199.9999, -3600.0002)
 rotation = 1.5707964
 
 [node name="DottedLine26" parent="DottedLine" instance=ExtResource("7_eidgh")]
-position = Vector2(900.0001, -3000)
+position = Vector2(600.00006, -3900.0002)
+rotation = 1.5707964
 
-[node name="DottedLine28" parent="DottedLine" instance=ExtResource("7_eidgh")]
-position = Vector2(1200, -3300)
+[node name="DottedLine36" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(300.00006, -4800)
+
+[node name="DottedLine35" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(600, -4500)
 rotation = 1.5707964
 
 [node name="DottedLine27" parent="DottedLine" instance=ExtResource("7_eidgh")]
-position = Vector2(300, -3000)
+position = Vector2(1200, -3007.0002)
+rotation = 1.5707964
+
+[node name="DottedLine28" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(600, -3308.0002)
+rotation = 1.5707964
+
+[node name="DottedLine6" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1200, -1500)
+rotation = 1.5707964
+
+[node name="DottedLine40" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1200.0001, -1800)
+rotation = 1.5707964
+
+[node name="DottedLine33" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1800, -3300.0002)
+rotation = 1.5707964
+
+[node name="DottedLine34" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1500, -2400)
+
+[node name="DottedLine37" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1800, -2700)
+rotation = 1.5707964
+
+[node name="DottedLine39" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(1800, -3900.0002)
+rotation = 1.5707964
 
 [node name="DottedLine12" parent="DottedLine" instance=ExtResource("7_eidgh")]
-position = Vector2(300, -1800)
+position = Vector2(900.00006, -2400)
 
 [node name="DottedLine7" parent="DottedLine" instance=ExtResource("7_eidgh")]
-position = Vector2(900, -1500)
+position = Vector2(300.00003, -1200.0001)
+rotation = 1.5707964
+
+[node name="DottedLine38" parent="DottedLine" instance=ExtResource("7_eidgh")]
+position = Vector2(300.00003, -1800)
 rotation = 1.5707964
 
 [node name="DottedLine8" parent="DottedLine" instance=ExtResource("7_eidgh")]
-position = Vector2(300, -1500)
-rotation = 1.5707964
+position = Vector2(900, -900)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -462,3 +538,35 @@ libraries = {
 
 [node name="END" parent="." instance=ExtResource("8_eidgh")]
 position = Vector2(600, -600)
+
+[node name="Egg" type="Node2D" parent="."]
+
+[node name="微信图片20260212194127434" type="Sprite2D" parent="Egg"]
+position = Vector2(1800.0001, -6580)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("10_f23eu")
+
+[node name="微信图片2026021216265415327" type="Sprite2D" parent="Egg"]
+position = Vector2(2400, -6584.0005)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("11_oeat8")
+
+[node name="微信图片2026021216273215527" type="Sprite2D" parent="Egg"]
+position = Vector2(2963.0002, -6594)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("12_5xkvv")
+
+[node name="微信图片2026021216282815727" type="Sprite2D" parent="Egg"]
+position = Vector2(3600, -6581)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("13_kcyjf")
+
+[node name="微信图片2026021217311716527" type="Sprite2D" parent="Egg"]
+position = Vector2(1200, -6564)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("14_xw5lg")
+
+[node name="微信图片2026021218273517127" type="Sprite2D" parent="Egg"]
+position = Vector2(4354, -6587)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("15_0lysu")
