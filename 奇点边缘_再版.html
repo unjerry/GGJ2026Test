@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>视界线：损管指挥官 - 视觉增强版</title>
+    <style>
+        :root {
+            --crit-red: #ff0033;
+            --warn-orange: #ff8800;
+            --safe-cyan: #00f2ff;
+            --void-black: #050508;
+            --monitor-green: #15ff00;
+        }
+
+        body {
+            background-color: #000;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        #game-wrapper {
+            width: 1000px;
+            height: 750px;
+            background: #111;
+            border: 10px solid #333;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 0 100px rgba(0,0,0,1);
+            margin-top: 20px;
+        }
+
+        /* 顶部状态栏 */
+        #header {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+            background: #1a1a1a;
+            padding: 15px;
+            border-bottom: 3px solid #333;
+            gap: 10px;
+        }
+
+        .stat { border-right: 1px solid #333; padding-left: 10px; }
+        .label { font-size: 10px; color: #888; display: block; margin-bottom: 5px; }
+        .val { font-size: 22px; font-weight: bold; }
+
+        /* 核心布局 */
+        #main-view {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            height: 480px;
+        }
+
+        #systems-grid {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #151515;
+        }
+
+        .sys-card {
+            background: #222;
+            border: 1px solid #444;
+            padding: 15px;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .sys-card:hover { background: #333; border-color: var(--safe-cyan); }
+        .sys-card:active { transform: scale(0.98); }
+
+        .health-bar-bg { width: 100%; height: 8px; background: #000; margin-top: 10px; border-radius: 4px; overflow: hidden; }
+        .health-bar-fill { height: 100%; width: 100%; background: var(--safe-cyan); transition: width 0.3s; }
+
+        /* 外部监视器区域 */
+        #monitor-container {
+            position: relative;
+            background: #000;
+            overflow: hidden;
+            border: 4px solid #222;
+            margin: 10px;
+            box-shadow: inset 0 0 50px rgba(0,0,0,1);
+        }
+
+        /* CRT 扫描线效果覆盖层 */
+        #monitor-container::after {
+            content: " ";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        canvas { width: 100%; height: 100%; }
+
+        #overlay-ui {
+            position: absolute;
+            top: 10px; left: 10px;
+            color: var(--monitor-green);
+            font-size: 12px;
+            text-shadow: 0 0 5px var(--monitor-green);
+            pointer-events: none;
+            z-index: 11;
+        }
+
+        /* 日志 */
+        #event-log {
+            height: 140px;
+            background: #000;
+            border-top: 4px solid #333;
+            padding: 10px;
+            font-size: 12px;
+            overflow-y: auto;
+            color: var(--monitor-green);
+        }
+
+        .debuff-tag {
+            background: var(--crit-red);
+            font-size: 9px;
+            padding: 10px 4px;
+            margin-right: 4px;
+            color: white;
+        }
+
+        #overlay {
+            position: absolute;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .critical-flash { animation: flash 0.5s infinite; }
+        @keyframes flash { 50% { opacity: 0.5; color: red; } }
+
+        button {
+            background: transparent;
+            border: 2px solid var(--safe-cyan);
+            color: var(--safe-cyan);
+            padding: 15px 40px;
+            font-size: 18px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        button:hover { background: var(--safe-cyan); color: #000; }
+    </style>
+</head>
+<body>
+
+<div id="game-wrapper">
+    <div id="header">
+        <div class="stat">
+            <span class="label">HULL INTEGRITY / 船体结构</span>
+            <span id="v-hp" class="val">1000</span>
+        </div>
+        <div class="stat">
+            <span class="label">ENERGY (AP) / 备用电力</span>
+            <span id="v-ap" class="val" style="color:var(--safe-cyan)">100</span>
+        </div>
+        <div class="stat">
+            <span class="label">NANITE STOCK / 纳米储备</span>
+            <span id="v-scrap" class="val">15</span>
+        </div>
+        <div class="stat">
+            <span class="label">ESCAPE PROGRESS / 逃离进度</span>
+            <span id="v-escape" class="val" style="color:var(--warn-orange)">0%</span>
+        </div>
+    </div>
+
+    <div id="main-view">
+        <div id="systems-grid">
+            <div class="sys-card" onclick="handleAction('bridge')">
+                <strong>舰桥指挥部</strong>
+                <div class="health-bar-bg"><div id="hp-bridge" class="health-bar-fill"></div></div>
+                <div id="tags-bridge"></div>
+            </div>
+            <div class="sys-card" onclick="handleAction('engine')">
+                <strong>核力推进引擎</strong>
+                <div class="health-bar-bg"><div id="hp-engine" class="health-bar-fill"></div></div>
+                <div id="tags-engine"></div>
+            </div>
+            <div class="sys-card" onclick="handleAction('reactor')">
+                <strong>主物质反应堆</strong>
+                <div class="health-bar-bg"><div id="hp-reactor" class="health-bar-fill"></div></div>
+                <div id="tags-reactor"></div>
+            </div>
+            <div class="sys-card" onclick="handleAction('shield')">
+                <strong>护盾矩阵发生器</strong>
+                <div class="health-bar-bg"><div id="hp-shield" class="health-bar-fill"></div></div>
+                <div id="tags-shield"></div>
+            </div>
+        </div>
+
+        <div id="monitor-container">
+            <div id="overlay-ui">
+                EXTERIOR CAM 01 - EVENT HORIZON PROXIMITY<br>
+                <span id="cam-status">SYSTEM ACTIVE</span><br>
+                <span id="cam-warning" style="color:red"></span>
+            </div>
+            <canvas id="exteriorCanvas"></canvas>
+        </div>
+    </div>
+
+    <div id="event-log"></div>
+
+    <div id="overlay">
+        <h1 id="over-title" style="font-size:48px"></h1>
+        <p id="over-desc" style="font-size:20px; color:#888; margin-bottom:30px"></p>
+        <button onclick="location.reload()">重新初始化</button>
+    </div>
+</div>
+
+<script>
+    const CONFIG = {
+        MAX_HP: 1000,
+        TARGET_ESCAPE: 1200, 
+        EVENT_CHANCE: 0.15,
+        RECOVERY_RATE: 1.2
+    };
+
+    let state = {
+        hp: CONFIG.MAX_HP,
+        ap: 80,
+        scrap: 15,
+        escape: 0,
+        leakRate: 0,
+        isGameOver: false,
+        shake: 0,
+        glitch: 0,
+        systems: {
+            bridge: { health: 100, fires: 0, name: "舰桥" },
+            engine: { health: 100, fires: 0, name: "引擎" },
+            reactor: { health: 100, fires: 0, name: "反应堆" },
+            shield: { health: 100, fires: 0, name: "护盾" }
+        }
+    };
+
+    const canvas = document.getElementById('exteriorCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    // 初始化背景粒子
+    for(let i=0; i<100; i++) {
+        particles.push({
+            x: Math.random() * 800,
+            y: Math.random() * 600,
+            z: Math.random() * 800,
+            speed: Math.random() * 2 + 1
+        });
+    }
+
+    function drawMonitor() {
+        const w = canvas.width = canvas.offsetWidth;
+        const h = canvas.height = canvas.offsetHeight;
+        
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, w, h);
+
+        // 震动效果
+        if (state.shake > 0) {
+            ctx.translate(Math.random()*state.shake - state.shake/2, Math.random()*state.shake - state.shake/2);
+            state.shake *= 0.9;
+        }
+
+        // 1. 绘制黑洞奇点 (Singularity)
+        const centerX = w * 0.7;
+        const centerY = h * 0.5;
+        const holeSize = 40 + (Math.sin(Date.now()/500) * 5);
+        
+        // 吸积盘
+        const grad = ctx.createRadialGradient(centerX, centerY, holeSize, centerX, centerY, holeSize*4);
+        grad.addColorStop(0, '#ffaa00');
+        grad.addColorStop(0.2, '#ff3300');
+        grad.addColorStop(1, 'transparent');
+        
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, holeSize*4, 0, Math.PI*2);
+        ctx.fill();
+
+        // 中心黑域
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, holeSize, 0, Math.PI*2);
+        ctx.fill();
+
+        // 2. 绘制星流粒子
+        ctx.fillStyle = "#fff";
+        particles.forEach(p => {
+            p.x -= (state.systems.engine.health / 50) + p.speed;
+            if (p.x < 0) p.x = w;
+            
+            // 越靠近黑洞越被吸引
+            let dist = Math.hypot(p.x - centerX, p.y - centerY);
+            if (dist < 200) {
+                p.y += (centerY - p.y) * 0.05;
+                ctx.fillStyle = "rgba(255,100,0,0.8)";
+            } else {
+                ctx.fillStyle = "rgba(255,255,255,0.5)";
+            }
+            
+            ctx.fillRect(p.x, p.y, 2, 2);
+        });
+
+        // 3. 画面故障效果 (Glitch)
+        if (state.leakRate > 0 || state.glitch > 0) {
+            if (Math.random() > 0.8) {
+                ctx.fillStyle = "rgba(0, 255, 255, 0.2)";
+                ctx.fillRect(0, Math.random()*h, w, Math.random()*20);
+            }
+            state.glitch = Math.max(0, state.glitch - 1);
+        }
+
+        requestAnimationFrame(drawMonitor);
+    }
+
+    function addLog(msg, color="var(--monitor-green)") {
+        const log = document.getElementById('event-log');
+        const line = document.createElement('div');
+        line.innerHTML = `> ${msg}`;
+        line.style.color = color;
+        log.prepend(line);
+    }
+
+    function handleAction(sysKey) {
+        if(state.isGameOver) return;
+        const sys = state.systems[sysKey];
+        
+        if (state.leakRate > 0 && state.scrap >= 2) {
+            state.leakRate = Math.max(0, state.leakRate - 2.5);
+            state.scrap -= 2;
+            state.ap -= 5;
+            addLog(`密封程序启动... 漏气率降低。`, "#00d4ff");
+            return;
+        }
+
+        if (state.ap >= 10) {
+            state.ap -= 10;
+            sys.health = Math.min(100, sys.health + 25);
+            if (sys.fires > 0) sys.fires--;
+            addLog(`正在执行 [${sys.name}] 损管作业。`);
+        } else {
+            addLog("错误: 备用电力不足!", "red");
+        }
+    }
+
+    function triggerEvent() {
+        const r = Math.random();
+        state.shake = 15;
+        state.glitch = 10;
+
+        if (r < 0.06) {
+            state.leakRate += 3.0;
+            addLog("警告: 船体发生穿透性损伤！装甲正在大出血！", "red");
+        } else if (r < 0.25) {
+            const keys = Object.keys(state.systems);
+            const target = keys[Math.floor(Math.random()*keys.length)];
+            state.systems[target].health -= 30;
+            state.hp -= 50;
+            if(Math.random() > 0.5) state.systems[target].fires++;
+            addLog(`引力波冲击！[${state.systems[target].name}] 遭受重创。`, "orange");
+        }
+    }
+
+    function gameLoop() {
+        if(state.isGameOver) return;
+
+        // 资源回复
+        let apGain = (state.systems.reactor.health / 100) * CONFIG.RECOVERY_RATE;
+        state.ap = Math.min(100, state.ap + apGain);
+
+        // 逃离进度
+        let gravityPull = 1.0; 
+        let thrust = (state.systems.engine.health / 100) * 2.5;
+        state.escape += (thrust - gravityPull);
+
+        // 负面效果
+        state.hp -= state.leakRate;
+        for (let k in state.systems) {
+            let s = state.systems[k];
+            if (s.fires > 0) { s.health -= 0.6; state.hp -= 0.3; }
+        }
+
+        // 随机事件
+        if (Math.random() < CONFIG.EVENT_CHANCE) triggerEvent();
+
+        updateUI();
+
+        if (state.hp <= 0) endGame("船体瓦解", "飞船已被奇点撕碎。");
+        if (state.escape >= CONFIG.TARGET_ESCAPE) endGame("脱离成功", "已跳跃至安全星域，幸存。");
+        if (state.escape < -300) endGame("坠入奇点", "飞船越过了事件视界。");
+
+        setTimeout(gameLoop, 100);
+    }
+
+    function updateUI() {
+        document.getElementById('v-hp').innerText = Math.floor(state.hp);
+        document.getElementById('v-ap').innerText = Math.floor(state.ap);
+        document.getElementById('v-scrap').innerText = state.scrap;
+        document.getElementById('v-escape').innerText = Math.max(0, ((state.escape / CONFIG.TARGET_ESCAPE) * 100).toFixed(1)) + "%";
+        
+        const warn = document.getElementById('cam-warning');
+        warn.innerText = state.leakRate > 0 ? `!!! HULL BREACH DETECTED !!!` : "";
+        if(state.leakRate > 0) warn.classList.add('critical-flash');
+
+        for (let k in state.systems) {
+            let s = state.systems[k];
+            document.getElementById(`hp-${k}`).style.width = s.health + "%";
+            let tags = "";
+            if (s.fires > 0) tags += `<span class="debuff-tag">FIRE</span>`;
+            if (s.health < 30) tags += `<span class="debuff-tag">CRITICAL</span>`;
+            document.getElementById(`tags-${k}`).innerHTML = tags;
+        }
+
+        if (state.hp < 300) document.getElementById('v-hp').classList.add('critical-flash');
+        else document.getElementById('v-hp').classList.remove('critical-flash');
+    }
+
+    function endGame(title, desc) {
+        state.isGameOver = true;
+        document.getElementById('overlay').style.display = 'flex';
+        document.getElementById('over-title').innerText = title;
+        document.getElementById('over-desc').innerText = desc;
+    }
+
+    drawMonitor();
+    gameLoop();
+</script>
+</body>
+</html>
